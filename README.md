@@ -1,0 +1,2 @@
+# rotations
+insecticide rotation strategies
