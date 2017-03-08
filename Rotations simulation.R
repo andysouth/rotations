@@ -11,6 +11,17 @@
 max_no_gens=500 #the maximum number of mosquito generations to run the simulation
 no_insectides=3 #the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
 
+#andy start
+#function to allow creation of arrays with named elements and dimensions
+#e.g. you can use like array_named(name1=c('a','b'), name2=c('x','y')
+array_named <- function(...)
+  {
+   array(0, dim = lengths(list(...)), dimnames = list(...))
+  }
+#initial suggestion
+RAF_intervention <- array_named(sex=c('f','m'), gen=1:5) 
+#andy end
+
 #now set up some arrays to hold data. Can make some dimensions the number of insecticides but hard-code as 5 meanwhile
 #because diretly write to these arrays below and need at least 5. 
 RAF_male_intervention <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in intervention site
