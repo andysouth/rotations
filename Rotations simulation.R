@@ -1,5 +1,5 @@
 #this is to simulate the effect of rotations on teh spread of resistnce
-#Written by Ian Hastings, but hopefully Andy South will erad it, give it a D-, and make teh code efficiant
+#Written by Ian Hastings, but hopefully Andy South will erad it, give it a D-, and make the code efficient
 
 #This can run any number of insecticides/loci but at prseentm, input will only allow a maximumum of 5
 
