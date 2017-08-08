@@ -23,6 +23,19 @@ exposure <- array_named(insecticide=1:no_insecticides, sex=c('male','female'), a
 fitness <- array_named(insecticide=1:no_insecticides, genotype=c('SS','SR', 'RR'), amount=c('none','low', 'high'))
 results<-array(0, dim=c(max_no_generations, 12))
 
+#now set up some arrays to hold data. Can make some dimensions the number of insecticides but hard-code as 5 meanwhile
+#because diretly write to these arrays below and need at least 5. 
+RAF_male_intervention <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in intervention site
+RAF_female_intervention <- array(0, dim=c(5, max_no_generations));
+RAF_male_refugia <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in refugia
+RAF_female_refugia <- array(0, dim=c(5, max_no_generations));
+alpha_male_high <- array(0, dim=5); alpha_male_low <- array(0, dim=5); alpha_male_none <- array(0, dim=5);
+alpha_female_high <- array(0, dim=5); alpha_female_low <- array(0, dim=5); alpha_female_none <- array(0, dim=5);
+z_rr <- array(0, dim=5); h_rr <- array(0, 5);
+w_ss_none <- array(0, dim=5);w_ss_low <- array(0, dim=5);w_ss_high <- array(0, dim=5);
+w_rs_none <- array(0, dim=5);w_rs_low <- array(0, dim=5);w_rs_high <- array(0, dim=5);
+w_rr_none <- array(0, dim=5);w_rr_low <- array(0, dim=5);w_rr_high <- array(0, dim=5);
+
 #now resume entering data
 migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
 coverage=0.8; # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
