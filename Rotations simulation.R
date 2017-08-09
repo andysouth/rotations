@@ -9,9 +9,9 @@
 
 
 max_no_generations=500 #the maximum number of mosquito generations to run the simulation
-no_insecticides=5 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+no_insecticides=4 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
 
-rotation_interval=20 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+rotation_interval=0 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 
 migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
@@ -32,27 +32,6 @@ exposure <- array_named(insecticide=1:no_insecticides, sex=c('male','female'), a
 fitness <- array_named(insecticide=1:no_insecticides, genotype=c('SS','SR', 'RR'), amount=c('none','low', 'high'))
 results<-array(0, dim=c(max_no_generations, 12))
 
-#now set up some arrays to hold data. Can make some dimensions the number of insecticides but hard-code as 5 meanwhile
-#because diretly write to these arrays below and need at least 5. 
-#RAF_male_intervention <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in intervention site
-#RAF_female_intervention <- array(0, dim=c(5, max_no_generations));
-#RAF_male_refugia <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in refugia
-#RAF_female_refugia <- array(0, dim=c(5, max_no_generations));
-#alpha_male_high <- array(0, dim=5); alpha_male_low <- array(0, dim=5); alpha_male_none <- array(0, dim=5);
-#alpha_female_high <- array(0, dim=5); alpha_female_low <- array(0, dim=5); alpha_female_none <- array(0, dim=5);
-#z_rr <- array(0, dim=5); h_rr <- array(0, 5);
-#w_ss_none <- array(0, dim=5);w_ss_low <- array(0, dim=5);w_ss_high <- array(0, dim=5);
-#w_rs_none <- array(0, dim=5);w_rs_low <- array(0, dim=5);w_rs_high <- array(0, dim=5);
-#w_rr_none <- array(0, dim=5);w_rr_low <- array(0, dim=5);w_rr_high <- array(0, dim=5);
-
-#now resume entering data
-migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
-coverage=0.8; # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
-migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)
-
-rotation_interval=20 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
-diagnostics=0
 
 #inital resistance allele frequency (i.e. generation 1) in the intervention and refugia
 #locus 1>>
@@ -114,7 +93,6 @@ exposure[5, 'female', 'none'] =1-exposure[5, 'female', 'low']-exposure[5, 'femal
 
 
 
-
 #genetic data for locus 1
 fitness[1, 'SS', 'none']=0.1; fitness[1, 'SS', 'low']=0.3; fitness[1, 'SS', 'high']=0.3;
 fitness[1, 'SR', 'none']=0.1; fitness[1, 'SR', 'low']=0.7; fitness[1, 'SR', 'high']=0.7;
@@ -134,8 +112,8 @@ fitness[3, 'RR', 'none']=0.3; fitness[3, 'RR', 'low']=0.3; fitness[3, 'RR', 'hig
 #genetic data for locus 4
 if(no_insecticides>=4){
 fitness[4, 'SS', 'none']=0.3; fitness[4, 'SS', 'low']=0.3; fitness[4, 'SS', 'high']=0.3;
-fitness[4, 'SR', 'none']=0.3; fitness[4, 'SR', 'low']=0.3; fitness[4, 'SR', 'high']=0.3;
-fitness[4, 'RR', 'none']=0.3; fitness[4, 'RR', 'low']=0.3; fitness[4, 'RR', 'high']=0.3;
+fitness[4, 'SR', 'none']=0.3; fitness[4, 'SR', 'low']=0.4; fitness[4, 'SR', 'high']=0.4;
+fitness[4, 'RR', 'none']=0.3; fitness[4, 'RR', 'low']=0.5; fitness[4, 'RR', 'high']=0.5;
 }#genetic data for locus 5
 if(no_insecticides>=5){
 fitness[5, 'SS', 'none']=0.3; fitness[5, 'SS', 'low']=0.3; fitness[5, 'SS', 'high']=0.3;
@@ -156,7 +134,6 @@ for(temp_int in 1:no_insecticides){
 if(migration_rate_intervention>(1-coverage)){
 message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
 }
-
 
 
 
