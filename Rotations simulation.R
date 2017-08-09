@@ -9,7 +9,7 @@
 
 
 max_no_generations=500 #the maximum number of mosquito generations to run the simulation
-no_insecticides=3 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+no_insecticides=5 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
 
 rotation_interval=20 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
