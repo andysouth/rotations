@@ -9,7 +9,16 @@
 
 
 max_no_generations=500 #the maximum number of mosquito generations to run the simulation
-no_insecticides=5 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+no_insecticides=3 #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+
+rotation_interval=20 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+
+migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
+coverage=0.8; # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
+migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)
+
+diagnostics=0
 
 #now set up some arrays to hold data. 
 
@@ -25,23 +34,23 @@ results<-array(0, dim=c(max_no_generations, 12))
 
 #now set up some arrays to hold data. Can make some dimensions the number of insecticides but hard-code as 5 meanwhile
 #because diretly write to these arrays below and need at least 5. 
-RAF_male_intervention <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in intervention site
-RAF_female_intervention <- array(0, dim=c(5, max_no_generations));
-RAF_male_refugia <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in refugia
-RAF_female_refugia <- array(0, dim=c(5, max_no_generations));
-alpha_male_high <- array(0, dim=5); alpha_male_low <- array(0, dim=5); alpha_male_none <- array(0, dim=5);
-alpha_female_high <- array(0, dim=5); alpha_female_low <- array(0, dim=5); alpha_female_none <- array(0, dim=5);
-z_rr <- array(0, dim=5); h_rr <- array(0, 5);
-w_ss_none <- array(0, dim=5);w_ss_low <- array(0, dim=5);w_ss_high <- array(0, dim=5);
-w_rs_none <- array(0, dim=5);w_rs_low <- array(0, dim=5);w_rs_high <- array(0, dim=5);
-w_rr_none <- array(0, dim=5);w_rr_low <- array(0, dim=5);w_rr_high <- array(0, dim=5);
+#RAF_male_intervention <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in intervention site
+#RAF_female_intervention <- array(0, dim=c(5, max_no_generations));
+#RAF_male_refugia <- array(0, dim=c(5, max_no_generations)); #resistance allele freq in refugia
+#RAF_female_refugia <- array(0, dim=c(5, max_no_generations));
+#alpha_male_high <- array(0, dim=5); alpha_male_low <- array(0, dim=5); alpha_male_none <- array(0, dim=5);
+#alpha_female_high <- array(0, dim=5); alpha_female_low <- array(0, dim=5); alpha_female_none <- array(0, dim=5);
+#z_rr <- array(0, dim=5); h_rr <- array(0, 5);
+#w_ss_none <- array(0, dim=5);w_ss_low <- array(0, dim=5);w_ss_high <- array(0, dim=5);
+#w_rs_none <- array(0, dim=5);w_rs_low <- array(0, dim=5);w_rs_high <- array(0, dim=5);
+#w_rr_none <- array(0, dim=5);w_rr_low <- array(0, dim=5);w_rr_high <- array(0, dim=5);
 
 #now resume entering data
 migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
 coverage=0.8; # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
 migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)
 
-rotation_interval=0 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+rotation_interval=20 #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 diagnostics=0
 
@@ -50,18 +59,24 @@ diagnostics=0
 RAF[1, 'male', 'intervention',1]=0.002;  RAF[1, 'female', 'intervention',1]=0.002;
 RAF[1, 'male', 'refugia',1]=0.001;       RAF[1, 'female', 'refugia',1]=0.001
 #locus 2>>
+if(no_insecticides>=2){ #need to avoid exceeding size of the array
 RAF[2, 'male', 'intervention',1]=0.001;   RAF[2, 'female', 'intervention',1]=0.001;
 RAF[2, 'male', 'refugia',1]=0.001;        RAF[2, 'female', 'refugia',1]=0.001
+}
 #locus 3>>
+if(no_insecticides>=3){
 RAF[3, 'male', 'intervention',1]=0.09;  RAF[3, 'female', 'intervention',1]=0.09;
 RAF[3, 'male', 'refugia',1]=0.001;       RAF[3, 'female', 'refugia',1]=0.001
+}
 #locus 4>>
+if(no_insecticides>=4){
 RAF[4, 'male', 'intervention',1]=0.09;  RAF[4, 'female', 'intervention',1]=0.09;
 RAF[4, 'male', 'refugia',1]=0.001;       RAF[4, 'female', 'refugia',1]=0.001
-#locus 5>>
+}#locus 5>>
+if(no_insecticides>=5){
 RAF[5, 'male', 'intervention',1]=0.09; RAF[5, 'female', 'intervention',1]=0.09;
 RAF[5, 'male', 'refugia',1]=0.001;      RAF[5, 'female', 'refugia',1]=0.001
-
+}
 
 #exposure patterns for insecticide 1
 exposure[1, 'male', 'low'] =0.1; exposure[1, 'male', 'high'] =0.5;
@@ -69,26 +84,33 @@ exposure[1, 'male', 'none'] =1-exposure[1, 'male', 'low']-exposure[1, 'male', 'h
 exposure[1, 'female', 'low'] =0.1; exposure[1, 'female', 'high'] =0.6;
 exposure[1, 'female', 'none'] =1-exposure[1, 'female', 'low']-exposure[1, 'female', 'high']; 
 #exposure patterns for insecticide 2
+if(no_insecticides>=2){ #need to avoid exceeding size of the array
 exposure[2, 'male', 'low'] =0.1; exposure[2, 'male', 'high'] =0.1;
 exposure[2, 'male', 'none'] =1-exposure[2, 'male', 'low']-exposure[2, 'male', 'high']; 
 exposure[2, 'female', 'low'] =0.1; exposure[2, 'female', 'high'] =0.1;
 exposure[2, 'female', 'none'] =1-exposure[2, 'female', 'low']-exposure[2, 'female', 'high']; 
+}
 #exposure patterns for insecticide 3
+if(no_insecticides>=3){
 exposure[3, 'male', 'low'] =0.1; exposure[3, 'male', 'high'] =0.1;
 exposure[3, 'male', 'none'] =1-exposure[3, 'male', 'low']-exposure[3, 'male', 'high']; 
 exposure[3, 'female', 'low'] =0.1; exposure[3, 'female', 'high'] =0.1;
 exposure[3, 'female', 'none'] =1-exposure[3, 'female', 'low']-exposure[3, 'female', 'high'];
+}
 #exposure patterns for insecticide 4
+if(no_insecticides>=4){
 exposure[4, 'male', 'low'] =0.1; exposure[4, 'male', 'high'] =0.1;
 exposure[4, 'male', 'none'] =1-exposure[4, 'male', 'low']-exposure[4, 'male', 'high']; 
 exposure[4, 'female', 'low'] =0.1; exposure[4, 'female', 'high'] =0.1;
 exposure[4, 'female', 'none'] =1-exposure[4, 'female', 'low']-exposure[4, 'female', 'high'];
+}
 #exposure patterns for insecticide 5
+if(no_insecticides>=5){
 exposure[5, 'male', 'low'] =0.1; exposure[5, 'male', 'high'] =0.1;
 exposure[5, 'male', 'none'] =1-exposure[5, 'male', 'low']-exposure[5, 'male', 'high']; 
 exposure[5, 'female', 'low'] =0.1; exposure[5, 'female', 'high'] =0.1;
 exposure[5, 'female', 'none'] =1-exposure[5, 'female', 'low']-exposure[5, 'female', 'high'];
-
+}
 
 
 
@@ -98,22 +120,28 @@ fitness[1, 'SS', 'none']=0.1; fitness[1, 'SS', 'low']=0.3; fitness[1, 'SS', 'hig
 fitness[1, 'SR', 'none']=0.1; fitness[1, 'SR', 'low']=0.7; fitness[1, 'SR', 'high']=0.7;
 fitness[1, 'RR', 'none']=0.1; fitness[1, 'RR', 'low']=0.9; fitness[1, 'RR', 'high']=0.9;
 #genetic data for locus 2
+if(no_insecticides>=2){
 fitness[2, 'SS', 'none']=0.3; fitness[2, 'SS', 'low']=0.3; fitness[2, 'SS', 'high']=0.3;
 fitness[2, 'SR', 'none']=0.3; fitness[2, 'SR', 'low']=0.8; fitness[2, 'SR', 'high']=0.8;
 fitness[2, 'RR', 'none']=0.3; fitness[2, 'RR', 'low']=0.9; fitness[2, 'RR', 'high']=0.9;
+}
 #genetic data for locus 3
+if(no_insecticides>=3){
 fitness[3, 'SS', 'none']=0.3; fitness[3, 'SS', 'low']=0.3; fitness[3, 'SS', 'high']=0.3;
 fitness[3, 'SR', 'none']=0.3; fitness[3, 'SR', 'low']=0.3; fitness[3, 'SR', 'high']=0.3;
 fitness[3, 'RR', 'none']=0.3; fitness[3, 'RR', 'low']=0.3; fitness[3, 'RR', 'high']=0.3;
+}
 #genetic data for locus 4
+if(no_insecticides>=4){
 fitness[4, 'SS', 'none']=0.3; fitness[4, 'SS', 'low']=0.3; fitness[4, 'SS', 'high']=0.3;
 fitness[4, 'SR', 'none']=0.3; fitness[4, 'SR', 'low']=0.3; fitness[4, 'SR', 'high']=0.3;
 fitness[4, 'RR', 'none']=0.3; fitness[4, 'RR', 'low']=0.3; fitness[4, 'RR', 'high']=0.3;
-#genetic data for locus 5
+}#genetic data for locus 5
+if(no_insecticides>=5){
 fitness[5, 'SS', 'none']=0.3; fitness[5, 'SS', 'low']=0.3; fitness[5, 'SS', 'high']=0.3;
 fitness[5, 'SR', 'none']=0.3; fitness[5, 'SR', 'low']=0.3; fitness[5, 'SR', 'high']=0.3;
 fitness[5, 'RR', 'none']=0.3; fitness[5, 'RR', 'low']=0.3; fitness[5, 'RR', 'high']=0.3;
-
+}
 
 # <<<<<<<<<<<<< end of user-defined variable >>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -349,16 +377,23 @@ for(temp_int in 1:max_no_generations){
 #results[temp_int,3]=RAF[1, 'female','intervention', temp_int]
 results[temp_int,3]=0.5*(RAF[1, 'male','intervention', temp_int]+RAF[1, 'female','intervention', temp_int]) #locus 1
 results[temp_int,4]=0.5*(RAF[1, 'male','refugia', temp_int]+RAF[1, 'female','refugia', temp_int]) #locus 1
+if(no_insecticides>=2){
 results[temp_int,5]=0.5*(RAF[2, 'male','intervention', temp_int]+RAF[2, 'female','intervention', temp_int]) #locus 2
 results[temp_int,6]=0.5*(RAF[2, 'male','refugia', temp_int]+RAF[2,'female','refugia', temp_int]) #locus 2
+}
+if(no_insecticides>=3){
 results[temp_int,7]=0.5*(RAF[3, 'male','intervention', temp_int]+RAF[3, 'female','intervention', temp_int]) #locus 3
 results[temp_int,8]=0.5*(RAF[3, 'male','refugia', temp_int]+RAF[3, 'female','refugia', temp_int]) #locus 3
+}
+if(no_insecticides>=4){
 results[temp_int,9]=0.5*(RAF[4, 'male','intervention', temp_int]+RAF[4, 'female','intervention', temp_int]) #locus 4
 results[temp_int,10]=0.5*(RAF[4, 'male','refugia', temp_int]+RAF[4,'female','refugia', temp_int]) #locus 4
+}
+if(no_insecticides>=5){
 results[temp_int,11]=0.5*(RAF[5, 'male','intervention', temp_int]+RAF[5, 'female','intervention', temp_int]) #locus 5
 results[temp_int,12]=0.5*(RAF[5, 'male','refugia', temp_int]+RAF[5, 'female','refugia', temp_int]) #locus 5
-
 }
+} #end of temp_int loop
 
 
 
