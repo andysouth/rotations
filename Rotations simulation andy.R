@@ -458,5 +458,5 @@ rot_plot_use <- function(df_res2) {
 }
 
 # do the plots
-rot_plot_resistance(df_res2)
 rot_plot_use(df_res2)
+rot_plot_resistance(df_res2)
