@@ -1,7 +1,8 @@
-#this is to simulate the effect of rotations on teh spread of resistnce
-#Written by Ian Hastings, but hopefully Andy South will read it, give it a D-, and make the code efficient
+#to simulate the effect of rotations on the spread of resistance
+#Ian Hastings and Andy South
 
-#This can run any number of insecticides/loci but at present, input will only allow a maximumum of 5
+#can run any number of insecticides/loci 
+#but at present, input will only allow a maximumum of 5
 
 
 # <<<<<<<<<<<<<<<first up are user-defined parameters>>>>>>>>>>>
@@ -26,11 +27,32 @@ array_named <- function(...)  {
 array(0, dim = lengths(list(...)), dimnames = list(...))  
  }  
 
+#RAF stands for resistance allele frequency
 
 RAF <- array_named(insecticide=1:no_insecticides, sex=c('male','female'), site=c('intervention','refugia'), gen=1:max_no_generations)
 exposure <- array_named(insecticide=1:no_insecticides, sex=c('male','female'), amount=c('none','low', 'high'))
 fitness <- array_named(insecticide=1:no_insecticides, genotype=c('SS','SR', 'RR'), amount=c('none','low', 'high'))
 results<-array(0, dim=c(max_no_generations, 12))
+
+#andy try to store results in data frame might make easier
+df_results <- data.frame(generation=1:max_no_generations,
+                    insecticide=NA,
+                    r1_active=NA,
+                    r1_refuge=NA,
+                    r2_active=NA,
+                    r2_refuge=NA,
+                    r3_active=NA,
+                    r3_refuge=NA,
+                    r4_active=NA,
+                    r4_refuge=NA,
+                    r5_active=NA,
+                    r5_refuge=NA, stringsAsFactors = FALSE)
+#experimental
+# df_res_active <- data.frame(generation=rep(1:max_no_generations,no_insecticides),
+#                       insecticide=NA,
+#                       region=NA,
+#                       resistance=NA, stringsAsFactors = FALSE)
+# df_res_refuge <- df_res_active
 
 
 #inital resistance allele frequency (i.e. generation 1) in the intervention and refugia
@@ -39,22 +61,22 @@ RAF[1, 'male', 'intervention',1]=0.002;  RAF[1, 'female', 'intervention',1]=0.00
 RAF[1, 'male', 'refugia',1]=0.001;       RAF[1, 'female', 'refugia',1]=0.001
 #locus 2>>
 if(no_insecticides>=2){ #need to avoid exceeding size of the array
-RAF[2, 'male', 'intervention',1]=0.001;   RAF[2, 'female', 'intervention',1]=0.001;
-RAF[2, 'male', 'refugia',1]=0.001;        RAF[2, 'female', 'refugia',1]=0.001
+  RAF[2, 'male', 'intervention',1]=0.001;   RAF[2, 'female', 'intervention',1]=0.001;
+  RAF[2, 'male', 'refugia',1]=0.001;        RAF[2, 'female', 'refugia',1]=0.001
 }
 #locus 3>>
 if(no_insecticides>=3){
-RAF[3, 'male', 'intervention',1]=0.09;  RAF[3, 'female', 'intervention',1]=0.09;
-RAF[3, 'male', 'refugia',1]=0.001;       RAF[3, 'female', 'refugia',1]=0.001
+  RAF[3, 'male', 'intervention',1]=0.09;  RAF[3, 'female', 'intervention',1]=0.09;
+  RAF[3, 'male', 'refugia',1]=0.001;       RAF[3, 'female', 'refugia',1]=0.001
 }
 #locus 4>>
 if(no_insecticides>=4){
-RAF[4, 'male', 'intervention',1]=0.09;  RAF[4, 'female', 'intervention',1]=0.09;
-RAF[4, 'male', 'refugia',1]=0.001;       RAF[4, 'female', 'refugia',1]=0.001
+  RAF[4, 'male', 'intervention',1]=0.09;  RAF[4, 'female', 'intervention',1]=0.09;
+  RAF[4, 'male', 'refugia',1]=0.001;       RAF[4, 'female', 'refugia',1]=0.001
 }#locus 5>>
 if(no_insecticides>=5){
-RAF[5, 'male', 'intervention',1]=0.09; RAF[5, 'female', 'intervention',1]=0.09;
-RAF[5, 'male', 'refugia',1]=0.001;      RAF[5, 'female', 'refugia',1]=0.001
+  RAF[5, 'male', 'intervention',1]=0.09; RAF[5, 'female', 'intervention',1]=0.09;
+  RAF[5, 'male', 'refugia',1]=0.001;      RAF[5, 'female', 'refugia',1]=0.001
 }
 
 #exposure patterns for insecticide 1
@@ -64,31 +86,31 @@ exposure[1, 'female', 'low'] =0.1; exposure[1, 'female', 'high'] =0.6;
 exposure[1, 'female', 'none'] =1-exposure[1, 'female', 'low']-exposure[1, 'female', 'high']; 
 #exposure patterns for insecticide 2
 if(no_insecticides>=2){ #need to avoid exceeding size of the array
-exposure[2, 'male', 'low'] =0.1; exposure[2, 'male', 'high'] =0.1;
-exposure[2, 'male', 'none'] =1-exposure[2, 'male', 'low']-exposure[2, 'male', 'high']; 
-exposure[2, 'female', 'low'] =0.1; exposure[2, 'female', 'high'] =0.1;
-exposure[2, 'female', 'none'] =1-exposure[2, 'female', 'low']-exposure[2, 'female', 'high']; 
+  exposure[2, 'male', 'low'] =0.1; exposure[2, 'male', 'high'] =0.1;
+  exposure[2, 'male', 'none'] =1-exposure[2, 'male', 'low']-exposure[2, 'male', 'high']; 
+  exposure[2, 'female', 'low'] =0.1; exposure[2, 'female', 'high'] =0.1;
+  exposure[2, 'female', 'none'] =1-exposure[2, 'female', 'low']-exposure[2, 'female', 'high']; 
 }
 #exposure patterns for insecticide 3
 if(no_insecticides>=3){
-exposure[3, 'male', 'low'] =0.1; exposure[3, 'male', 'high'] =0.1;
-exposure[3, 'male', 'none'] =1-exposure[3, 'male', 'low']-exposure[3, 'male', 'high']; 
-exposure[3, 'female', 'low'] =0.1; exposure[3, 'female', 'high'] =0.1;
-exposure[3, 'female', 'none'] =1-exposure[3, 'female', 'low']-exposure[3, 'female', 'high'];
+  exposure[3, 'male', 'low'] =0.1; exposure[3, 'male', 'high'] =0.1;
+  exposure[3, 'male', 'none'] =1-exposure[3, 'male', 'low']-exposure[3, 'male', 'high']; 
+  exposure[3, 'female', 'low'] =0.1; exposure[3, 'female', 'high'] =0.1;
+  exposure[3, 'female', 'none'] =1-exposure[3, 'female', 'low']-exposure[3, 'female', 'high'];
 }
 #exposure patterns for insecticide 4
 if(no_insecticides>=4){
-exposure[4, 'male', 'low'] =0.1; exposure[4, 'male', 'high'] =0.1;
-exposure[4, 'male', 'none'] =1-exposure[4, 'male', 'low']-exposure[4, 'male', 'high']; 
-exposure[4, 'female', 'low'] =0.1; exposure[4, 'female', 'high'] =0.1;
-exposure[4, 'female', 'none'] =1-exposure[4, 'female', 'low']-exposure[4, 'female', 'high'];
+  exposure[4, 'male', 'low'] =0.1; exposure[4, 'male', 'high'] =0.1;
+  exposure[4, 'male', 'none'] =1-exposure[4, 'male', 'low']-exposure[4, 'male', 'high']; 
+  exposure[4, 'female', 'low'] =0.1; exposure[4, 'female', 'high'] =0.1;
+  exposure[4, 'female', 'none'] =1-exposure[4, 'female', 'low']-exposure[4, 'female', 'high'];
 }
 #exposure patterns for insecticide 5
 if(no_insecticides>=5){
-exposure[5, 'male', 'low'] =0.1; exposure[5, 'male', 'high'] =0.1;
-exposure[5, 'male', 'none'] =1-exposure[5, 'male', 'low']-exposure[5, 'male', 'high']; 
-exposure[5, 'female', 'low'] =0.1; exposure[5, 'female', 'high'] =0.1;
-exposure[5, 'female', 'none'] =1-exposure[5, 'female', 'low']-exposure[5, 'female', 'high'];
+  exposure[5, 'male', 'low'] =0.1; exposure[5, 'male', 'high'] =0.1;
+  exposure[5, 'male', 'none'] =1-exposure[5, 'male', 'low']-exposure[5, 'male', 'high']; 
+  exposure[5, 'female', 'low'] =0.1; exposure[5, 'female', 'high'] =0.1;
+  exposure[5, 'female', 'none'] =1-exposure[5, 'female', 'low']-exposure[5, 'female', 'high'];
 }
 
 
@@ -334,8 +356,10 @@ if(next_insecticide_found==1) break
 } #end of loop to try and change insecticide i.e. the "if(change_insecticide==1)" lopp
 
 #now to store some results for ease of plotting (see later) before potentially terminating the simulation
-results[gen,1]=gen; results[gen,2]=current_insecticide
-  
+results[gen,1]=gen; 
+results[gen,2]=current_insecticide
+
+df_results$insecticide[gen] <- current_insecticide 
 
 if(next_insecticide_found==0){
 message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rotation_criterion))
@@ -350,8 +374,31 @@ break #breaks out of looping generations and terminates the simulation
 #****************************************************************  
  # NOW collate the data and draw plots
 
+#andy trying to replace below with data frame  
+#also can probably do on whole row so not require the loop
+for(i_num in 1:no_insecticides)
+{
+  df_results[[paste0('r',i_num,'_active')]] <- 0.5*(RAF[i_num, 'male','intervention', ]+
+                                                    RAF[i_num, 'female','intervention', ])
+  df_results[[paste0('r',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'male','refugia', ]+
+                                                    RAF[i_num, 'female','refugia', ]) 
+  
+  #df_res_active$region[[(i_num-1)*max_no_generations:(i_num)*max_no_generations]] <- paste0("insecticide",i_num)
+  #df_res_active$resistance[[(i_num-1)*max_no_generations:(i_num)*max_no_generations]] <-  0.5*(RAF[i_num, 'male','intervention', ]+
+  #                                                                                             RAF[i_num, 'female','intervention', ])
+}
+#but if I want to facet by intervention may want to structure differently
+#generation, treatment, resistance
+df_res2 <- df_results %>%
+  gather('r1_refuge', 'r1_active',
+         'r2_refuge', 'r2_active',
+         'r3_refuge', 'r3_active',
+         'r4_refuge', 'r4_active',
+         #'r5_refuge', 'r5_active', 
+         key=region, value=resistance)
+
 for(temp_int in 1:max_no_generations){
-#results[temp_int,3]=RAF[1, 'female','intervention', temp_int]
+
 results[temp_int,3]=0.5*(RAF[1, 'male','intervention', temp_int]+RAF[1, 'female','intervention', temp_int]) #locus 1
 results[temp_int,4]=0.5*(RAF[1, 'male','refugia', temp_int]+RAF[1, 'female','refugia', temp_int]) #locus 1
 if(no_insecticides>=2){
@@ -370,14 +417,46 @@ if(no_insecticides>=5){
 results[temp_int,11]=0.5*(RAF[5, 'male','intervention', temp_int]+RAF[5, 'female','intervention', temp_int]) #locus 5
 results[temp_int,12]=0.5*(RAF[5, 'male','refugia', temp_int]+RAF[5, 'female','refugia', temp_int]) #locus 5
 }
+
+
+
 } #end of temp_int loop
 
 
-
-xdata<-results[,1]
-ydata<-results[,2]
-plot(xdata, ydata) 
+# xdata<-results[,1]
+# ydata<-results[,2]
+# plot(xdata, ydata) 
 #plot(results[1], results[2])
 
+library(ggplot2)
+
+#ggplot( df_results, aes_string(x='generation',y='r1_active') ) + 
+#  geom_point(shape=1, colour='red') #+
 
 
+#facet by insecticide and active/refuge
+#how can I add insecticide used to this plot ?
+rot_plot_resistance <- function(df_res2) {
+  ggplot( df_res2, aes_string(x='generation',y='resistance') ) + 
+    #geom_point(shape=1, colour='red') +
+    geom_line( colour='blue') +  
+    facet_wrap('region', ncol=2) +
+    #theme(axis.text.x = element_blank()) +
+    theme_bw()
+} 
+
+
+#insecticide use (currently restricted to 4)
+rot_plot_use <- function(df_res2) {
+  ggplot( df_res2, aes_string(x='generation',y='insecticide') ) + 
+    geom_point(shape=1, colour='red') +
+    #geom_line( colour='blue') +  
+    #facet_wrap('region', ncol=2) +
+    ylim(1,4) +
+    theme_bw() 
+    #theme(axis.text.x = element_blank()) 
+}
+
+# do the plots
+rot_plot_resistance(df_res2)
+rot_plot_use(df_res2)
