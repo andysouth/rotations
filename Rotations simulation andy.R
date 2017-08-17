@@ -20,7 +20,7 @@ rotation_criterion=0.5 #resistant allele frequency that triggers a RwR change or
 
 migration_rate_intervention=0.01 # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
 coverage=0.8; # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
-migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)
+
 
 diagnostics=0
 
@@ -43,6 +43,8 @@ run_rotation <- function( max_no_generations = 500, #the maximum number of mosqu
 )
 {
 
+migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
+  
 #RAF stands for resistance allele frequency
 RAF <- array_named(insecticide=1:no_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_no_generations)
 exposure <- array_named(insecticide=1:no_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
@@ -96,40 +98,38 @@ if(no_insecticides>=5){
 
 
 #exposure patterns for insecticide 1
-exposure[1, 'm', 'lo'] =0.1; exposure[1, 'm', 'hi'] =0.5;
-exposure[1, 'm', 'no'] =1-exposure[1, 'm', 'lo']-exposure[1, 'm', 'hi']; 
-exposure[1, 'f', 'lo'] =0.1; exposure[1, 'f', 'hi'] =0.6;
-exposure[1, 'f', 'no'] =1-exposure[1, 'f', 'lo']-exposure[1, 'f', 'hi']; 
+  exposure[1, 'm', 'lo'] =0.1; exposure[1, 'm', 'hi'] =0.5;
+  exposure[1, 'f', 'lo'] =0.1; exposure[1, 'f', 'hi'] =0.6;
 #exposure patterns for insecticide 2
 if(no_insecticides>=2){ #need to avoid exceeding size of the array
   exposure[2, 'm', 'lo'] =0.1; exposure[2, 'm', 'hi'] =0.1;
-  exposure[2, 'm', 'no'] =1-exposure[2, 'm', 'lo']-exposure[2, 'm', 'hi']; 
   exposure[2, 'f', 'lo'] =0.1; exposure[2, 'f', 'hi'] =0.1;
-  exposure[2, 'f', 'no'] =1-exposure[2, 'f', 'lo']-exposure[2, 'f', 'hi']; 
 }
 #exposure patterns for insecticide 3
 if(no_insecticides>=3){
   exposure[3, 'm', 'lo'] =0.1; exposure[3, 'm', 'hi'] =0.1;
-  exposure[3, 'm', 'no'] =1-exposure[3, 'm', 'lo']-exposure[3, 'm', 'hi']; 
   exposure[3, 'f', 'lo'] =0.1; exposure[3, 'f', 'hi'] =0.1;
-  exposure[3, 'f', 'no'] =1-exposure[3, 'f', 'lo']-exposure[3, 'f', 'hi'];
 }
 #exposure patterns for insecticide 4
 if(no_insecticides>=4){
   exposure[4, 'm', 'lo'] =0.1; exposure[4, 'm', 'hi'] =0.1;
-  exposure[4, 'm', 'no'] =1-exposure[4, 'm', 'lo']-exposure[4, 'm', 'hi']; 
   exposure[4, 'f', 'lo'] =0.1; exposure[4, 'f', 'hi'] =0.1;
-  exposure[4, 'f', 'no'] =1-exposure[4, 'f', 'lo']-exposure[4, 'f', 'hi'];
 }
 #exposure patterns for insecticide 5
 if(no_insecticides>=5){
   exposure[5, 'm', 'lo'] =0.1; exposure[5, 'm', 'hi'] =0.1;
-  exposure[5, 'm', 'no'] =1-exposure[5, 'm', 'lo']-exposure[5, 'm', 'hi']; 
   exposure[5, 'f', 'lo'] =0.1; exposure[5, 'f', 'hi'] =0.1;
-  exposure[5, 'f', 'no'] =1-exposure[5, 'f', 'lo']-exposure[5, 'f', 'hi'];
 }
 
+#set all no exposures to 1-(lo+hi) 
+exposure[,, 'no'] <- 1-(exposure[,, 'lo'] + exposure[,, 'hi'])
 
+# andy looking to set fitnesses for all insecticides to be same
+# but it seemed to mess up simulation
+# so disabled for now
+# fitness[, 'SS', 'no']=0.3; fitness[, 'SS', 'lo']=0.3; fitness[, 'SS', 'hi']=0.3;
+# fitness[, 'SR', 'no']=0.3; fitness[, 'SR', 'lo']=0.7; fitness[, 'SR', 'hi']=0.7;
+# fitness[, 'RR', 'no']=0.3; fitness[, 'RR', 'lo']=0.9; fitness[, 'RR', 'hi']=0.9;
 
 #genetic data for locus 1
 fitness[1, 'SS', 'no']=0.1; fitness[1, 'SS', 'lo']=0.3; fitness[1, 'SS', 'hi']=0.3;
@@ -194,19 +194,23 @@ for(insecticide in 1:no_insecticides){
  if(insecticide==current_insecticide){ #i.e. insecticide selection taking place
    
    coeff_1=
-     (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
-     (1-RAF[insecticide, 'm','intervention',gen-1])*RAF[insecticide, 'f', 'intervention',gen-1])*0.5
+     (  RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
+     (1-RAF[insecticide, 'm', 'intervention',gen-1]) * RAF[insecticide, 'f', 'intervention',gen-1])*0.5
 
    coeff_2=
      exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SR', 'no']+
      exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SR', 'lo']+
      exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SR', 'hi']
+   #todo andy this does same with less code
+   #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SR', ] )
     
    coeff_3=
      exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SR', 'no']+
      exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SR', 'lo']+
      exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SR', 'hi']
-  
+   #todo andy this does same with less code
+   #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SR', ] )
+     
 #Eqn 4: first the m resistant alleles>>
   temp_coeff=
     exposure[insecticide, 'm', 'no']*fitness[insecticide, 'RR', 'no']+
