@@ -1,9 +1,13 @@
+#Rotations simulation andy.R
 #to simulate the effect of rotations on the spread of resistance
 #Ian Hastings and Andy South
 
 #can run any number of insecticides/loci 
 #but at present, input will only allow a maximumum of 5
 
+#library(dplyr)
+#library(ggplot2)
+library(tidyverse)
 
 # <<<<<<<<<<<<<<<first up are user-defined parameters>>>>>>>>>>>
 #I will eventually block this out and use a function to generate values from distributions for sensitivity analysis
@@ -428,21 +432,35 @@ results[temp_int,12]=0.5*(RAF[5, 'male','refugia', temp_int]+RAF[5, 'female','re
 # plot(xdata, ydata) 
 #plot(results[1], results[2])
 
-library(ggplot2)
+#library(ggplot2)
 
 #ggplot( df_results, aes_string(x='generation',y='r1_active') ) + 
 #  geom_point(shape=1, colour='red') #+
 
 
+
 #facet by insecticide and active/refuge
-#how can I add insecticide used to this plot ?
 rot_plot_resistance <- function(df_res2) {
+  
+  # to allow plotting of insecticide in use
+  # add column which has a value if insecticide in use & NA if not
+  # the value (currently 1.1) determines where the line appears on the y axis
+  df_res2 <- df_res2 %>%
+    #mutate( i_in_use = ifelse(insecticide==1,1,NA))
+    mutate( i_in_use = ifelse(stringr::str_detect(region,paste0(insecticide,"_active")),1.1,NA))    
+  
   ggplot( df_res2, aes_string(x='generation',y='resistance') ) + 
-    #geom_point(shape=1, colour='red') +
-    geom_line( colour='blue') +  
+    geom_point(shape=1, colour='blue') +
+    #geom_line( colour='blue') +  
     facet_wrap('region', ncol=2) +
     #theme(axis.text.x = element_blank()) +
-    theme_bw()
+    #add insecticide use indication
+    geom_line( aes_string(x='generation',y='i_in_use'), colour='red', lwd=2) +
+    annotate("text", x = 0, y = 1.15, label = "deployment", size = 2.5, hjust='left') +
+    #scale_y_continuous(breaks=c(0,0.2,0.4,0.6,0.8,1)) +
+    scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1)) +
+    #theme_bw()
+    theme_minimal()
 } 
 
 
