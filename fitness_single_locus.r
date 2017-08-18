@@ -22,7 +22,6 @@
 #' @examples 
 #' #defaults
 #' fitness_single_locus()
-#' fitness_single_locus(eff1 = 0.8)
 #' #2 different insecticides
 #' fitness_single_locus(eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 #' #4 same insecticides
