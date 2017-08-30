@@ -87,41 +87,15 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
     RAF[5, 'm', 'refugia',1]=0.001;      RAF[5, 'f', 'refugia',1]=0.001
   }
   
+  ### set exposures from hardcoded test function or based on other inputs
+  a_expo <- set_exposure_rot_test( num_ins=n_insecticides )
+  #a_expo <- set_exposure_rot()
   
-  # andy looking to set fitnesses for all insecticides to be same
-  # but it seemed to mess up simulation
-  # so disabled for now
-  # fitness[, 'SS', 'no']=0.3; fitness[, 'SS', 'lo']=0.3; fitness[, 'SS', 'hi']=0.3;
-  # fitness[, 'SR', 'no']=0.3; fitness[, 'SR', 'lo']=0.7; fitness[, 'SR', 'hi']=0.7;
-  # fitness[, 'RR', 'no']=0.3; fitness[, 'RR', 'lo']=0.9; fitness[, 'RR', 'hi']=0.9;
+  ### set fitnesses from hardcoded test function or based on other inputs
+  fitness <- fitness_single_locus_test( num_ins=n_insecticides )
   
-  #genetic data for locus 1
-  fitness[1, 'SS', 'no']=0.1; fitness[1, 'SS', 'lo']=0.3; fitness[1, 'SS', 'hi']=0.3;
-  fitness[1, 'SR', 'no']=0.1; fitness[1, 'SR', 'lo']=0.7; fitness[1, 'SR', 'hi']=0.7;
-  fitness[1, 'RR', 'no']=0.1; fitness[1, 'RR', 'lo']=0.9; fitness[1, 'RR', 'hi']=0.9;
-  #genetic data for locus 2
-  if(n_insecticides>=2){
-  fitness[2, 'SS', 'no']=0.3; fitness[2, 'SS', 'lo']=0.3; fitness[2, 'SS', 'hi']=0.3;
-  fitness[2, 'SR', 'no']=0.3; fitness[2, 'SR', 'lo']=0.8; fitness[2, 'SR', 'hi']=0.8;
-  fitness[2, 'RR', 'no']=0.3; fitness[2, 'RR', 'lo']=0.9; fitness[2, 'RR', 'hi']=0.9;
-  }
-  #genetic data for locus 3
-  if(n_insecticides>=3){
-  fitness[3, 'SS', 'no']=0.3; fitness[3, 'SS', 'lo']=0.3; fitness[3, 'SS', 'hi']=0.3;
-  fitness[3, 'SR', 'no']=0.3; fitness[3, 'SR', 'lo']=0.3; fitness[3, 'SR', 'hi']=0.3;
-  fitness[3, 'RR', 'no']=0.3; fitness[3, 'RR', 'lo']=0.3; fitness[3, 'RR', 'hi']=0.3;
-  }
-  #genetic data for locus 4
-  if(n_insecticides>=4){
-  fitness[4, 'SS', 'no']=0.3; fitness[4, 'SS', 'lo']=0.3; fitness[4, 'SS', 'hi']=0.3;
-  fitness[4, 'SR', 'no']=0.3; fitness[4, 'SR', 'lo']=0.4; fitness[4, 'SR', 'hi']=0.4;
-  fitness[4, 'RR', 'no']=0.3; fitness[4, 'RR', 'lo']=0.5; fitness[4, 'RR', 'hi']=0.5;
-  }#genetic data for locus 5
-  if(n_insecticides>=5){
-  fitness[5, 'SS', 'no']=0.3; fitness[5, 'SS', 'lo']=0.3; fitness[5, 'SS', 'hi']=0.3;
-  fitness[5, 'SR', 'no']=0.3; fitness[5, 'SR', 'lo']=0.3; fitness[5, 'SR', 'hi']=0.3;
-  fitness[5, 'RR', 'no']=0.3; fitness[5, 'RR', 'lo']=0.3; fitness[5, 'RR', 'hi']=0.3;
-  }
+  #4 same insecticides
+  #a_fitloc <- fitness_single_locus(num_ins=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
   
   # <<<<<<<<<<<<< end of user-defined variable >>>>>>>>>>>>>>>>>>>>>>>>
   

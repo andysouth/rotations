@@ -99,3 +99,74 @@ fitness_single_locus <- function ( num_ins = NULL,
   
   return(a_fitloc)
 }
+
+#' test fill a single locus fitness array
+#' 
+#' with hardcoded values
+
+#' @param num_ins number of insecticides 
+#' @param a_fitloc array of single locus fitnesses to fill
+#' @param plot whether to plot fitness
+#' 
+#' @examples 
+#' #defaults
+#' fitness_single_locus()
+
+#' @return fitness values
+#' @export
+
+fitness_single_locus_test <- function ( num_ins = NULL,
+                                   a_fitloc = NULL,
+                                   plot = FALSE)
+{
+  
+  #set num_ins if it is not specified
+  if ( is.null(num_ins)) num_ins <- 4
+
+  # andy looking to set fitnesses for all insecticides to be same
+  # but it seemed to mess up simulation
+  # so disabled for now
+  # a_fitloc[, 'SS', 'no']=0.3; a_fitloc[, 'SS', 'lo']=0.3; a_fitloc[, 'SS', 'hi']=0.3;
+  # a_fitloc[, 'SR', 'no']=0.3; a_fitloc[, 'SR', 'lo']=0.7; a_fitloc[, 'SR', 'hi']=0.7;
+  # a_fitloc[, 'RR', 'no']=0.3; a_fitloc[, 'RR', 'lo']=0.9; a_fitloc[, 'RR', 'hi']=0.9;
+  
+  #genetic data for locus 1
+  a_fitloc[1, 'SS', 'no']=0.1; a_fitloc[1, 'SS', 'lo']=0.3; a_fitloc[1, 'SS', 'hi']=0.3;
+  a_fitloc[1, 'SR', 'no']=0.1; a_fitloc[1, 'SR', 'lo']=0.7; a_fitloc[1, 'SR', 'hi']=0.7;
+  a_fitloc[1, 'RR', 'no']=0.1; a_fitloc[1, 'RR', 'lo']=0.9; a_fitloc[1, 'RR', 'hi']=0.9;
+  #genetic data for locus 2
+  if(n_insecticides>=2){
+    a_fitloc[2, 'SS', 'no']=0.3; a_fitloc[2, 'SS', 'lo']=0.3; a_fitloc[2, 'SS', 'hi']=0.3;
+    a_fitloc[2, 'SR', 'no']=0.3; a_fitloc[2, 'SR', 'lo']=0.8; a_fitloc[2, 'SR', 'hi']=0.8;
+    a_fitloc[2, 'RR', 'no']=0.3; a_fitloc[2, 'RR', 'lo']=0.9; a_fitloc[2, 'RR', 'hi']=0.9;
+  }
+  #genetic data for locus 3
+  if(n_insecticides>=3){
+    a_fitloc[3, 'SS', 'no']=0.3; a_fitloc[3, 'SS', 'lo']=0.3; a_fitloc[3, 'SS', 'hi']=0.3;
+    a_fitloc[3, 'SR', 'no']=0.3; a_fitloc[3, 'SR', 'lo']=0.3; a_fitloc[3, 'SR', 'hi']=0.3;
+    a_fitloc[3, 'RR', 'no']=0.3; a_fitloc[3, 'RR', 'lo']=0.3; a_fitloc[3, 'RR', 'hi']=0.3;
+  }
+  #genetic data for locus 4
+  if(n_insecticides>=4){
+    a_fitloc[4, 'SS', 'no']=0.3; a_fitloc[4, 'SS', 'lo']=0.3; a_fitloc[4, 'SS', 'hi']=0.3;
+    a_fitloc[4, 'SR', 'no']=0.3; a_fitloc[4, 'SR', 'lo']=0.4; a_fitloc[4, 'SR', 'hi']=0.4;
+    a_fitloc[4, 'RR', 'no']=0.3; a_fitloc[4, 'RR', 'lo']=0.5; a_fitloc[4, 'RR', 'hi']=0.5;
+  }#genetic data for locus 5
+  if(n_insecticides>=5){
+    a_fitloc[5, 'SS', 'no']=0.3; a_fitloc[5, 'SS', 'lo']=0.3; a_fitloc[5, 'SS', 'hi']=0.3;
+    a_fitloc[5, 'SR', 'no']=0.3; a_fitloc[5, 'SR', 'lo']=0.3; a_fitloc[5, 'SR', 'hi']=0.3;
+    a_fitloc[5, 'RR', 'no']=0.3; a_fitloc[5, 'RR', 'lo']=0.3; a_fitloc[5, 'RR', 'hi']=0.3;
+  }
+    
+  
+  #error check for fitnesses > 1 or < 0
+  if ( any( a_fitloc > 1  ) ) 
+    warning( sum(a_fitloc > 1 ), " locus fitness values (a_fitloc) are >1 : ", a_fitloc[a_fitloc>1])
+  if ( any( a_fitloc < 0 ) ) 
+    warning( sum( a_fitloc < 0 ), " locus fitness values (a_fitloc) are <0")     
+  
+  
+  return(a_fitloc)
+}
+
+
