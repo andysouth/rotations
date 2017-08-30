@@ -62,3 +62,71 @@ set_exposure_rot <- function( num_ins = NULL,
   
   return(a_expo)
 }
+
+#' set_exposure_rot_test allows exposures to be hardcoded
+#' 
+#' set exposure to insecticides for rotations to a flexible number of insecticides
+#' fills an array of exposure values
+#' 
+#' @param num_ins number of insecticides, optional can just be specified by number of items in vector expo
+# @param expo exposure to the insecticides
+# @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1
+#' @param plot whether to plot exposure    
+#' 
+#' @examples
+#' a_exp <- set_exposure_rot_test( )
+#' 
+#' #allowing array to be viewed differently
+#' as.data.frame(a_exp)
+#' 
+#' @return array of exposure values for the different insecticides
+#' @export
+#' 
+set_exposure_rot_test <- function( num_ins = NULL,
+                                   plot = FALSE)
+{
+  
+  #set num_ins if it is not specified
+  if ( is.null(num_ins)) num_ins <- 4
+  
+  a_expo <- array_named(insecticide=1:num_ins, sex=c('m','f'), exposure=c('no','lo','hi'))
+  
+  #exposure patterns for insecticide 1
+  a_expo[1, 'm', 'lo'] =0.1; a_expo[1, 'm', 'hi'] =0.5;
+  a_expo[1, 'f', 'lo'] =0.1; a_expo[1, 'f', 'hi'] =0.6;
+  #exposure patterns for insecticide 2
+  if(n_insecticides>=2){ #need to avoid exceeding size of the array
+    a_expo[2, 'm', 'lo'] =0.1; a_expo[2, 'm', 'hi'] =0.1;
+    a_expo[2, 'f', 'lo'] =0.1; a_expo[2, 'f', 'hi'] =0.1;
+  }
+  #exposure patterns for insecticide 3
+  if(n_insecticides>=3){
+    a_expo[3, 'm', 'lo'] =0.1; a_expo[3, 'm', 'hi'] =0.1;
+    a_expo[3, 'f', 'lo'] =0.1; a_expo[3, 'f', 'hi'] =0.1;
+  }
+  #exposure patterns for insecticide 4
+  if(n_insecticides>=4){
+    a_expo[4, 'm', 'lo'] =0.1; a_expo[4, 'm', 'hi'] =0.1;
+    a_expo[4, 'f', 'lo'] =0.1; a_expo[4, 'f', 'hi'] =0.1;
+  }
+  #exposure patterns for insecticide 5
+  if(n_insecticides>=5){
+    a_expo[5, 'm', 'lo'] =0.1; a_expo[5, 'm', 'hi'] =0.1;
+    a_expo[5, 'f', 'lo'] =0.1; a_expo[5, 'f', 'hi'] =0.1;
+  }
+  
+  #set all no exposures to 1-(lo+hi) 
+  a_expo[,, 'no'] <- 1-(a_expo[,, 'lo'] + a_expo[,, 'hi'])    
+  
+  #todo add check that lo+hi is not greater than 1
+  #and check my understanding of the logic
+  #error check for fitnesses > 1 or < 0
+  if ( any( a_expo > 1  ) ) 
+    warning( sum(a_expo > 1 ), " exposure values (a_expo) are >1 : ", a_expo[a_expo>1])
+  if ( any( a_expo < 0 ) ) 
+    warning( sum( a_expo < 0 ), " locus fitness values (a_expo) are <0")    
+  
+  #if (plot) plot_exposure(a_expo)
+  
+  return(a_expo)
+}

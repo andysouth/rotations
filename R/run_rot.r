@@ -3,8 +3,8 @@
 #' can run any number of insecticides/loci 
 #' but at present, input will only allow a maximumum of 5
 #' 
-#' @param max_no_generations maximum number of mosquito generations to run the simulation
-#' @param no_insecticides MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+#' @param max_generations maximum number of mosquito generations to run the simulation
+#' @param n_insecticides MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
 #' @param rotation_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 #' @param rotation_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param migration_rate_intervention migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
@@ -21,8 +21,8 @@
 #' @export
 
 
-run_rot <- function( max_no_generations = 500, #the maximum number of mosquito generations to run the simulation
-                          no_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+run_rot <- function( max_generations = 500, #the maximum number of mosquito generations to run the simulation
+                          n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
                           
                           rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
                           rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
@@ -37,13 +37,13 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
     
   #RAF stands for resistance allele frequency
-  RAF <- array_named(insecticide=1:no_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_no_generations)
-  exposure <- array_named(insecticide=1:no_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
-  fitness <- array_named(insecticide=1:no_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
-  results<-array(0, dim=c(max_no_generations, 12))
+  RAF <-      array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
+  exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
+  fitness <-  array_named(insecticide=1:n_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
+  results <-  array(0, dim=c(max_generations, 12))
   
   #andy try to store results in data frame might make easier
-  df_results <- data.frame(generation=1:max_no_generations,
+  df_results <- data.frame(generation=1:max_generations,
                       insecticide=NA,
                       r1_active=NA,
                       r1_refuge=NA,
@@ -56,7 +56,7 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
                       r5_active=NA,
                       r5_refuge=NA, stringsAsFactors = FALSE)
   #experimental
-  # df_res_active <- data.frame(generation=rep(1:max_no_generations,no_insecticides),
+  # df_res_active <- data.frame(generation=rep(1:max_generations,n_insecticides),
   #                       insecticide=NA,
   #                       region=NA,
   #                       resistance=NA, stringsAsFactors = FALSE)
@@ -68,52 +68,25 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   RAF[1, 'm', 'intervention',1]=0.002;  RAF[1, 'f', 'intervention',1]=0.002;
   RAF[1, 'm', 'refugia',1]=0.001;       RAF[1, 'f', 'refugia',1]=0.001
   #locus 2>>
-  if(no_insecticides>=2){ #need to avoid exceeding size of the array
+  if(n_insecticides>=2){ #need to avoid exceeding size of the array
     RAF[2, 'm', 'intervention',1]=0.001;   RAF[2, 'f', 'intervention',1]=0.001;
     RAF[2, 'm', 'refugia',1]=0.001;        RAF[2, 'f', 'refugia',1]=0.001
   }
   #locus 3>>
-  if(no_insecticides>=3){
+  if(n_insecticides>=3){
     RAF[3, 'm', 'intervention',1]=0.09;  RAF[3, 'f', 'intervention',1]=0.09;
     RAF[3, 'm', 'refugia',1]=0.001;       RAF[3, 'f', 'refugia',1]=0.001
   }
   #locus 4>>
-  if(no_insecticides>=4){
+  if(n_insecticides>=4){
     RAF[4, 'm', 'intervention',1]=0.09;  RAF[4, 'f', 'intervention',1]=0.09;
     RAF[4, 'm', 'refugia',1]=0.001;       RAF[4, 'f', 'refugia',1]=0.001
   }#locus 5>>
-  if(no_insecticides>=5){
+  if(n_insecticides>=5){
     RAF[5, 'm', 'intervention',1]=0.09; RAF[5, 'f', 'intervention',1]=0.09;
     RAF[5, 'm', 'refugia',1]=0.001;      RAF[5, 'f', 'refugia',1]=0.001
   }
   
-  
-  #exposure patterns for insecticide 1
-    exposure[1, 'm', 'lo'] =0.1; exposure[1, 'm', 'hi'] =0.5;
-    exposure[1, 'f', 'lo'] =0.1; exposure[1, 'f', 'hi'] =0.6;
-  #exposure patterns for insecticide 2
-  if(no_insecticides>=2){ #need to avoid exceeding size of the array
-    exposure[2, 'm', 'lo'] =0.1; exposure[2, 'm', 'hi'] =0.1;
-    exposure[2, 'f', 'lo'] =0.1; exposure[2, 'f', 'hi'] =0.1;
-  }
-  #exposure patterns for insecticide 3
-  if(no_insecticides>=3){
-    exposure[3, 'm', 'lo'] =0.1; exposure[3, 'm', 'hi'] =0.1;
-    exposure[3, 'f', 'lo'] =0.1; exposure[3, 'f', 'hi'] =0.1;
-  }
-  #exposure patterns for insecticide 4
-  if(no_insecticides>=4){
-    exposure[4, 'm', 'lo'] =0.1; exposure[4, 'm', 'hi'] =0.1;
-    exposure[4, 'f', 'lo'] =0.1; exposure[4, 'f', 'hi'] =0.1;
-  }
-  #exposure patterns for insecticide 5
-  if(no_insecticides>=5){
-    exposure[5, 'm', 'lo'] =0.1; exposure[5, 'm', 'hi'] =0.1;
-    exposure[5, 'f', 'lo'] =0.1; exposure[5, 'f', 'hi'] =0.1;
-  }
-  
-  #set all no exposures to 1-(lo+hi) 
-  exposure[,, 'no'] <- 1-(exposure[,, 'lo'] + exposure[,, 'hi'])
   
   # andy looking to set fitnesses for all insecticides to be same
   # but it seemed to mess up simulation
@@ -127,24 +100,24 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   fitness[1, 'SR', 'no']=0.1; fitness[1, 'SR', 'lo']=0.7; fitness[1, 'SR', 'hi']=0.7;
   fitness[1, 'RR', 'no']=0.1; fitness[1, 'RR', 'lo']=0.9; fitness[1, 'RR', 'hi']=0.9;
   #genetic data for locus 2
-  if(no_insecticides>=2){
+  if(n_insecticides>=2){
   fitness[2, 'SS', 'no']=0.3; fitness[2, 'SS', 'lo']=0.3; fitness[2, 'SS', 'hi']=0.3;
   fitness[2, 'SR', 'no']=0.3; fitness[2, 'SR', 'lo']=0.8; fitness[2, 'SR', 'hi']=0.8;
   fitness[2, 'RR', 'no']=0.3; fitness[2, 'RR', 'lo']=0.9; fitness[2, 'RR', 'hi']=0.9;
   }
   #genetic data for locus 3
-  if(no_insecticides>=3){
+  if(n_insecticides>=3){
   fitness[3, 'SS', 'no']=0.3; fitness[3, 'SS', 'lo']=0.3; fitness[3, 'SS', 'hi']=0.3;
   fitness[3, 'SR', 'no']=0.3; fitness[3, 'SR', 'lo']=0.3; fitness[3, 'SR', 'hi']=0.3;
   fitness[3, 'RR', 'no']=0.3; fitness[3, 'RR', 'lo']=0.3; fitness[3, 'RR', 'hi']=0.3;
   }
   #genetic data for locus 4
-  if(no_insecticides>=4){
+  if(n_insecticides>=4){
   fitness[4, 'SS', 'no']=0.3; fitness[4, 'SS', 'lo']=0.3; fitness[4, 'SS', 'hi']=0.3;
   fitness[4, 'SR', 'no']=0.3; fitness[4, 'SR', 'lo']=0.4; fitness[4, 'SR', 'hi']=0.4;
   fitness[4, 'RR', 'no']=0.3; fitness[4, 'RR', 'lo']=0.5; fitness[4, 'RR', 'hi']=0.5;
   }#genetic data for locus 5
-  if(no_insecticides>=5){
+  if(n_insecticides>=5){
   fitness[5, 'SS', 'no']=0.3; fitness[5, 'SS', 'lo']=0.3; fitness[5, 'SS', 'hi']=0.3;
   fitness[5, 'SR', 'no']=0.3; fitness[5, 'SR', 'lo']=0.3; fitness[5, 'SR', 'hi']=0.3;
   fitness[5, 'RR', 'no']=0.3; fitness[5, 'RR', 'lo']=0.3; fitness[5, 'RR', 'hi']=0.3;
@@ -155,7 +128,7 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   ################### now to check input value are sensible, lie within their limits, etc #######################################
   
   #>>>Now check that exposure(none) is not less than zero
-  for(temp_int in 1:no_insecticides){
+  for(temp_int in 1:n_insecticides){
     if (exposure[temp_int, 'm', 'no']<0) message(sprintf("warning from calibration: m exposure to no insecticide %d is <0\n", temp_int)) 
     if (exposure[temp_int, 'f', 'no']<0) message(sprintf("warning from calibration: f exposure to no insecticide %d is <0\n", temp_int)) 
   }
@@ -175,11 +148,11 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   
   results[1,1]=1; results[1,2]=current_insecticide;
   
-  for(gen in 2:max_no_generations)
+  for(gen in 2:max_generations)
   { #start at generation 2 because generation 1 holds the user-defined initial allele frequenciess
     
   
-  for(insecticide in 1:no_insecticides){
+  for(insecticide in 1:n_insecticides){
   
   #first the intervention site  
    if(insecticide==current_insecticide){ #i.e. insecticide selection taking place
@@ -306,7 +279,7 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
     
   #now for migration between refugia and intervention site
   
-  for(temp_int in 1:no_insecticides){ 
+  for(temp_int in 1:n_insecticides){ 
       
    fem_intervention=
      (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
@@ -354,8 +327,8 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   if(change_insecticide==1){
   rotation_count=1; next_insecticide_found=0; candidate=current_insecticide 
               
-  for(temp_int in 1:no_insecticides){
-    if(candidate==no_insecticides) candidate=1 else candidate=candidate+1 
+  for(temp_int in 1:n_insecticides){
+    if(candidate==n_insecticides) candidate=1 else candidate=candidate+1 
     if(RAF[candidate, 'f','intervention', gen]<rotation_criterion){
       message(sprintf("generation %d, switching from insecticide %d to insecticide %d; RAF are %f and %f respectively\n",
                       gen, current_insecticide, candidate,
@@ -374,28 +347,28 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
   
   if(next_insecticide_found==0){
   message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rotation_criterion))
-    for(temp_int in 1:no_insecticides){
+    for(temp_int in 1:n_insecticides){
       message(sprintf("frequency of resistance in females to insecticide %d is %f\n", temp_int, RAF[temp_int, 'f','intervention', gen]))  
     }
   break #breaks out of looping generations and terminates the simulation
   }    
     
-   } #end of cycle running the gens up to max_no_generations
+   } #end of cycle running the gens up to max_generations
     
   #****************************************************************  
    # NOW collate the data and draw plots
   
   #andy trying to replace below with data frame  
   #also can probably do on whole row so not require the loop
-  for(i_num in 1:no_insecticides)
+  for(i_num in 1:n_insecticides)
   {
     df_results[[paste0('r',i_num,'_active')]] <- 0.5*(RAF[i_num, 'm','intervention', ]+
                                                       RAF[i_num, 'f','intervention', ])
     df_results[[paste0('r',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
                                                       RAF[i_num, 'f','refugia', ]) 
     
-    #df_res_active$region[[(i_num-1)*max_no_generations:(i_num)*max_no_generations]] <- paste0("insecticide",i_num)
-    #df_res_active$resistance[[(i_num-1)*max_no_generations:(i_num)*max_no_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+
+    #df_res_active$region[[(i_num-1)*max_generations:(i_num)*max_generations]] <- paste0("insecticide",i_num)
+    #df_res_active$resistance[[(i_num-1)*max_generations:(i_num)*max_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+
     #                                                                                             RAF[i_num, 'f','intervention', ])
   }
   #but if I want to facet by intervention may want to structure differently
@@ -408,23 +381,23 @@ run_rot <- function( max_no_generations = 500, #the maximum number of mosquito g
            #'r5_refuge', 'r5_active', 
            key=region, value=resistance)
   
-  for(temp_int in 1:max_no_generations){
+  for(temp_int in 1:max_generations){
   
   results[temp_int,3]=0.5*(RAF[1, 'm','intervention', temp_int]+RAF[1, 'f','intervention', temp_int]) #locus 1
   results[temp_int,4]=0.5*(RAF[1, 'm','refugia', temp_int]+RAF[1, 'f','refugia', temp_int]) #locus 1
-  if(no_insecticides>=2){
+  if(n_insecticides>=2){
   results[temp_int,5]=0.5*(RAF[2, 'm','intervention', temp_int]+RAF[2, 'f','intervention', temp_int]) #locus 2
   results[temp_int,6]=0.5*(RAF[2, 'm','refugia', temp_int]+RAF[2,'f','refugia', temp_int]) #locus 2
   }
-  if(no_insecticides>=3){
+  if(n_insecticides>=3){
   results[temp_int,7]=0.5*(RAF[3, 'm','intervention', temp_int]+RAF[3, 'f','intervention', temp_int]) #locus 3
   results[temp_int,8]=0.5*(RAF[3, 'm','refugia', temp_int]+RAF[3, 'f','refugia', temp_int]) #locus 3
   }
-  if(no_insecticides>=4){
+  if(n_insecticides>=4){
   results[temp_int,9]=0.5*(RAF[4, 'm','intervention', temp_int]+RAF[4, 'f','intervention', temp_int]) #locus 4
   results[temp_int,10]=0.5*(RAF[4, 'm','refugia', temp_int]+RAF[4,'f','refugia', temp_int]) #locus 4
   }
-  if(no_insecticides>=5){
+  if(n_insecticides>=5){
   results[temp_int,11]=0.5*(RAF[5, 'm','intervention', temp_int]+RAF[5, 'f','intervention', temp_int]) #locus 5
   results[temp_int,12]=0.5*(RAF[5, 'm','refugia', temp_int]+RAF[5, 'f','refugia', temp_int]) #locus 5
   }
