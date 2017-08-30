@@ -1,4 +1,4 @@
-#' plot fitness by resistant/susceptible genotypes
+#' from resistance. plot fitness by resistant/susceptible genotypes
 #' 
 #' accepts a dataframe with a column or rownames containing RS identifiers and another
 
