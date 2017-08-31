@@ -14,7 +14,7 @@
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
-#' df_res2 <- run_rotation()
+#' df_res2 <- run_rot()
 #' 
 #' @import tidyverse 
 #' @return dataframe of results

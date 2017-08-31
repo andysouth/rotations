@@ -5,10 +5,13 @@
 #'
 #' @import ggplot2
 #' @importFrom stringr str_detect
-#' @return
+#' @return ggplot object
 #' @export
 #'
 #' @examples
+#' df_res2 <- run_rot()
+#' rot_plot_resistance(df_res2)
+#' 
 rot_plot_resistance <- function(df_res2) {
   
   # to allow plotting of insecticide in use
