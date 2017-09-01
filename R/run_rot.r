@@ -36,10 +36,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   
   migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
     
-  #RAF stands for resistance allele frequency
-  RAF <-      array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
-  fitness <-  array_named(insecticide=1:n_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
   results <-  array(0, dim=c(max_generations, 12))
   
   #andy try to store results in data frame might make easier
@@ -63,45 +60,20 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   # df_res_refuge <- df_res_active
   
   
-  #inital resistance allele frequency (i.e. generation 1) in the intervention and refugia
-  #locus 1>>
-  RAF[1, 'm', 'intervention',1]=0.002;  RAF[1, 'f', 'intervention',1]=0.002;
-  RAF[1, 'm', 'refugia',1]=0.001;       RAF[1, 'f', 'refugia',1]=0.001
-  #locus 2>>
-  if(n_insecticides>=2){ #need to avoid exceeding size of the array
-    RAF[2, 'm', 'intervention',1]=0.001;   RAF[2, 'f', 'intervention',1]=0.001;
-    RAF[2, 'm', 'refugia',1]=0.001;        RAF[2, 'f', 'refugia',1]=0.001
-  }
-  #locus 3>>
-  if(n_insecticides>=3){
-    RAF[3, 'm', 'intervention',1]=0.09;  RAF[3, 'f', 'intervention',1]=0.09;
-    RAF[3, 'm', 'refugia',1]=0.001;       RAF[3, 'f', 'refugia',1]=0.001
-  }
-  #locus 4>>
-  if(n_insecticides>=4){
-    RAF[4, 'm', 'intervention',1]=0.09;  RAF[4, 'f', 'intervention',1]=0.09;
-    RAF[4, 'm', 'refugia',1]=0.001;       RAF[4, 'f', 'refugia',1]=0.001
-  }#locus 5>>
-  if(n_insecticides>=5){
-    RAF[5, 'm', 'intervention',1]=0.09; RAF[5, 'f', 'intervention',1]=0.09;
-    RAF[5, 'm', 'refugia',1]=0.001;      RAF[5, 'f', 'refugia',1]=0.001
-  }
+  ### set starting allele frequencies from hardcoded test function or based on other inputs
+  RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_generations=max_generations )  
   
   ### set exposures from hardcoded test function or based on other inputs
-  a_expo <- set_exposure_rot_test( num_ins=n_insecticides )
+  a_expo <- set_exposure_rot_test( n_insecticides=n_insecticides )
   #a_expo <- set_exposure_rot()
   
   ### set fitnesses from hardcoded test function or based on other inputs
-  fitness <- fitness_single_locus_test( num_ins=n_insecticides )
+  fitness <- fitness_single_locus_test( n_insecticides=n_insecticides )
   
   #4 same insecticides
-  #a_fitloc <- fitness_single_locus(num_ins=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+  #a_fitloc <- fitness_single_locus(n_insecticides=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
   
-  # <<<<<<<<<<<<< end of user-defined variable >>>>>>>>>>>>>>>>>>>>>>>>
-  
-  ################### now to check input value are sensible, lie within their limits, etc #######################################
-  
-  #>>>Now check that exposure(none) is not less than zero
+  # check that exposure(none) is not less than zero
   for(temp_int in 1:n_insecticides){
     if (exposure[temp_int, 'm', 'no']<0) message(sprintf("warning from calibration: m exposure to no insecticide %d is <0\n", temp_int)) 
     if (exposure[temp_int, 'f', 'no']<0) message(sprintf("warning from calibration: f exposure to no insecticide %d is <0\n", temp_int)) 
@@ -110,7 +82,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   if(migration_rate_intervention>(1-coverage)){
   message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
   }
-  
   
   
   #>>>>>>>> now to run the simulations <<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -122,159 +93,179 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   
   results[1,1]=1; results[1,2]=current_insecticide;
   
+  #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
   for(gen in 2:max_generations)
-  { #start at generation 2 because generation 1 holds the user-defined initial allele frequenciess
+  { 
     
-  
-  for(insecticide in 1:n_insecticides){
-  
-  #first the intervention site  
-   if(insecticide==current_insecticide){ #i.e. insecticide selection taking place
-     
-     coeff_1=
-       (  RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
-       (1-RAF[insecticide, 'm', 'intervention',gen-1]) * RAF[insecticide, 'f', 'intervention',gen-1])*0.5
-  
-     coeff_2=
-       exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SR', 'no']+
-       exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SR', 'lo']+
-       exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SR', 'hi']
-     #todo andy this does same with less code
-     #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SR', ] )
-      
-     coeff_3=
-       exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SR', 'no']+
-       exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SR', 'lo']+
-       exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SR', 'hi']
-     #todo andy this does same with less code
-     #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SR', ] )
+    for(insecticide in 1:n_insecticides){
+    
+      #first the intervention site, insecticide selection taking place  
+      if(insecticide==current_insecticide){
        
-  #Eqn 4: first the m resistant alleles>>
-    temp_coeff=
-      exposure[insecticide, 'm', 'no']*fitness[insecticide, 'RR', 'no']+
-      exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'RR', 'lo']+
-      exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'RR', 'hi']
+       coeff_1=
+         (  RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
+         (1-RAF[insecticide, 'm', 'intervention',gen-1]) * RAF[insecticide, 'f', 'intervention',gen-1])*0.5
+    
+       coeff_2=
+         exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SR', 'no']+
+         exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SR', 'lo']+
+         exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SR', 'hi']
+       #todo andy this does same with less code
+       #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SR', ] )
         
-    F_male_r_intervention=
-      RAF[insecticide, 'm', 'intervention', gen-1]*RAF[insecticide, 'f', 'intervention', gen-1]*temp_coeff+
+       #i could create a function to do but it wouldn't save much code
+       #and might make less transparent 
+       
+       coeff_3=
+         exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SR', 'no']+
+         exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SR', 'lo']+
+         exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SR', 'hi']
+       #todo andy this does same with less code
+       #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SR', ] )
+         
+    #Eqn 4: first the m resistant alleles>>
+      temp_coeff=
+        exposure[insecticide, 'm', 'no']*fitness[insecticide, 'RR', 'no']+
+        exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'RR', 'lo']+
+        exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'RR', 'hi']
+      #todo andy this does same with less code
+      #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RR', ] )
+          
+      F_male_r_intervention=
+        RAF[insecticide, 'm', 'intervention', gen-1]*
+        RAF[insecticide, 'f', 'intervention', gen-1]*temp_coeff+
+        coeff_1*coeff_2
+      
+      #Eqn 5: now the male sensitive alleles>> 
+      temp_coeff=
+        exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SS', 'no']+
+        exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SS', 'lo']+
+        exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SS', 'hi']
+      #todo andy this does same with less code
+      #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SS', ] )
+       
+    F_male_s_intervention=
+      (1-RAF[insecticide, 'm', 'intervention', gen-1])*
+      (1-RAF[insecticide, 'f', 'intervention', gen-1])*temp_coeff+
       coeff_1*coeff_2
     
-    #Eqn 5: now the male sensitive alleles>> 
-    temp_coeff=
-      exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SS', 'no']+
-      exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SS', 'lo']+
-      exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SS', 'hi']
-     
-  F_male_s_intervention=
-  (1-RAF[insecticide, 'm', 'intervention',gen-1])*(1-RAF[insecticide, 'f', 'intervention', gen-1])*temp_coeff+
-  coeff_1*coeff_2
-  
-  #now normalise the male gamete frequencies and store the results
-  norm_coeff=F_male_r_intervention+F_male_s_intervention
-  RAF[insecticide, 'm', 'intervention', gen]=F_male_r_intervention/norm_coeff
-  
-      
-    #now the f resistant alleles>>
-    temp_coeff=
-      exposure[insecticide, 'f', 'no']*fitness[insecticide, 'RR', 'no']+
-      exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'RR', 'lo']+
-      exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'RR', 'hi']
-   
-    F_female_r_intervention=
-    RAF[insecticide, 'm', 'intervention', gen-1]*RAF[insecticide, 'f', 'intervention',gen-1]*temp_coeff+
-      coeff_1*coeff_3
+    #now normalise the male gamete frequencies and store the results
+    norm_coeff=F_male_r_intervention+F_male_s_intervention
+    RAF[insecticide, 'm', 'intervention', gen]=F_male_r_intervention/norm_coeff
     
-    #now the female sensitive alleles>> 
-    temp_coeff=
-      exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SS', 'no']+
-      exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SS', 'lo']+
-      exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SS', 'hi']
         
-   F_female_s_intervention=
-  (1-RAF[insecticide, 'm', 'intervention', gen-1])*(1-RAF[insecticide, 'f', 'intervention',gen-1])*temp_coeff+
-  coeff_1*coeff_3 
-  
-   
-    #now normalise the female gamete frequencies and store the results
-    norm_coeff=F_female_r_intervention+F_female_s_intervention
-    RAF[insecticide, 'f', 'intervention', gen]=F_female_r_intervention/norm_coeff
-    
-    if(diagnostics) message(sprintf("generation %d: just completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
-    
-    
-  } #end of loop that deals with this insecticide if it is being deployed
-    
-   else{ #i.e no selection for this insecticide in the intervention site
-     #first the coefficient for heterozygotes common to equations 2 and 3
-     temp_coeff=
-       (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
-       RAF[insecticide, 'f', 'intervention',gen-1]*(1-RAF[insecticide, 'm', 'intervention',gen-1]))*
-       0.5*fitness[insecticide, 'SR', 'no']
-                  
+      #now the f resistant alleles>>
+      temp_coeff=
+        exposure[insecticide, 'f', 'no']*fitness[insecticide, 'RR', 'no']+
+        exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'RR', 'lo']+
+        exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'RR', 'hi']
+      #todo andy this does same with less code
+      #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RR', ] )    
      
-  #now the resistant and sensitive frequencies in untreated areas  
-     F_male_r_intervention=RAF[insecticide, 'm', 'intervention',gen-1]*RAF[insecticide, 'f', 'intervention', gen-1]*fitness[insecticide, 'RR', 'no']+temp_coeff
-     F_male_s_intervention=(1-RAF[insecticide, 'm', 'intervention',gen-1])*(1-RAF[insecticide, 'f', 'intervention',gen-1])*fitness[insecticide, 'SS', 'no']+temp_coeff
-     #now to normalise them
-     norm_coeff= F_male_r_intervention+F_male_s_intervention
-     RAF[insecticide, 'm', 'intervention', gen]=F_male_r_intervention/norm_coeff
+      F_female_r_intervention=
+      RAF[insecticide, 'm', 'intervention', gen-1]*RAF[insecticide, 'f', 'intervention',gen-1]*temp_coeff+
+        coeff_1*coeff_3
+      
+      #now the female sensitive alleles>> 
+      temp_coeff=
+        exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SS', 'no']+
+        exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SS', 'lo']+
+        exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SS', 'hi']
+      #todo andy this does same with less code
+      #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SS', ] )  
+      
+     F_female_s_intervention=
+    (1-RAF[insecticide, 'm', 'intervention', gen-1])*(1-RAF[insecticide, 'f', 'intervention',gen-1])*temp_coeff+
+    coeff_1*coeff_3 
     
-  
-  #same allele frequencies in both sexes if no differential exposure so 
-     RAF[insecticide, 'f', 'intervention', gen]=RAF[insecticide, 'm', 'intervention', gen]
-    if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in intervention site\n", gen, insecticide))   
+     
+      #now normalise the female gamete frequencies and store the results
+      norm_coeff=F_female_r_intervention+F_female_s_intervention
+      RAF[insecticide, 'f', 'intervention', gen]=F_female_r_intervention/norm_coeff
+      
+      if(diagnostics) message(sprintf("generation %d: just completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
+      
+      
+    } #end of loop that deals with this insecticide if it is being deployed
+      
+     else{ #i.e no selection for this insecticide in the intervention site
+       #first the coefficient for heterozygotes common to equations 2 and 3
+       temp_coeff=
+         (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
+          RAF[insecticide, 'f', 'intervention',gen-1]*(1-RAF[insecticide, 'm', 'intervention',gen-1]))*
+         0.5*fitness[insecticide, 'SR', 'no']
+                    
+       
+    #now the resistant and sensitive frequencies in untreated areas  
+       F_male_r_intervention = RAF[insecticide, 'm', 'intervention', gen-1]*
+                               RAF[insecticide, 'f', 'intervention', gen-1]*
+                               fitness[insecticide, 'RR', 'no']+temp_coeff
+       
+       F_male_s_intervention=(1-RAF[insecticide, 'm', 'intervention',gen-1])*
+                             (1-RAF[insecticide, 'f', 'intervention',gen-1])*
+                              fitness[insecticide, 'SS', 'no']+temp_coeff
+       #now to normalise them
+       norm_coeff= F_male_r_intervention+F_male_s_intervention
+       RAF[insecticide, 'm', 'intervention', gen]=F_male_r_intervention/norm_coeff
+      
+    
+    #same allele frequencies in both sexes if no differential exposure so 
+       RAF[insecticide, 'f', 'intervention', gen]=RAF[insecticide, 'm', 'intervention', gen]
+       
+      if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in intervention site\n", gen, insecticide))   
+          
+     
+       } #end of code for insecticides that are not being deployed  in the intervention site
         
-   
-     } #end of code for insecticides that are not being deployed  in the intervention site
+    #now for the refugia
+      #first the coefficient for heterozygotes common to equations 2 and 3
+      temp_coeff=(RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
+                    RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm','refugia',gen-1]))*
+        0.5*fitness[insecticide, 'SR', 'no']
       
-  #now for the refugia
-    #first the coefficient for heterozygotes common to equations 2 and 3
-    temp_coeff=(RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
-                  RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm','refugia',gen-1]))*
-      0.5*fitness[insecticide, 'SR', 'no']
-    
-   
-     #now the resistant and sensitive frequencies   
-    F_male_r_refugia=RAF[insecticide, 'm', 'refugia',gen-1]*RAF[insecticide, 'f', 'refugia',gen-1]*
-      fitness[insecticide, 'RR', 'no']+temp_coeff
-    F_male_s_refugia=(1-RAF[insecticide, 'm', 'refugia',gen-1])*(1-RAF[insecticide, 'f', 'refugia', gen-1])*
-      fitness[insecticide, 'SS', 'no']+temp_coeff 
-    
-    #now to normalise them and store the results
-    norm_coeff= F_male_r_refugia+F_male_s_refugia
-    RAF[insecticide, 'm', 'refugia', gen]=F_male_r_refugia/norm_coeff
-    #same allele frequencies in both sexes if no differential selection so
-    RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
-    
-    if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in refugia\n", gen, insecticide))
-    
-  }   #end of cycling insecticides
-  
-    
-  #now for migration between refugia and intervention site
-  
-  for(temp_int in 1:n_insecticides){ 
+     
+       #now the resistant and sensitive frequencies   
+      F_male_r_refugia=RAF[insecticide, 'm', 'refugia',gen-1]*RAF[insecticide, 'f', 'refugia',gen-1]*
+        fitness[insecticide, 'RR', 'no']+temp_coeff
+      F_male_s_refugia=(1-RAF[insecticide, 'm', 'refugia',gen-1])*(1-RAF[insecticide, 'f', 'refugia', gen-1])*
+        fitness[insecticide, 'SS', 'no']+temp_coeff 
       
-   fem_intervention=
-     (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
-     migration_rate_intervention*RAF[temp_int, 'f', 'refugia', gen]
+      #now to normalise them and store the results
+      norm_coeff= F_male_r_refugia+F_male_s_refugia
+      RAF[insecticide, 'm', 'refugia', gen]=F_male_r_refugia/norm_coeff
+      
+      #same allele frequencies in both sexes if no differential selection so
+      RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
+      
+      if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in refugia\n", gen, insecticide))
+      
+    }   #end of cycling insecticides
     
-   male_intervention=
-     (1-migration_rate_intervention)*RAF[temp_int, 'm', 'intervention', gen]+
-     migration_rate_intervention*RAF[temp_int, 'm', 'refugia', gen]
-   
-   fem_refugia=
-     (1-migration_rate_refugia)*RAF[temp_int, 'f', 'refugia', gen]+
-     migration_rate_refugia*RAF[temp_int, 'f', 'intervention', gen]
-   
-   male_refugia=
-     (1-migration_rate_refugia)*RAF[temp_int, 'm', 'refugia', gen]+
-     migration_rate_refugia*RAF[temp_int, 'm', 'intervention', gen]
-   
-  RAF[temp_int, 'f', 'intervention', gen]=fem_intervention
-  RAF[temp_int, 'm', 'intervention', gen]=male_intervention 
-  RAF[temp_int, 'f', 'refugia', gen]=fem_refugia
-  RAF[temp_int, 'm', 'refugia', gen]=male_refugia
+      
+    #now for migration between refugia and intervention site
+    
+    for(temp_int in 1:n_insecticides){ 
+        
+     fem_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'f', 'refugia', gen]
+      
+     male_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'm', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'm', 'refugia', gen]
+     
+     fem_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'f', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'f', 'intervention', gen]
+     
+     male_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'm', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'm', 'intervention', gen]
+     
+    RAF[temp_int, 'f', 'intervention', gen]=fem_intervention
+    RAF[temp_int, 'm', 'intervention', gen]=male_intervention 
+    RAF[temp_int, 'f', 'refugia', gen]=fem_refugia
+    RAF[temp_int, 'm', 'refugia', gen]=male_refugia
   
    } #end of cycling migration for each insecticide
     

@@ -2,10 +2,10 @@
 #' 
 #' can be used in 2 ways
 #' 1) by passing arrays a_dom etc. as done from runModel2()
-#' 2) pass a single value and num_ins to give all insecticides the same value
+#' 2) pass a single value and n_insecticides to give all insecticides the same value
 #' 2) pass vectors - new way for rotations
 
-#' @param num_ins number of insecticides (not needed if vectors or arrays are passed)
+#' @param n_insecticides number of insecticides (not needed if vectors or arrays are passed)
 #' @param eff effectiveness
 #' @param dom dominance1
 #' @param rr_ resistance restoration selection coefficient = resistance restoration * effectiveness
@@ -25,14 +25,14 @@
 #' #2 different insecticides
 #' fitness_single_locus(eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 #' #4 same insecticides
-#' fitness_single_locus(num_ins=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+#' fitness_single_locus(n_insecticides=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
 #' #4 pairs of the same insecticides
-#' fitness_single_locus(num_ins=8, eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+#' fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 
 #' @return fitness values
 #' @export
 
-fitness_single_locus <- function ( num_ins = NULL,
+fitness_single_locus <- function ( n_insecticides = NULL,
                                    eff = c(0.5, 0.7, 0.9),
                                    dom = c(0.5, 0.5, 0.5),
                                    rr = c(0.5, 0.5, 0.5),
@@ -46,9 +46,9 @@ fitness_single_locus <- function ( num_ins = NULL,
                                    plot = FALSE)
 {
   
-  #get num_ins if it is not specified
+  #get n_insecticides if it is not specified
   #todo add checks, allow single
-  if ( is.null(num_ins)) num_ins <- length(eff)
+  if ( is.null(n_insecticides)) n_insecticides <- length(eff)
   
   if ( is.null(a_fitloc) )
   {
@@ -58,7 +58,7 @@ fitness_single_locus <- function ( num_ins = NULL,
     #fitness <- array_named(insecticide=1:no_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
     #compromise :
     #BEWARE we need to decide on whether to call SR or RS, I've gone for RS Ian had SR
-    a_fitloc<- array_named(insecticide=1:num_ins, genotype=c('SS','RS', 'RR'), exposure=c('no','lo', 'hi'))
+    a_fitloc<- array_named(insecticide=1:n_insecticides, genotype=c('SS','RS', 'RR'), exposure=c('no','lo', 'hi'))
     
     #set from input file in resistance::runModel2
     a_fitloc[,'SS','no'] <- fitSS 
@@ -104,7 +104,7 @@ fitness_single_locus <- function ( num_ins = NULL,
 #' 
 #' with hardcoded values
 
-#' @param num_ins number of insecticides 
+#' @param n_insecticides number of insecticides 
 #' @param a_fitloc array of single locus fitnesses to fill
 #' @param plot whether to plot fitness
 #' 
@@ -115,14 +115,18 @@ fitness_single_locus <- function ( num_ins = NULL,
 #' @return fitness values
 #' @export
 
-fitness_single_locus_test <- function ( num_ins = NULL,
+fitness_single_locus_test <- function ( n_insecticides = NULL,
                                    a_fitloc = NULL,
                                    plot = FALSE)
 {
   
-  #set num_ins if it is not specified
-  if ( is.null(num_ins)) num_ins <- 4
+  #set n_insecticides if it is not specified
+  if ( is.null(n_insecticides)) n_insecticides <- 4
 
+  # create array
+  a_fitloc <-  array_named(insecticide=1:n_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
+  
+  
   # andy looking to set fitnesses for all insecticides to be same
   # but it seemed to mess up simulation
   # so disabled for now
