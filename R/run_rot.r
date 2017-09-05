@@ -10,6 +10,7 @@
 #' @param migration_rate_intervention migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
 #' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
 #' @param plot whether to plot results
+#' @param start_insecticide which insecticide to start with
 #' @param diagnostics whether to output running info
 #' 
 #' @examples 
@@ -30,6 +31,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
                           migration_rate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
                           coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
                           plot = TRUE,
+                          start_insecticide = 1,
                           diagnostics = FALSE
                           )
   {
@@ -64,7 +66,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_generations=max_generations )  
   
   ### set exposures from hardcoded test function or based on other inputs
-  a_expo <- set_exposure_rot_test( n_insecticides=n_insecticides )
+  exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
   #a_expo <- set_exposure_rot()
   
   ### set fitnesses from hardcoded test function or based on other inputs
@@ -86,7 +88,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   
   #>>>>>>>> now to run the simulations <<<<<<<<<<<<<<<<<<<<<<<<<<<
   
-  current_insecticide=1 #usually start the rotation sequence at #1 but can specify any one start
+  current_insecticide=start_insecticide #usually start the rotation sequence at #1 but can specify any one start
   next_insecticide_found=1
   change_insecticide=0;
   rotation_count=1
