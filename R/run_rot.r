@@ -15,7 +15,8 @@
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
-#' df_res2 <- run_rot()
+#' dfr <- run_rot(rotation_interval=50, max_generations = 300)
+#' dfr <- run_rot()
 #' 
 #' @import tidyverse 
 #' @return dataframe of results
@@ -85,8 +86,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
   }
   
-  
-  #>>>>>>>> now to run the simulations <<<<<<<<<<<<<<<<<<<<<<<<<<<
   
   current_insecticide=start_insecticide #usually start the rotation sequence at #1 but can specify any one start
   next_insecticide_found=1
