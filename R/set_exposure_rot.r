@@ -92,8 +92,11 @@ set_exposure_rot_test <- function( n_insecticides = NULL,
   a_expo <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), exposure=c('no','lo','hi'))
   
   #exposure patterns for insecticide 1
-  a_expo[1, 'm', 'lo'] =0.1; a_expo[1, 'm', 'hi'] =0.5;
-  a_expo[1, 'f', 'lo'] =0.1; a_expo[1, 'f', 'hi'] =0.6;
+  #ians initial values
+  #a_expo[1, 'm', 'lo'] =0.1; a_expo[1, 'm', 'hi'] =0.5;
+  #a_expo[1, 'f', 'lo'] =0.1; a_expo[1, 'f', 'hi'] =0.6;
+  a_expo[1, 'm', 'lo'] =0.1; a_expo[1, 'm', 'hi'] =0.1;
+  a_expo[1, 'f', 'lo'] =0.1; a_expo[1, 'f', 'hi'] =0.1;  
   #exposure patterns for insecticide 2
   if(n_insecticides>=2){ #need to avoid exceeding size of the array
     a_expo[2, 'm', 'lo'] =0.1; a_expo[2, 'm', 'hi'] =0.1;

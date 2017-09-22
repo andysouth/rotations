@@ -22,8 +22,8 @@ rot_plot_resistance <- function(df_res2) {
     mutate( i_in_use = ifelse(stringr::str_detect(region,paste0(insecticide,"_active")),1.05,NA))    
   
   gg <- ggplot( df_res2, aes_string(x='generation',y='resistance') ) + 
-    geom_point(shape=1, colour='blue') +
-    #geom_line( colour='blue') +  
+    #geom_point(shape=1, colour='blue') +
+    geom_line( colour='blue') +  
     facet_wrap('region', ncol=2) +
     #theme(axis.text.x = element_blank()) +
     #add insecticide use indication

@@ -12,11 +12,14 @@
 #' @param plot whether to plot results
 #' @param start_insecticide which insecticide to start with
 #' @param diagnostics whether to output running info
+#' @param same_insecticides whether to just set fitnesses for all insecticides the same
+#' 
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
 #' dfr <- run_rot(rotation_interval=50, max_generations = 300)
-#' dfr <- run_rot()
+#' dfr <- run_rot(rotation_interval=0, max_generations = 300)
+#' dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
 #' 
 #' @import tidyverse 
 #' @return dataframe of results
@@ -33,7 +36,13 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
                           coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
                           plot = TRUE,
                           start_insecticide = 1,
-                          diagnostics = FALSE
+                          diagnostics = FALSE,
+                          hardcode_fitness = TRUE,
+                          same_insecticides = TRUE,
+                          hardcode_exposure = TRUE,
+                          expo_hi = 0.8,
+                          expo_lo = 0,                              
+                          male_expo_prop = 1
                           )
   {
   
@@ -68,13 +77,18 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   
   ### set exposures from hardcoded test function or based on other inputs
   exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
-  #a_expo <- set_exposure_rot()
+  #exposure <- set_exposure_rot()
   
   ### set fitnesses from hardcoded test function or based on other inputs
-  fitness <- fitness_single_locus_test( n_insecticides=n_insecticides )
-  
-  #4 same insecticides
-  #a_fitloc <- fitness_single_locus(n_insecticides=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+  if (hardcode_fitness)
+  {
+    fitness <- fitness_single_locus_test( n_insecticides=n_insecticides, same_insecticides = same_insecticides )
+  } else
+  {
+    #4 same insecticides
+    #todo allow eff etc. params to be passed
+    fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+  }
   
   # check that exposure(none) is not less than zero
   for(temp_int in 1:n_insecticides){
@@ -108,21 +122,21 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
          (1-RAF[insecticide, 'm', 'intervention',gen-1]) * RAF[insecticide, 'f', 'intervention',gen-1])*0.5
     
        coeff_2=
-         exposure[insecticide, 'm', 'no']*fitness[insecticide, 'SR', 'no']+
-         exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'SR', 'lo']+
-         exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'SR', 'hi']
+         exposure[insecticide, 'm', 'no']*fitness[insecticide, 'RS', 'no']+
+         exposure[insecticide, 'm', 'lo']*fitness[insecticide, 'RS', 'lo']+
+         exposure[insecticide, 'm', 'hi']*fitness[insecticide, 'RS', 'hi']
        #todo andy this does same with less code
-       #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SR', ] )
+       #sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RS', ] )
         
        #i could create a function to do but it wouldn't save much code
        #and might make less transparent 
        
        coeff_3=
-         exposure[insecticide, 'f', 'no']*fitness[insecticide, 'SR', 'no']+
-         exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'SR', 'lo']+
-         exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'SR', 'hi']
+         exposure[insecticide, 'f', 'no']*fitness[insecticide, 'RS', 'no']+
+         exposure[insecticide, 'f', 'lo']*fitness[insecticide, 'RS', 'lo']+
+         exposure[insecticide, 'f', 'hi']*fitness[insecticide, 'RS', 'hi']
        #todo andy this does same with less code
-       #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SR', ] )
+       #sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RS', ] )
          
     #Eqn 4: first the m resistant alleles>>
       temp_coeff=
@@ -194,7 +208,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
        temp_coeff=
          (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
           RAF[insecticide, 'f', 'intervention',gen-1]*(1-RAF[insecticide, 'm', 'intervention',gen-1]))*
-         0.5*fitness[insecticide, 'SR', 'no']
+         0.5*fitness[insecticide, 'RS', 'no']
                     
        
     #now the resistant and sensitive frequencies in untreated areas  
@@ -222,7 +236,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
       #first the coefficient for heterozygotes common to equations 2 and 3
       temp_coeff=(RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
                     RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm','refugia',gen-1]))*
-        0.5*fitness[insecticide, 'SR', 'no']
+        0.5*fitness[insecticide, 'RS', 'no']
       
      
        #now the resistant and sensitive frequencies   

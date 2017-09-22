@@ -20,7 +20,7 @@
 
 array_named <- function(...)
   {
-   array(0, dim = lengths(list(...)), dimnames = list(...))
+   array(NA, dim = lengths(list(...)), dimnames = list(...))
   }
 
 

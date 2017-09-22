@@ -1,0 +1,44 @@
+---
+title: "Rotations and Insecticide Resistance"
+output:
+  pdf_document:
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+
+```{r,echo=FALSE,results='hide',warning=FALSE}
+  library(rotations)
+  library(ggplot2)
+```
+
+
+### Rotation interval 50 generations, migration 0.01, steps through insecticides
+
+```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+
+dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
+
+```
+
+### decreasing migration to 0.001
+
+```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+
+dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.001)
+
+```
+
+### Rotate when resistant, migration 0.001
+
+```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+
+dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.001)
+
+```
+
+

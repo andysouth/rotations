@@ -106,6 +106,7 @@ fitness_single_locus <- function ( n_insecticides = NULL,
 
 #' @param n_insecticides number of insecticides 
 #' @param a_fitloc array of single locus fitnesses to fill
+#' @param same_insecticides whether to just set fitnesses for all insecticides the same
 #' @param plot whether to plot fitness
 #' 
 #' @examples 
@@ -117,6 +118,7 @@ fitness_single_locus <- function ( n_insecticides = NULL,
 
 fitness_single_locus_test <- function ( n_insecticides = NULL,
                                    a_fitloc = NULL,
+                                   same_insecticides = FALSE,
                                    plot = FALSE)
 {
   
@@ -124,42 +126,46 @@ fitness_single_locus_test <- function ( n_insecticides = NULL,
   if ( is.null(n_insecticides)) n_insecticides <- 4
 
   # create array
-  a_fitloc <-  array_named(insecticide=1:n_insecticides, genotype=c('SS','SR', 'RR'), amount=c('no','lo', 'hi'))
+  a_fitloc <-  array_named(insecticide=1:n_insecticides, genotype=c('SS','RS', 'RR'), amount=c('no','lo', 'hi'))
   
   
   # andy looking to set fitnesses for all insecticides to be same
   # but it seemed to mess up simulation
-  # so disabled for now
-  # a_fitloc[, 'SS', 'no']=0.3; a_fitloc[, 'SS', 'lo']=0.3; a_fitloc[, 'SS', 'hi']=0.3;
-  # a_fitloc[, 'SR', 'no']=0.3; a_fitloc[, 'SR', 'lo']=0.7; a_fitloc[, 'SR', 'hi']=0.7;
-  # a_fitloc[, 'RR', 'no']=0.3; a_fitloc[, 'RR', 'lo']=0.9; a_fitloc[, 'RR', 'hi']=0.9;
+  if (same_insecticides)
+  {
+    a_fitloc[, 'SS', 'no']=0.3; a_fitloc[, 'SS', 'lo']=0.3; a_fitloc[, 'SS', 'hi']=0.3;
+    a_fitloc[, 'RS', 'no']=0.3; a_fitloc[, 'RS', 'lo']=0.7; a_fitloc[, 'RS', 'hi']=0.7;
+    a_fitloc[, 'RR', 'no']=0.3; a_fitloc[, 'RR', 'lo']=0.9; a_fitloc[, 'RR', 'hi']=0.9;
   
-  #genetic data for locus 1
-  a_fitloc[1, 'SS', 'no']=0.1; a_fitloc[1, 'SS', 'lo']=0.3; a_fitloc[1, 'SS', 'hi']=0.3;
-  a_fitloc[1, 'SR', 'no']=0.1; a_fitloc[1, 'SR', 'lo']=0.7; a_fitloc[1, 'SR', 'hi']=0.7;
-  a_fitloc[1, 'RR', 'no']=0.1; a_fitloc[1, 'RR', 'lo']=0.9; a_fitloc[1, 'RR', 'hi']=0.9;
-  #genetic data for locus 2
-  if(n_insecticides>=2){
-    a_fitloc[2, 'SS', 'no']=0.3; a_fitloc[2, 'SS', 'lo']=0.3; a_fitloc[2, 'SS', 'hi']=0.3;
-    a_fitloc[2, 'SR', 'no']=0.3; a_fitloc[2, 'SR', 'lo']=0.8; a_fitloc[2, 'SR', 'hi']=0.8;
-    a_fitloc[2, 'RR', 'no']=0.3; a_fitloc[2, 'RR', 'lo']=0.9; a_fitloc[2, 'RR', 'hi']=0.9;
-  }
-  #genetic data for locus 3
-  if(n_insecticides>=3){
-    a_fitloc[3, 'SS', 'no']=0.3; a_fitloc[3, 'SS', 'lo']=0.3; a_fitloc[3, 'SS', 'hi']=0.3;
-    a_fitloc[3, 'SR', 'no']=0.3; a_fitloc[3, 'SR', 'lo']=0.3; a_fitloc[3, 'SR', 'hi']=0.3;
-    a_fitloc[3, 'RR', 'no']=0.3; a_fitloc[3, 'RR', 'lo']=0.3; a_fitloc[3, 'RR', 'hi']=0.3;
-  }
-  #genetic data for locus 4
-  if(n_insecticides>=4){
-    a_fitloc[4, 'SS', 'no']=0.3; a_fitloc[4, 'SS', 'lo']=0.3; a_fitloc[4, 'SS', 'hi']=0.3;
-    a_fitloc[4, 'SR', 'no']=0.3; a_fitloc[4, 'SR', 'lo']=0.4; a_fitloc[4, 'SR', 'hi']=0.4;
-    a_fitloc[4, 'RR', 'no']=0.3; a_fitloc[4, 'RR', 'lo']=0.5; a_fitloc[4, 'RR', 'hi']=0.5;
-  }#genetic data for locus 5
-  if(n_insecticides>=5){
-    a_fitloc[5, 'SS', 'no']=0.3; a_fitloc[5, 'SS', 'lo']=0.3; a_fitloc[5, 'SS', 'hi']=0.3;
-    a_fitloc[5, 'SR', 'no']=0.3; a_fitloc[5, 'SR', 'lo']=0.3; a_fitloc[5, 'SR', 'hi']=0.3;
-    a_fitloc[5, 'RR', 'no']=0.3; a_fitloc[5, 'RR', 'lo']=0.3; a_fitloc[5, 'RR', 'hi']=0.3;
+  } else #ians original test data
+  {
+    #genetic data for locus 1
+    a_fitloc[1, 'SS', 'no']=0.1; a_fitloc[1, 'SS', 'lo']=0.3; a_fitloc[1, 'SS', 'hi']=0.3;
+    a_fitloc[1, 'RS', 'no']=0.1; a_fitloc[1, 'RS', 'lo']=0.7; a_fitloc[1, 'RS', 'hi']=0.7;
+    a_fitloc[1, 'RR', 'no']=0.1; a_fitloc[1, 'RR', 'lo']=0.9; a_fitloc[1, 'RR', 'hi']=0.9;
+    #genetic data for locus 2
+    if(n_insecticides>=2){
+      a_fitloc[2, 'SS', 'no']=0.3; a_fitloc[2, 'SS', 'lo']=0.3; a_fitloc[2, 'SS', 'hi']=0.3;
+      a_fitloc[2, 'RS', 'no']=0.3; a_fitloc[2, 'RS', 'lo']=0.8; a_fitloc[2, 'RS', 'hi']=0.8;
+      a_fitloc[2, 'RR', 'no']=0.3; a_fitloc[2, 'RR', 'lo']=0.9; a_fitloc[2, 'RR', 'hi']=0.9;
+    }
+    #genetic data for locus 3
+    if(n_insecticides>=3){
+      a_fitloc[3, 'SS', 'no']=0.3; a_fitloc[3, 'SS', 'lo']=0.3; a_fitloc[3, 'SS', 'hi']=0.3;
+      a_fitloc[3, 'RS', 'no']=0.3; a_fitloc[3, 'RS', 'lo']=0.3; a_fitloc[3, 'RS', 'hi']=0.3;
+      a_fitloc[3, 'RR', 'no']=0.3; a_fitloc[3, 'RR', 'lo']=0.3; a_fitloc[3, 'RR', 'hi']=0.3;
+    }
+    #genetic data for locus 4
+    if(n_insecticides>=4){
+      a_fitloc[4, 'SS', 'no']=0.3; a_fitloc[4, 'SS', 'lo']=0.3; a_fitloc[4, 'SS', 'hi']=0.3;
+      a_fitloc[4, 'RS', 'no']=0.3; a_fitloc[4, 'RS', 'lo']=0.4; a_fitloc[4, 'RS', 'hi']=0.4;
+      a_fitloc[4, 'RR', 'no']=0.3; a_fitloc[4, 'RR', 'lo']=0.5; a_fitloc[4, 'RR', 'hi']=0.5;
+    }#genetic data for locus 5
+    if(n_insecticides>=5){
+      a_fitloc[5, 'SS', 'no']=0.3; a_fitloc[5, 'SS', 'lo']=0.3; a_fitloc[5, 'SS', 'hi']=0.3;
+      a_fitloc[5, 'RS', 'no']=0.3; a_fitloc[5, 'RS', 'lo']=0.3; a_fitloc[5, 'RS', 'hi']=0.3;
+      a_fitloc[5, 'RR', 'no']=0.3; a_fitloc[5, 'RR', 'lo']=0.3; a_fitloc[5, 'RR', 'hi']=0.3;
+    }    
   }
     
   
