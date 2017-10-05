@@ -112,7 +112,8 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   for(gen in 2:max_generations)
   { 
     
-    for(insecticide in 1:n_insecticides){
+    for(insecticide in 1:n_insecticides)
+      {
     
       #first the intervention site, insecticide selection taking place  
       if(insecticide==current_insecticide){
@@ -257,7 +258,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
     }   #end of cycling insecticides
     
       
-    #now for migration between refugia and intervention site
+    #migration between refugia and intervention site
     
     for(temp_int in 1:n_insecticides){ 
         
@@ -285,7 +286,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
    } #end of cycling migration for each insecticide
     
     
-  #now to find if we need to switch current insecticide
+  #do we need to switch current insecticide ?
     if(rotation_interval==0){  #i.e.  its a RwR policy:
           if(RAF[current_insecticide, 'f','intervention', gen] > rotation_criterion) change_insecticide=1
           #message(sprintf("confirm. RAF=%f, change_insecticide=%d \n", RAF[current_insecticide, 'f','intervention', gen], change_insecticide))
@@ -348,8 +349,7 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
                                                       RAF[i_num, 'f','refugia', ]) 
     
     #df_res_active$region[[(i_num-1)*max_generations:(i_num)*max_generations]] <- paste0("insecticide",i_num)
-    #df_res_active$resistance[[(i_num-1)*max_generations:(i_num)*max_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+
-    #                                                                                             RAF[i_num, 'f','intervention', ])
+    #df_res_active$resistance[[(i_num-1)*max_generations:(i_num)*max_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
   }
   #but if I want to facet by intervention may want to structure differently
   #generation, treatment, resistance
