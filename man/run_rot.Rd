@@ -4,9 +4,12 @@
 \alias{run_rot}
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
-run_rot(max_generations = 500, n_insecticides = 4, rotation_interval = 0,
+run_rot(max_generations = 200, n_insecticides = 4, rotation_interval = 0,
   rotation_criterion = 0.5, migration_rate_intervention = 0.01,
-  coverage = 0.8, plot = TRUE, diagnostics = FALSE)
+  coverage = 0.8, plot = TRUE, start_insecticide = 1,
+  diagnostics = FALSE, hardcode_fitness = TRUE, same_insecticides = TRUE,
+  hardcode_exposure = TRUE, expo_hi = 0.8, expo_lo = 0,
+  male_expo_prop = 1)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}
@@ -23,7 +26,11 @@ run_rot(max_generations = 500, n_insecticides = 4, rotation_interval = 0,
 
 \item{plot}{whether to plot results}
 
+\item{start_insecticide}{which insecticide to start with}
+
 \item{diagnostics}{whether to output running info}
+
+\item{same_insecticides}{whether to just set fitnesses for all insecticides the same}
 }
 \value{
 dataframe of results
@@ -34,6 +41,8 @@ but at present, input will only allow a maximumum of 5
 }
 \examples{
 run_rot(rotation_interval=100)
-df_res2 <- run_rotation()
+dfr <- run_rot(rotation_interval=50, max_generations = 300)
+dfr <- run_rot(rotation_interval=0, max_generations = 300)
+dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
 
 }

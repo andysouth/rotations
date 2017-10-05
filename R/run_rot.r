@@ -381,7 +381,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   
   invisible(df_res2)
   
-} # end of run_rotation()
+} # end of run_rot()
 
 
 

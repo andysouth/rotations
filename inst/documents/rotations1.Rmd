@@ -1,8 +1,8 @@
 ---
-title: "Rotations and Insecticide Resistance"
+title: "Rotations and Insecticide Resistance initial plots"
 output:
   pdf_document:
-    keep_tex: true
+    keep_tex: false
     fig_caption: true
     latex_engine: pdflatex
 
@@ -11,31 +11,45 @@ author: "Andy South and Ian Hastings"
 date: "`r Sys.Date()`"
 ---
 
-```{r,echo=FALSE,results='hide',warning=FALSE}
+```{r, eval=TRUE, include=FALSE}
+
+library(knitr)
+opts_chunk$set(fig.height=7, fig.width=7)
+# opts_chunk$set(dev="tiff",
+#                dev.args=list(compression="lzw"),
+#                dpi=300,
+#                cache=FALSE,
+#                fig.path='pap2figs/')
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
   library(rotations)
   library(ggplot2)
 ```
 
 
-### Rotation interval 50 generations, migration 0.01, steps through insecticides
 
-```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotation interval 50, migration 0.01"}
+
+# Interval 50, migration 0.01
 
 dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
 
 ```
 
-### decreasing migration to 0.001
 
-```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotation interval 50, migration 0.001"}
+
+# Decrease migration to 0.001
 
 dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.001)
 
 ```
 
-### Rotate when resistant, migration 0.001
 
-```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1"}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotate when resistant, migration 0.001"}
+
+### Rotate when resistant, migration 0.001
 
 dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.001)
 

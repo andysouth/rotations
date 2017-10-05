@@ -4,12 +4,15 @@
 \alias{fitness_single_locus_test}
 \title{test fill a single locus fitness array}
 \usage{
-fitness_single_locus_test(num_ins = NULL, a_fitloc = NULL, plot = FALSE)
+fitness_single_locus_test(n_insecticides = NULL, a_fitloc = NULL,
+  same_insecticides = FALSE, plot = FALSE)
 }
 \arguments{
-\item{num_ins}{number of insecticides}
+\item{n_insecticides}{number of insecticides}
 
 \item{a_fitloc}{array of single locus fitnesses to fill}
+
+\item{same_insecticides}{whether to just set fitnesses for all insecticides the same}
 
 \item{plot}{whether to plot fitness}
 }

@@ -4,10 +4,10 @@
 \alias{set_exposure_rot_test}
 \title{set_exposure_rot_test allows exposures to be hardcoded}
 \usage{
-set_exposure_rot_test(num_ins = NULL, plot = FALSE)
+set_exposure_rot_test(n_insecticides = NULL, plot = FALSE)
 }
 \arguments{
-\item{num_ins}{number of insecticides, optional can just be specified by number of items in vector expo}
+\item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
 
 \item{plot}{whether to plot exposure}
 }

@@ -9,6 +9,14 @@ rot_plot_resistance(df_res2)
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 }
+\value{
+ggplot object
+}
 \description{
 rot_plot_resistance plot rotation simulation resistance results
+}
+\examples{
+df_res2 <- run_rot()
+rot_plot_resistance(df_res2)
+
 }
