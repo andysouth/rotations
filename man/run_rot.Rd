@@ -7,9 +7,10 @@
 run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
   rotation_interval = 0, rotation_criterion = 0.5,
   migration_rate_intervention = 0.01, coverage = 0.8, plot = TRUE,
-  start_insecticide = 1, diagnostics = FALSE, hardcode_fitness = TRUE,
-  same_insecticides = TRUE, hardcode_exposure = TRUE, expo_hi = 0.8,
-  expo_lo = 0, male_expo_prop = 1)
+  start_insecticide = 1, diagnostics = FALSE, hardcode_fitness = FALSE,
+  same_insecticides = TRUE, hardcode_exposure = FALSE, expo_hi = 0.8,
+  expo_lo = 0, male_expo_prop = 1, eff = 0.5, dom = 0.5, rr = 0.5,
+  cost = 0.5, fitSS = 1)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}
@@ -33,6 +34,22 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
 \item{diagnostics}{whether to output running info}
 
 \item{same_insecticides}{only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same}
+
+\item{expo_hi}{exposure to insecticide in hi niche, either single or vector of 1 per insecticide}
+
+\item{expo_lo}{exposure to insecticide in lo niche, either single or vector of 1 per insecticide}
+
+\item{male_expo_prop}{proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)}
+
+\item{eff}{effectiveness, for all insecticides or individually}
+
+\item{dom}{dominance, for all insecticides or individually}
+
+\item{rr}{resistance restoration, for all insecticides or individually}
+
+\item{cost}{fitness cost of RR in no insecticide, for all insecticides or individually}
+
+\item{fitSS}{fitness of SS if no insecticide, for all insecticides or individually}
 }
 \value{
 dataframe of results

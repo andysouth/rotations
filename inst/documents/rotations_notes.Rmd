@@ -71,18 +71,20 @@ I now have run_rot() working for flexible numbers of insecticides (1-5).
 done : Next, get active and refuge onto the same plots.  
 done : allowed starting frequencies to be set
 
-implemented set_expsoure_rot() but currently changing exposure seems to make no difference ?
+implemented set_expsoure_rot() now working
 dfr <- run_rot(rotation_interval=50, expo_hi=0.9)
 dfr <- run_rot(rotation_interval=50, expo_hi=0.2)
-# these produce identical frequency curves for r1 & r2
+# diff frequency curves for r1 & r2
 dfr <- run_rot(n=2, rotation_interval=50, expo_hi=c(1,0.1))
 
+started fitness_single_locus() from run_rot()
 
+dfr <- run_rot(n=2, rotation_interval=50, eff=c(1,0.1))
 
 
 
 # TODO
-~ implement set_exposure_rot() to replace test version 
+~ test fitness_single_locus() from run_rot() and add to Rmd
 
 ~ test setting inputs correctly (move away from hardcoded test functions)
 ~ find what went wrong when I set fitnesses

@@ -11,19 +11,19 @@ fitness_single_locus(n_insecticides = NULL, eff = c(0.5, 0.7, 0.9),
 \arguments{
 \item{n_insecticides}{number of insecticides (not needed if vectors or arrays are passed)}
 
-\item{eff}{effectiveness}
+\item{eff}{effectiveness, for all insecticides or individually}
 
-\item{dom}{dominance1}
+\item{dom}{dominance, for all insecticides or individually}
 
-\item{cost}{fitness cost of R in no insecticide}
+\item{rr}{resistance restoration, for all insecticides or individually}
 
-\item{fitSS}{fitness of SS if no insecticide}
+\item{cost}{fitness cost of RR in no insecticide, for all insecticides or individually}
+
+\item{fitSS}{fitness of SS if no insecticide, for all insecticides or individually}
 
 \item{a_fitloc}{array of single locus fitnesses to fill}
 
 \item{plot}{whether to plot fitness}
-
-\item{rr_}{resistance restoration selection coefficient = resistance restoration * effectiveness}
 }
 \value{
 fitness values

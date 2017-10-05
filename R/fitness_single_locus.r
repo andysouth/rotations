@@ -6,11 +6,11 @@
 #' 2) pass vectors - new way for rotations
 
 #' @param n_insecticides number of insecticides (not needed if vectors or arrays are passed)
-#' @param eff effectiveness
-#' @param dom dominance1
-#' @param rr_ resistance restoration selection coefficient = resistance restoration * effectiveness
-#' @param cost fitness cost of R in no insecticide
-#' @param fitSS fitness of SS if no insecticide
+#' @param eff effectiveness, for all insecticides or individually
+#' @param dom dominance, for all insecticides or individually
+#' @param rr resistance restoration, for all insecticides or individually 
+#' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
+#' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' 
 # @param a_dom dominance array
 # @param a_sel selection coefficient array

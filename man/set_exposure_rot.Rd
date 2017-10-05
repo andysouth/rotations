@@ -10,11 +10,13 @@ set_exposure_rot(n_insecticides = NULL, expo_hi = 0.8, expo_lo = 0,
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
 
-\item{male_expo_prop}{proportion tht males are exposed relative to f, default 1, likely to be <1}
+\item{expo_hi}{exposure to insecticide in hi niche, either single or vector of 1 per insecticide}
+
+\item{expo_lo}{exposure to insecticide in lo niche, either single or vector of 1 per insecticide}
+
+\item{male_expo_prop}{proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)}
 
 \item{plot}{whether to plot exposure}
-
-\item{expo}{exposure to the insecticides}
 }
 \value{
 array of exposure values for the different insecticides

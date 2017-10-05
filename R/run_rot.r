@@ -17,6 +17,11 @@
 #' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
 #' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
 #' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
+#' @param eff effectiveness, for all insecticides or individually
+#' @param dom dominance, for all insecticides or individually
+#' @param rr resistance restoration, for all insecticides or individually 
+#' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
+#' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
@@ -30,23 +35,26 @@
 
 
 run_rot <- function( max_generations = 200, #the maximum number of mosquito generations to run the simulation
-                          n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
-                          start_freqs = 0.001,
-                          rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-                          rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
-                          
-                          migration_rate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
-                          coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
-                          plot = TRUE,
-                          start_insecticide = 1,
-                          diagnostics = FALSE,
-                          hardcode_fitness = TRUE,
-                          same_insecticides = TRUE,
-                          hardcode_exposure = TRUE,
-                          expo_hi = 0.8,
-                          expo_lo = 0,                              
-                          male_expo_prop = 1
-                          )
+                     n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+                      start_freqs = 0.001,
+                      rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+                      rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+                      migration_rate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
+                      coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
+                      plot = TRUE,
+                      start_insecticide = 1,
+                      diagnostics = FALSE,
+                      hardcode_fitness = FALSE,
+                      same_insecticides = TRUE,
+                      hardcode_exposure = FALSE,
+                      expo_hi = 0.8,
+                      expo_lo = 0,                              
+                      male_expo_prop = 1,
+                     eff = 0.5, #c(0.5, 0.7, 0.9),
+                     dom = 0.5, #c(0.5, 0.5, 0.5),
+                     rr = 0.5, #c(0.5, 0.5, 0.5),
+                     cost = 0.5, #c(0,0,0),
+                     fitSS = 1 ) #c(1,1,1)
   {
   
   migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
@@ -104,9 +112,9 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     fitness <- fitness_single_locus_test( n_insecticides=n_insecticides, same_insecticides = same_insecticides )
   } else
   {
-    #4 same insecticides
-    #todo allow eff etc. params to be passed
-    fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+    #fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+    fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=eff, dom=dom, rr=rr, cost=cost, fitSS=fitSS)
+    
   }
   
   # check that exposure(none) is not less than zero

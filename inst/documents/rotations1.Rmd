@@ -27,7 +27,16 @@ opts_chunk$set(fig.height=7, fig.width=7)
   library(ggplot2)
 ```
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="exposure set to 1 for r1 & 0.1 for r2"}
+# Current state of play
+
+1. Flexible number of insecticides between 1 & 5
+1. Exposure can be set for each insecticide or same for all.
+1. Starting frequency can be set for each insecticide or same for all.
+
+Some example plots follow, these act as a visual test that the model is doing what we expect.
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="exposure set to 1 for r1 and 0.1 for r2"}
 
 #expo_hi=c(1,0.1)
 dfr <- run_rot(n=2, rotation_interval=100, expo_hi=c(1,0.1))
@@ -39,12 +48,13 @@ dfr <- run_rot(n=2, rotation_interval=100, expo_hi=c(1,0.1))
 
 # Interval 50, migration 0.01
 
+# TODO remove hardcode fitnesses from here
 dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
 
 ```
 
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotation interval 50, migration 0.001"}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="decrease migration to 0.001"}
 
 # Decrease migration to 0.001
 
@@ -52,12 +62,15 @@ dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = T
 
 ```
 
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="cost 0.1 effectiveness 1"}
+dfr <- run_rot(n=3, rotation_interval=50, eff=1, cost=0.1)
+```
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotate when resistant, migration 0.001"}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotate when resistant, exposure 0.5 migration 0.01"}
 
-### Rotate when resistant, migration 0.001
+### Rotate when resistant, migration 0.01
 
-dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.001)
+dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, expo_hi=0.5, migration_rate_intervention=0.01)
 
 ```
 
