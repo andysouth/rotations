@@ -26,7 +26,7 @@
 #' @export
 
 
-run_rot <- function( max_generations = 500, #the maximum number of mosquito generations to run the simulation
+run_rot <- function( max_generations = 200, #the maximum number of mosquito generations to run the simulation
                           n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
                           
                           rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
@@ -49,7 +49,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
     
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
-  results <-  array(0, dim=c(max_generations, 12))
   
   #andy try to store results in data frame might make easier
   df_results <- data.frame(generation=1:max_generations,
@@ -106,7 +105,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   change_insecticide=0;
   rotation_count=1
   
-  results[1,1]=1; results[1,2]=current_insecticide;
   
   #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
   for(gen in 2:max_generations)
@@ -320,9 +318,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
   } #end of temp_int loop
   } #end of loop to try and change insecticide i.e. the "if(change_insecticide==1)" lopp
   
-  #now to store some results for ease of plotting (see later) before potentially terminating the simulation
-  results[gen,1]=gen; 
-  results[gen,2]=current_insecticide
   
   df_results$insecticide[gen] <- current_insecticide 
   
@@ -361,28 +356,6 @@ run_rot <- function( max_generations = 500, #the maximum number of mosquito gene
            #'r5_refuge', 'r5_active', 
            key=region, value=resistance)
   
-  for(temp_int in 1:max_generations){
-  
-  results[temp_int,3]=0.5*(RAF[1, 'm','intervention', temp_int]+RAF[1, 'f','intervention', temp_int]) #locus 1
-  results[temp_int,4]=0.5*(RAF[1, 'm','refugia', temp_int]+RAF[1, 'f','refugia', temp_int]) #locus 1
-  if(n_insecticides>=2){
-  results[temp_int,5]=0.5*(RAF[2, 'm','intervention', temp_int]+RAF[2, 'f','intervention', temp_int]) #locus 2
-  results[temp_int,6]=0.5*(RAF[2, 'm','refugia', temp_int]+RAF[2,'f','refugia', temp_int]) #locus 2
-  }
-  if(n_insecticides>=3){
-  results[temp_int,7]=0.5*(RAF[3, 'm','intervention', temp_int]+RAF[3, 'f','intervention', temp_int]) #locus 3
-  results[temp_int,8]=0.5*(RAF[3, 'm','refugia', temp_int]+RAF[3, 'f','refugia', temp_int]) #locus 3
-  }
-  if(n_insecticides>=4){
-  results[temp_int,9]=0.5*(RAF[4, 'm','intervention', temp_int]+RAF[4, 'f','intervention', temp_int]) #locus 4
-  results[temp_int,10]=0.5*(RAF[4, 'm','refugia', temp_int]+RAF[4,'f','refugia', temp_int]) #locus 4
-  }
-  if(n_insecticides>=5){
-  results[temp_int,11]=0.5*(RAF[5, 'm','intervention', temp_int]+RAF[5, 'f','intervention', temp_int]) #locus 5
-  results[temp_int,12]=0.5*(RAF[5, 'm','refugia', temp_int]+RAF[5, 'f','refugia', temp_int]) #locus 5
-  }
-  
-  } #end of temp_int loop
   
   # do the plots
   #rot_plot_use(df_res2)
