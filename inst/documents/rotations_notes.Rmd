@@ -66,8 +66,8 @@ I can use tidyr::separate() to get from r1_refuge to r1 & refuge in different co
 
 separate(region, into=c("resistance_gene","active_or_refuge"))
 
+I now have run_rot() working for flexible numbers of insecticides (1-5).
 
-
-                         
+Next, get active and refuge onto the same plots.                         
                          
                          

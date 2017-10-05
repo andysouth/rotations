@@ -372,12 +372,12 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     gather(names(l_gene_plus_activity),
            key=region, value=resistance)
   
-  #use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
-  #df_res2 <- separate(df_res2, region, into=c("resistance_gene","active_or_refuge"))
+  # use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
+  # to get active & refuge into the same subplot
+  df_res2 <- separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
   
   # do the plots
-  #rot_plot_use(df_res2)
-  rot_plot_resistance(df_res2)
+  if (plot) rot_plot_resistance(df_res2)
   
   invisible(df_res2)
   
