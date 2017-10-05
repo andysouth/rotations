@@ -4,17 +4,19 @@
 \alias{run_rot}
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
-run_rot(max_generations = 200, n_insecticides = 4, rotation_interval = 0,
-  rotation_criterion = 0.5, migration_rate_intervention = 0.01,
-  coverage = 0.8, plot = TRUE, start_insecticide = 1,
-  diagnostics = FALSE, hardcode_fitness = TRUE, same_insecticides = TRUE,
-  hardcode_exposure = TRUE, expo_hi = 0.8, expo_lo = 0,
-  male_expo_prop = 1)
+run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
+  rotation_interval = 0, rotation_criterion = 0.5,
+  migration_rate_intervention = 0.01, coverage = 0.8, plot = TRUE,
+  start_insecticide = 1, diagnostics = FALSE, hardcode_fitness = TRUE,
+  same_insecticides = TRUE, hardcode_exposure = TRUE, expo_hi = 0.8,
+  expo_lo = 0, male_expo_prop = 1)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}
 
-\item{n_insecticides}{MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<}
+\item{n_insecticides}{number of insecticides (and hence loci), current max is 5}
+
+\item{start_freqs}{starting frequencies of resistance either one per insecticide or same for all}
 
 \item{rotation_interval}{frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant}
 
@@ -30,7 +32,7 @@ run_rot(max_generations = 200, n_insecticides = 4, rotation_interval = 0,
 
 \item{diagnostics}{whether to output running info}
 
-\item{same_insecticides}{whether to just set fitnesses for all insecticides the same}
+\item{same_insecticides}{only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same}
 }
 \value{
 dataframe of results

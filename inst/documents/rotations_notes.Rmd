@@ -73,12 +73,12 @@ Done : Next, get active and refuge onto the same plots.
 
 
 # TODO
-~ allow inputs to be set correctly (move away from hardcoded test functions)
+~ test setting inputs correctly (move away from hardcoded test functions)
 ~ find what went wrong when I set fitnesses
 ~ get Ian to pull changes
 
 # state of play
-~ rotations1.Rmd : 
+~ rotations1.Rmd : example plots
 
                          
                          

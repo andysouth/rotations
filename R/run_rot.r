@@ -4,7 +4,8 @@
 #' but at present, input will only allow a maximumum of 5
 #' 
 #' @param max_generations maximum number of mosquito generations to run the simulation
-#' @param n_insecticides MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+#' @param n_insecticides number of insecticides (and hence loci), current max is 5
+#' @param start_freqs starting frequencies of resistance either one per insecticide or same for all
 #' @param rotation_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 #' @param rotation_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param migration_rate_intervention migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
@@ -12,7 +13,7 @@
 #' @param plot whether to plot results
 #' @param start_insecticide which insecticide to start with
 #' @param diagnostics whether to output running info
-#' @param same_insecticides whether to just set fitnesses for all insecticides the same
+#' @param same_insecticides only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same
 #' 
 #' 
 #' @examples 
@@ -28,7 +29,7 @@
 
 run_rot <- function( max_generations = 200, #the maximum number of mosquito generations to run the simulation
                           n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
-                          
+                          start_freqs = 0.001,
                           rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
                           rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
                           
@@ -82,8 +83,12 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   
   
   ### set starting allele frequencies from hardcoded test function or based on other inputs
-  RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_generations=max_generations )  
-  
+  #RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_generations=max_generations )  
+  #todo add checks thats start_freqs is either length 1 or n_insecticides
+  RAF <- set_start_freqs( n_insecticides=n_insecticides, 
+                          max_generations=max_generations, 
+                          freqs = start_freqs )  
+    
   ### set exposures from hardcoded test function or based on other inputs
   exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
   #exposure <- set_exposure_rot()

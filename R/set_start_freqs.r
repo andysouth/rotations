@@ -1,3 +1,50 @@
+#' set_start_freqs allows starting allele frequencies to be set
+#' 
+#' 
+#' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
+#' @param freqs starting allele frequencies either one per insecticide or same for all
+#'              in this version same for m,f,intervention & refuge    
+#' 
+#' @examples
+#' #frequencies the same for all insecticides
+#' RAF <- set_start_freqs(n=3, freqs=0.001)
+#' RAF[,,,1] # to view generation 1
+#' #frequencies different for each insecticide
+#' RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
+#' RAF[,,,1] # to view generation 1
+#' 
+#' #allowing array to be viewed differently
+#' as.data.frame(RAF)
+#' 
+#' @return array of allele frequencies with just first record filled
+#' @export
+#' 
+set_start_freqs <- function( n_insecticides = NULL,
+                             max_generations = 200,
+                             freqs = 0.001 )
+{
+  
+  #get n_insecticides if it is not specified
+  #todo add checks, allow single
+  if ( is.null(n_insecticides)) n_insecticides <- length(freqs)
+  
+  # create empty array
+  # RAF stands for resistance allele frequency
+  RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
+
+  # fill generation 1
+  # in this version same for m,f,intervention & refuge
+  RAF[, 'm', 'intervention', 1] = freqs
+  # dim1 :n_insecticides
+  # dim2 :sex: m,f
+  # dim3 :site: intervention,refuge
+  # dim4 : generations
+  # I checked this fills correctly for dims2 & 3 when freqs is a vector
+  RAF[ , , , 1] = freqs
+   
+  return(RAF)  
+}  
+
 #' set_start_freqs_test allows starting allele frequencies to be hardcoded
 #' 
 #' 
@@ -48,8 +95,6 @@ set_start_freqs_test <- function( n_insecticides = NULL,
     RAF[5, 'm', 'refugia',1]=0.001;      RAF[5, 'f', 'refugia',1]=0.001
   } 
   
-  
-  #if (plot) plot_exposure(a_expo)
   
   return(RAF)
 }
