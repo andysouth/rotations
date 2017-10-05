@@ -50,19 +50,29 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
   
-  #andy try to store results in data frame might make easier
-  df_results <- data.frame(generation=1:max_generations,
-                      insecticide=NA,
-                      r1_active=NA,
-                      r1_refuge=NA,
-                      r2_active=NA,
-                      r2_refuge=NA,
-                      r3_active=NA,
-                      r3_refuge=NA,
-                      r4_active=NA,
-                      r4_refuge=NA,
-                      r5_active=NA,
-                      r5_refuge=NA, stringsAsFactors = FALSE)
+  # df_results <- data.frame(generation=1:max_generations,
+  #                     insecticide=NA,
+  #                     r1_active=NA,
+  #                     r1_refuge=NA,
+  #                     r2_active=NA,
+  #                     r2_refuge=NA,
+  #                     r3_active=NA,
+  #                     r3_refuge=NA,
+  #                     r4_active=NA,
+  #                     r4_refuge=NA, stringsAsFactors = FALSE)
+  
+  # setup dataframe to store results, tricky to cope with variable number insecticides
+  l_gene_plus_activity <- rep(list(rep(NA,max_generations)), n_insecticides*2) #2 because active & refuge 
+  
+  names(l_gene_plus_activity) <- c( paste0("r", 1:n_insecticides, "_active"),
+                                    paste0("r", 1:n_insecticides, "_refuge") )
+  
+  df_results <- do.call(data.frame, list(generation = 1:max_generations,
+                                         insecticide = NA,
+                                         stringsAsFactors = FALSE,
+                                         l_gene_plus_activity))  
+  
+  
   #experimental
   # df_res_active <- data.frame(generation=rep(1:max_generations,n_insecticides),
   #                       insecticide=NA,
@@ -329,15 +339,15 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   break #breaks out of looping generations and terminates the simulation
   }    
     
-   } #end of cycle running the gens up to max_generations
+   } #end of max_generations loop
     
-  #****************************************************************  
-   # NOW collate the data and draw plots
+  #####################################  
+  # recording results of resistance frequency
   
-  #andy trying to replace below with data frame  
-  #also can probably do on whole row so not require the loop
+  #andy saving results in wide data frame  
   for(i_num in 1:n_insecticides)
   {
+    # does calculation for all generations (final dimension in RAF array)
     df_results[[paste0('r',i_num,'_active')]] <- 0.5*(RAF[i_num, 'm','intervention', ]+
                                                       RAF[i_num, 'f','intervention', ])
     df_results[[paste0('r',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
@@ -346,16 +356,24 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     #df_res_active$region[[(i_num-1)*max_generations:(i_num)*max_generations]] <- paste0("insecticide",i_num)
     #df_res_active$resistance[[(i_num-1)*max_generations:(i_num)*max_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
   }
+  
   #but if I want to facet by intervention may want to structure differently
-  #generation, treatment, resistance
+  #todo region is a bad name for r1_refuge etc.
+  
+  #generation, region, resistance
+  # df_res2 <- df_results %>%
+  #   gather('r1_refuge', 'r1_active',
+  #          'r2_refuge', 'r2_active',
+  #          'r3_refuge', 'r3_active',
+  #          'r4_refuge', 'r4_active',
+  #          key=region, value=resistance)
+  
   df_res2 <- df_results %>%
-    gather('r1_refuge', 'r1_active',
-           'r2_refuge', 'r2_active',
-           'r3_refuge', 'r3_active',
-           'r4_refuge', 'r4_active',
-           #'r5_refuge', 'r5_active', 
+    gather(names(l_gene_plus_activity),
            key=region, value=resistance)
   
+  #use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
+  #df_res2 <- separate(df_res2, region, into=c("resistance_gene","active_or_refuge"))
   
   # do the plots
   #rot_plot_use(df_res2)

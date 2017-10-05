@@ -1,0 +1,73 @@
+#rotations_notes.Rmd
+
+Just rough notes.
+
+*4/10/2017*
+  
+How to make the dataframe that saves results in run_rot flexible to the number of insecticides ?
+
+df_results <- data.frame(generation=1:max_generations,
+                         insecticide=NA,
+                         r1_active=NA,
+                         r1_refuge=NA,
+                         r2_active=NA,
+                         r2_refuge=NA,
+                         r3_active=NA,
+                         r3_refuge=NA,
+                         r4_active=NA,
+                         r4_refuge=NA, stringsAsFactors = FALSE)
+
+Can I adapt this from array_named() in resistance ?
+#' n_insecticides <- 3
+#' # list(c()) is important below to create one list for each dim
+#' l_dimnames <- rep(list(c('no','lo','hi')), n_insecticides)
+#' names(l_dimnames) <- paste0("niche", 1:n_insecticides)
+#' do.call(array_named,l_dimnames)
+
+# this feels hacky, but it does work & I can put in a function
+
+# create the flexible r* columns
+n_insecticides <- 3
+l_ <- rep(list(NA), n_insecticides*2) #2 because active & refuge 
+names(l_) <- c( paste0("r", 1:n_insecticides, "_active"),
+                paste0("r", 1:n_insecticides, "_refuge") )
+df_r <- do.call(data.frame,l_)
+
+# create inflexible columns ready to add r* columns on
+max_generations <- 10
+df_results <- data.frame(generation=1:max_generations,
+                         insecticide=NA)
+
+df_results <- data.frame(df_results, df_r)
+
+Note this can only cope with one insceticide being active at a time ? (I could put a comma delimited string in later if I did want to record multiple insecticides).
+
+Does this fit with tidy data ?
+
+Each variable you measure should be in one column.
+Each different observation of that variable should be in a different row.
+
+Yes I think it does. Although maybe not ?
+Currently I record df_results and gather to df_r2 to allow plotting.
+To get :
+ generation insecticide    region  resistance
+1          1          NA   r1_refuge 0.001000000
+2          2           1   r1_refuge 0.001061247
+
+So perhaps I can just save as that to start ? It has multiple rows per generation.
+More difficult to see, but easier to plot ?
+
+This allows me to facet by region.
+BUT if I wanted to put the lines for active & region into the same subplots (which would make easier to view) I would probably want columns for active and refuge or would I ??
+
+gen active_insecticide resistance_gene active_or_refuge resistance 
+
+I can use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
+
+separate(region, into=c("resistance_gene","active_or_refuge"))
+
+
+
+                         
+                         
+                         
