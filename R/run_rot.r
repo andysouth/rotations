@@ -14,7 +14,9 @@
 #' @param start_insecticide which insecticide to start with
 #' @param diagnostics whether to output running info
 #' @param same_insecticides only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same
-#' 
+#' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
+#' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
+#' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
@@ -90,8 +92,11 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                           freqs = start_freqs )  
     
   ### set exposures from hardcoded test function or based on other inputs
-  exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
-  #exposure <- set_exposure_rot()
+  #exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
+  exposure <- set_exposure_rot( n_insecticides=n_insecticides,
+                                expo_hi = expo_hi,
+                                expo_lo = expo_lo,                              
+                                male_expo_prop = male_expo_prop)
   
   ### set fitnesses from hardcoded test function or based on other inputs
   if (hardcode_fitness)

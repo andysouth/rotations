@@ -27,6 +27,12 @@ opts_chunk$set(fig.height=7, fig.width=7)
   library(ggplot2)
 ```
 
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="exposure set to 1 for r1 & 0.1 for r2"}
+
+#expo_hi=c(1,0.1)
+dfr <- run_rot(n=2, rotation_interval=100, expo_hi=c(1,0.1))
+
+```
 
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Rotation interval 50, migration 0.01"}

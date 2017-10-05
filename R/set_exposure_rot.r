@@ -10,8 +10,9 @@
 #' fills an array of exposure values
 #' 
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
-#' @param expo exposure to the insecticides
-#' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1
+#' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
+#' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
+#' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
 #' @param plot whether to plot exposure    
 #' 
 #' @examples
@@ -32,8 +33,11 @@ set_exposure_rot <- function( n_insecticides = NULL,
 {
   
   #get n_insecticides if it is not specified
-  #todo add checks, allow single
   if ( is.null(n_insecticides)) n_insecticides <- length(expo_hi)
+  
+  if ( ( length(expo_hi) != 1 & length(expo_hi) != n_insecticides ) |
+       ( length(expo_lo) != 1 & length(expo_lo) != n_insecticides ) )
+    stop("expo_hi & lo need to be length 1 or n_insecticides")
   
   #exposure to insecticide
   #exposure array initialise with 0s 
