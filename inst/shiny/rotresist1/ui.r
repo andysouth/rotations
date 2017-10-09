@@ -1,7 +1,6 @@
-#resistance/shiny/resistmob2/ui.r
-#andy south 15/6/16
-#a mobile compatible app
-#uses NEW system where rr_restoration used as input instead of selection coefficient
+#rotations/shiny/rotresist1/ui.r
+#andy south 9/10/17
+#initially copied from resistance/resistmopb2
 
 library(shiny)
 
@@ -43,9 +42,9 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
                     "))
     ),  
      
-  title = "resistance to insecticide mixtures",
+  title = "insecticide rotations effects on resistance",
   
-  h6("Development of resistance to insecticides used in mixtures and sequence. Modify inputs and compare 2 scenarios. by @southmapr"),  
+  h6("Evolution of resistance to insecticides used in rotations. Modify inputs and compare 2 scenarios. by @southmapr"),  
   
   #fixedRow(
   fluidRow(
@@ -56,7 +55,6 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
   ), #end fixed row
   
   fluidRow(
-    #column(4, h5("takes a few seconds :")),
     column(2, p()),
     column(2, actionButton('aButtonRunA', 'Run Scenario A')),
     column(1, p()),   
@@ -69,74 +67,83 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
   hr(),
   
   fluidRow(
-    column(2,
-           h5("scenario & insecticide "),
-           h2("A1"),
-           h2("A2"),
+    column(1,
+           h5("scenario "),
+           h2("A"),
            hr(),
-           h2("B1"),
-           h2("B2")
+           h2("B")
     ),
-    column(2,
+    column(1, offset = 0,
+           h5("n. insecticides"),
+           #hr(),
+           sliderInput("n_A", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           hr(), #hr(),hr(),
+           sliderInput("n_B", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           hr()
+    ),        
+    column(1,
            #h5("Starting frequency of resistance"),
            h5("Start Freq."),
-           #numericInput("P_1", "locus1: 0.01", 0.01, min = 0.0001, max = 0.1, step = 0.001),
-           #numericInput("P_2", "locus2: 0.01", 0.01, min = 0.0001, max = 0.1, step = 0.001)
            sliderInput("frequency_A1", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
-           sliderInput("frequency_A2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
+           #sliderInput("frequency_A2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr(),
            sliderInput("frequency_B1", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
-           sliderInput("frequency_B2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE)
-           
+           #sliderInput("frequency_B2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE)
+           hr()          
     ),    
-    column(2, offset = 0,
+    column(1, offset = 0,
            h5("Dominance"),
-           #numericInput("h.RS1_A0", "locus1: 0.17", 0.17, min = 0, max = 1, step = 0.01),
-           #numericInput("h.RS2_0B", "locus2: 0.0016", 0.0016, min = 0, max = 1, step = 0.01)
            sliderInput("dominance_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("dominance_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           #sliderInput("dominance_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("dominance_B1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("dominance_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)
+           #sliderInput("dominance_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)
+           hr()
     ),
     column(2, offset = 0,
            h5("Exposure"),
            #in Curtis it assumes exposure to AB the same at 0.9 & same for M&F
            #numericInput("exposure", "same for both insecticides in Curtis 0.9", 0.9, min = 0.1, max = 1, step = 0.05)
            #sliderInput("exposure", NULL, val=0.2, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr(),
+           #hr(),
            sliderInput("exposure_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr(),hr(),hr(),
+           hr(),#hr(),hr(),
            sliderInput("exposure_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
-           #sliderInput("exposure_B2", NULL, val=0.2, min = 0, max = 1, step = 0.1, ticks=FALSE)           
-    ),    
+     ),    
     column(2, offset = 0,
-           #h5("Selection against susceptibles(SS) exposed to insecticide"),
            h5("Effectiveness"),
            #numericInput("phi.SS1_A0", "locus1: 0.73", 0.73, min = 0, max = 1, step = 0.05),
            #numericInput("phi.SS2_0B", "locus2: 1", 1, min = 0, max = 1, step = 0.05)
            sliderInput("effectiveness_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("effectiveness_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           #sliderInput("effectiveness_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("effectiveness_B1", NULL, val=0.9, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("effectiveness_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
-           
+           #sliderInput("effectiveness_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           hr()           
     ),
     column(2, offset = 0,
            #h5("Advantage of resistance"),
            h5("RR restoration"),
-           #numericInput("s.RR1_A0", "locus1: 0.23", 0.23, min = 0, max = 1, step = 0.05),
-           #numericInput("s.RR2_0B", "locus2: 0.43", 0.43, min = 0, max = 1, step = 0.05),
-           
+         
            sliderInput("advantage_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("advantage_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           #sliderInput("advantage_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("advantage_B1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           sliderInput("advantage_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           #sliderInput("advantage_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           hr()          
+    ),
+    column(2, offset = 0,
+           #h5("Cost of resistance"),
+           h5("Cost"),
            
-           
-    )
+           sliderInput("cost_A1", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           #sliderInput("advantage_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr(),
+           sliderInput("cost_B1", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           #sliderInput("advantage_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           hr()          
+    )    
     # column(2, offset = 0,
     #        h5("Extra params not included in Curtis"),
     #        numericInput("correct_mix_deploy", "Mixture correct deployment", 1, min = 0, max = 1, step = 0.1),
