@@ -44,7 +44,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
      
   title = "insecticide rotations effects on resistance",
   
-  h6("Evolution of resistance to insecticides used in rotations. Modify inputs and compare 2 scenarios. by @southmapr"),  
+  h6("Evolution of resistance to insecticides used in rotations. Needs to be run on a widescreen. Modify inputs and compare 2 scenarios. by @southmapr"),  
   
   #fixedRow(
   fluidRow(
@@ -75,73 +75,79 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),
     column(1, offset = 0,
            h5("n. insecticides"),
-           #hr(),
            sliderInput("n_A", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
            hr(), #hr(),hr(),
            sliderInput("n_B", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
            hr()
-    ),        
+    ),   
+    column(1, offset = 0,
+           h5("generations"),
+           sliderInput("max_generations_A", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
+           hr(), #hr(),hr(),
+           sliderInput("max_generations_B", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
+           hr()
+    ),  
+    column(1, offset = 0,
+           h5("interval"),
+           sliderInput("rotation_interval_A", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           hr(), #hr(),hr(),
+           sliderInput("rotation_interval_B", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           hr()
+    ),     
     column(1,
-           #h5("Starting frequency of resistance"),
-           h5("Start Freq."),
-           sliderInput("frequency_A1", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
-           #sliderInput("frequency_A2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
+           h5("start freq."),
+           sliderInput("frequency_A", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr(),
-           sliderInput("frequency_B1", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
-           #sliderInput("frequency_B2", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE)
+           sliderInput("frequency_B", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr()          
     ),    
     column(1, offset = 0,
-           h5("Dominance"),
-           sliderInput("dominance_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("dominance_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           h5("dominance"),
+           sliderInput("dominance_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
-           sliderInput("dominance_B1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("dominance_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)
+           sliderInput("dominance_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
     ),
-    column(2, offset = 0,
-           h5("Exposure"),
-           #in Curtis it assumes exposure to AB the same at 0.9 & same for M&F
-           #numericInput("exposure", "same for both insecticides in Curtis 0.9", 0.9, min = 0.1, max = 1, step = 0.05)
-           #sliderInput("exposure", NULL, val=0.2, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #hr(),
+    column(1, offset = 0,
+           h5("exposure"),
            sliderInput("exposure_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),#hr(),hr(),
            sliderInput("exposure_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
      ),    
-    column(2, offset = 0,
-           h5("Effectiveness"),
-           #numericInput("phi.SS1_A0", "locus1: 0.73", 0.73, min = 0, max = 1, step = 0.05),
-           #numericInput("phi.SS2_0B", "locus2: 1", 1, min = 0, max = 1, step = 0.05)
-           sliderInput("effectiveness_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("effectiveness_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+    column(1, offset = 0,
+           h5("effectiveness"),
+           sliderInput("effectiveness_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
-           sliderInput("effectiveness_B1", NULL, val=0.9, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("effectiveness_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           sliderInput("effectiveness_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()           
     ),
-    column(2, offset = 0,
-           #h5("Advantage of resistance"),
+    column(1, offset = 0,
            h5("RR restoration"),
-         
-           sliderInput("advantage_A1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("advantage_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           sliderInput("advantage_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
-           sliderInput("advantage_B1", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("advantage_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           sliderInput("advantage_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()          
     ),
-    column(2, offset = 0,
-           #h5("Cost of resistance"),
-           h5("Cost"),
-           
-           sliderInput("cost_A1", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("advantage_A2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+    column(1, offset = 0,
+           h5("coverage"),
+           sliderInput("coverage_A", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr(),#hr(),hr(),
+           sliderInput("coverage_B", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr()
+    ),     
+    column(1, offset = 0,
+           h5("migration"),
+           sliderInput("migration_A", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
+           hr(),#hr(),hr(),
+           sliderInput("migration_B", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
+           hr()
+    ),  
+    column(1, offset = 0,
+           h5("cost"),
+           sliderInput("cost_A", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
-           sliderInput("cost_B1", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           #sliderInput("advantage_B2", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE)             
+           sliderInput("cost_B", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()          
     )    
     # column(2, offset = 0,

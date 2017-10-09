@@ -225,7 +225,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
       norm_coeff=F_female_r_intervention+F_female_s_intervention
       RAF[insecticide, 'f', 'intervention', gen]=F_female_r_intervention/norm_coeff
       
-      if(diagnostics) message(sprintf("generation %d: just completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
+      if(diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
       
       
     } #end of loop that deals with this insecticide if it is being deployed
@@ -254,7 +254,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     #same allele frequencies in both sexes if no differential exposure so 
        RAF[insecticide, 'f', 'intervention', gen]=RAF[insecticide, 'm', 'intervention', gen]
        
-      if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in intervention site\n", gen, insecticide))   
+      if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
           
      
        } #end of code for insecticides that are not being deployed  in the intervention site
@@ -279,7 +279,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
       #same allele frequencies in both sexes if no differential selection so
       RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
       
-      if(diagnostics) message(sprintf("generation %d: just completed natural selection against locus %d in refugia\n", gen, insecticide))
+      if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
     }   #end of cycling insecticides
     
@@ -337,7 +337,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   for(temp_int in 1:n_insecticides){
     if(candidate==n_insecticides) candidate=1 else candidate=candidate+1 
     if(RAF[candidate, 'f','intervention', gen]<rotation_criterion){
-      message(sprintf("generation %d, switching from insecticide %d to insecticide %d; RAF are %f and %f respectively\n",
+      message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f\n",
                       gen, current_insecticide, candidate,
                       RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
       next_insecticide_found=1; current_insecticide=candidate; change_insecticide=0

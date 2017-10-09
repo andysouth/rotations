@@ -81,9 +81,22 @@ started fitness_single_locus() from run_rot()
 
 dfr <- run_rot(n=2, rotation_interval=50, eff=c(1,0.1))
 
+*9/10/17*
+~ started first shiny UI : rotresist1
+~ add rot interval and generations to rotresist
+
 
 
 # TODO
+
+~ seems that resistance evolves more slowly in later insecticides despite same params. Why ?
+
+e.g. :
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 50 , eff = 0.7 , dom = 0.5 , rr = 0.5 , expo_hi = 0.7 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
+
+
+*Ian said first question is to assess whether there is any benefit to rotations when there are no costs and no emigration*
+
 ~ test fitness_single_locus() from run_rot() and add to Rmd
 
 ~ test setting inputs correctly (move away from hardcoded test functions)
