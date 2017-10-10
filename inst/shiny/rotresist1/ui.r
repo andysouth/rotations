@@ -58,7 +58,8 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     column(2, p()),
     column(2, actionButton('aButtonRunA', 'Run Scenario A')),
     column(1, p()),   
-    column(3, h6("(takes a few seconds)")),
+    #column(3, h6("(takes a few seconds)")),
+    column(3, checkboxInput("logy", "log y axis", FALSE)),
     column(2, actionButton('aButtonRunB', 'Run Scenario B')),
     column(2, p())
   ), #end fixed row

@@ -22,6 +22,7 @@
 #' @param rr resistance restoration, for all insecticides or individually 
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
+#' @param logy whether to use log scale for y axis
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
@@ -54,7 +55,8 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                      dom = 0.5, #c(0.5, 0.5, 0.5),
                      rr = 0.5, #c(0.5, 0.5, 0.5),
                      cost = 0.5, #c(0,0,0),
-                     fitSS = 1 ) #c(1,1,1)
+                     fitSS = 1,
+                     logy = FALSE) #c(1,1,1)
   {
   
   migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
@@ -75,8 +77,8 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   # setup dataframe to store results, tricky to cope with variable number insecticides
   l_gene_plus_activity <- rep(list(rep(NA,max_generations)), n_insecticides*2) #2 because active & refuge 
   
-  names(l_gene_plus_activity) <- c( paste0("r", 1:n_insecticides, "_active"),
-                                    paste0("r", 1:n_insecticides, "_refuge") )
+  names(l_gene_plus_activity) <- c( paste0('insecticide', 1:n_insecticides, "_active"),
+                                    paste0('insecticide', 1:n_insecticides, "_refuge") )
   
   df_results <- do.call(data.frame, list(generation = 1:max_generations,
                                          insecticide = NA,
@@ -366,9 +368,9 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   for(i_num in 1:n_insecticides)
   {
     # does calculation for all generations (final dimension in RAF array)
-    df_results[[paste0('r',i_num,'_active')]] <- 0.5*(RAF[i_num, 'm','intervention', ]+
+    df_results[[paste0('insecticide',i_num,'_active')]] <- 0.5*(RAF[i_num, 'm','intervention', ]+
                                                       RAF[i_num, 'f','intervention', ])
-    df_results[[paste0('r',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
+    df_results[[paste0('insecticide',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
                                                       RAF[i_num, 'f','refugia', ]) 
     
     #df_res_active$region[[(i_num-1)*max_generations:(i_num)*max_generations]] <- paste0("insecticide",i_num)
@@ -395,7 +397,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   df_res2 <- separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
   
   # do the plots
-  if (plot) rot_plot_resistance(df_res2)
+  if (plot) rot_plot_resistance(df_res2, logy = logy)
   
   invisible(df_res2)
   

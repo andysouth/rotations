@@ -74,4 +74,12 @@ dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TR
 
 ```
 
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Showing how with cost (0.1) an initial decline in the freq of the later insecticides when they are not being used can lead them to behave differently than earlier ones."}
 
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
+
+```
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="When cost is set to 0 all insecticides give the same curves."}
+
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0 )
