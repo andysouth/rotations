@@ -328,7 +328,9 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     #(a) it will continue to be use if it is the only one below the threshold 
     #(b) it will be replaced if one of the other insecticides is now below the threshold due to fitness effects or migration
     #(c) the simulation will terminate if all insecticides exceed the threshold
-      
+  
+  # TODO this keeps the rotation going, if I want to add in responsive that stops the rotation if 
+  # the resistance frequency is reached then I can add it in here with &
   if (rotation_count!=rotation_interval) rotation_count=rotation_count+1
   else change_insecticide=1 #i.e. its time to rotate so need to identify the next insecticide in the rotation
   }

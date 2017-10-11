@@ -118,21 +118,43 @@ rr_restoration |  0.2 - 1
 correct_mix   | 0.5 - 1
 
 
-To add for rotations 
+For rotations 
 
-n_insecticides    | 
+n_insecticides    | 3,4,5
 max_generations   | 
-rotation_interval | 
-coverage          | 
+rotation_interval | 5 - 50 (integer)
+male_expo_prop    | 0 - 1
+coverage          | 0.1 - 0.9
 migration         |  
-cost              | 
+cost              | 0 - 0.05
+
+dominance of selection  |
+dominance of cost       | 0 - 1
+
+Sudo manuscript rotations are always a single generation.
+
+How do we deal with the problem that resistance frequenciesin the rotation scenario may go above 50% and this makes time-to-resistance not a good measure of how good the intervention is (because the rotation).
+
+Ian wants it to be a fair comparison.
+
+I'm nervous about making the rotation repsonsive. We both said that i unlikely to happen in the field.
+
+Could we have number of generations at < 50% ? Not perfect either.
+
 
 
 # TODO
 
-~ meet with Ian PM to prepare table for sensitivity analysis, we'll need to think about num insecticides, num generations & coverage too
+~ time to 50% resistance.
 
-~ what were the ranges for the Levick paper
+~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
+
+~ fix migration rate to be between 0 & 1, where 1 is random movement.
+~ read Ians document
+
+~ set dominance of cost and dominance of selection to be different in fitness_single_locus().
+
+~ Ian & I talked about using fitness to detremine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
 
 ~ Ian said we may want to 
 ~ Ian will send me grant app to assess single v multi locus insecticide resistance
