@@ -1,13 +1,13 @@
 #' calculate single locus fitness for a flexible number of insecticides
 #' 
 #' can be used in 2 ways
-#' 1) by passing arrays a_dom etc. as done from runModel2()
-#' 2) pass a single value and n_insecticides to give all insecticides the same value
+#' 1) pass a single value and n_insecticides to give all insecticides the same value
 #' 2) pass vectors - new way for rotations
 
 #' @param n_insecticides number of insecticides (not needed if vectors or arrays are passed)
 #' @param eff effectiveness, for all insecticides or individually
-#' @param dom dominance, for all insecticides or individually
+#' @param dom_sel dominance of selection, for all insecticides or individually
+#' @param dom_cos dominance of cost, for all insecticides or individually
 #' @param rr resistance restoration, for all insecticides or individually 
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
@@ -23,18 +23,19 @@
 #' #defaults
 #' fitness_single_locus()
 #' #2 different insecticides
-#' fitness_single_locus(eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+#' fitness_single_locus(eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 #' #4 same insecticides
-#' fitness_single_locus(n_insecticides=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+#' fitness_single_locus(n_insecticides=4, eff=0.5, dom_sel=0.5, dom_cost=0.5, rr=0.5, cost=0, fitSS=1)
 #' #4 pairs of the same insecticides
-#' fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+#' fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 
 #' @return fitness values
 #' @export
 
 fitness_single_locus <- function ( n_insecticides = NULL,
                                    eff = c(0.5, 0.7, 0.9),
-                                   dom = c(0.5, 0.5, 0.5),
+                                   dom_sel = c(0.5, 0.5, 0.5),
+                                   dom_cos = c(0.5, 0.5, 0.5),
                                    rr = c(0.5, 0.5, 0.5),
                                    cost = c(0,0,0),
                                    fitSS = c(1,1,1),
@@ -67,7 +68,7 @@ fitness_single_locus <- function ( n_insecticides = NULL,
   #now vectorised so all the calculations below are done for every insecticide
   
   #exposure 0 'no'
-  a_fitloc[ ,'RS', 'no'] <- 1 - (dom * cost)
+  a_fitloc[ ,'RS', 'no'] <- 1 - (dom_cos * cost)
   a_fitloc[ ,'RR', 'no'] <- 1 - cost
     
   sel <- rr * eff #selection coeff is resistance restoration * effectiveness
@@ -77,7 +78,7 @@ fitness_single_locus <- function ( n_insecticides = NULL,
     #? is effectiveness, dominance & selection the same in lo as hi
     a_fitloc[ ,'SS', exposID] <- 1 - eff
     
-    a_fitloc[ ,'RS', exposID] <- 1 - eff + dom * sel
+    a_fitloc[ ,'RS', exposID] <- 1 - eff + dom_sel * sel
     
     a_fitloc[ ,'RR', exposID] <- 1 - eff + sel
   }

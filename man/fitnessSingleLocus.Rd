@@ -2,7 +2,8 @@
 % Please edit documentation in R/fitnessSingleLocus.r
 \name{fitnessSingleLocus}
 \alias{fitnessSingleLocus}
-\title{calculate single locus fitness for 2 loci from insecticide exposure}
+\title{calculate single locus fitness for 2 loci from insecticide exposure
+VERSION FROM RESISTANCE NOT USED IN ROTATIONS}
 \usage{
 fitnessSingleLocus(eff1 = 0.5, eff2 = 0.5, dom1 = 0.5, dom2 = 0.5,
   rr_1 = 0.5, rr_2 = 0.5, cost1 = 0, cost2 = 0, fitSS1 = 1,

@@ -1,4 +1,5 @@
 #' calculate single locus fitness for 2 loci from insecticide exposure
+#' VERSION FROM RESISTANCE NOT USED IN ROTATIONS
 #' 
 #' can be used in 2 ways
 #' 1) by passing arrays a_dom etc. as done from runModel2()

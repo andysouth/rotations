@@ -5,15 +5,18 @@
 \title{calculate single locus fitness for a flexible number of insecticides}
 \usage{
 fitness_single_locus(n_insecticides = NULL, eff = c(0.5, 0.7, 0.9),
-  dom = c(0.5, 0.5, 0.5), rr = c(0.5, 0.5, 0.5), cost = c(0, 0, 0),
-  fitSS = c(1, 1, 1), a_fitloc = NULL, plot = FALSE)
+  dom_sel = c(0.5, 0.5, 0.5), dom_cos = c(0.5, 0.5, 0.5), rr = c(0.5, 0.5,
+  0.5), cost = c(0, 0, 0), fitSS = c(1, 1, 1), a_fitloc = NULL,
+  plot = FALSE)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides (not needed if vectors or arrays are passed)}
 
 \item{eff}{effectiveness, for all insecticides or individually}
 
-\item{dom}{dominance, for all insecticides or individually}
+\item{dom_sel}{dominance of selection, for all insecticides or individually}
+
+\item{dom_cos}{dominance of cost, for all insecticides or individually}
 
 \item{rr}{resistance restoration, for all insecticides or individually}
 
@@ -30,17 +33,16 @@ fitness values
 }
 \description{
 can be used in 2 ways
-1) by passing arrays a_dom etc. as done from runModel2()
-2) pass a single value and n_insecticides to give all insecticides the same value
+1) pass a single value and n_insecticides to give all insecticides the same value
 2) pass vectors - new way for rotations
 }
 \examples{
 #defaults
 fitness_single_locus()
 #2 different insecticides
-fitness_single_locus(eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+fitness_single_locus(eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 #4 same insecticides
-fitness_single_locus(n_insecticides=4, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
+fitness_single_locus(n_insecticides=4, eff=0.5, dom_sel=0.5, dom_cost=0.5, rr=0.5, cost=0, fitSS=1)
 #4 pairs of the same insecticides
-fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 }

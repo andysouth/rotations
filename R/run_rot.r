@@ -18,7 +18,8 @@
 #' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
 #' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
 #' @param eff effectiveness, for all insecticides or individually
-#' @param dom dominance, for all insecticides or individually
+#' @param dom_sel dominance of selection, for all insecticides or individually
+#' @param dom_cos dominance of cost, for all insecticides or individually
 #' @param rr resistance restoration, for all insecticides or individually 
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
@@ -52,7 +53,8 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                       expo_lo = 0,                              
                       male_expo_prop = 1,
                      eff = 0.5, #c(0.5, 0.7, 0.9),
-                     dom = 0.5, #c(0.5, 0.5, 0.5),
+                     dom_sel = 0.5, #c(0.5, 0.5, 0.5),
+                     dom_cos = 0.5, #c(0.5, 0.5, 0.5),
                      rr = 0.5, #c(0.5, 0.5, 0.5),
                      cost = 0.5, #c(0,0,0),
                      fitSS = 1,
@@ -114,8 +116,13 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     fitness <- fitness_single_locus_test( n_insecticides=n_insecticides, same_insecticides = same_insecticides )
   } else
   {
-    #fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=0.5, dom=0.5, rr=0.5, cost=0, fitSS=1)
-    fitness <- fitness_single_locus(n_insecticides=n_insecticides, eff=eff, dom=dom, rr=rr, cost=cost, fitSS=fitSS)
+    fitness <- fitness_single_locus(n_insecticides=n_insecticides, 
+                                    eff=eff, 
+                                    dom_sel=dom_sel, 
+                                    dom_cos=dom_cos, 
+                                    rr=rr, 
+                                    cost=cost, 
+                                    fitSS=fitSS)
     
   }
   

@@ -141,9 +141,14 @@ I'm nervous about making the rotation repsonsive. We both said that i unlikely t
 
 Could we have number of generations at < 50% ? Not perfect either.
 
+*11/10/17*
+
 
 
 # TODO
+
+~ set dominance of cost and dominance of selection to be different in fitness_single_locus().
+
 
 ~ time to 50% resistance.
 
@@ -152,7 +157,6 @@ Could we have number of generations at < 50% ? Not perfect either.
 ~ fix migration rate to be between 0 & 1, where 1 is random movement.
 ~ read Ians document
 
-~ set dominance of cost and dominance of selection to be different in fitness_single_locus().
 
 ~ Ian & I talked about using fitness to detremine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
 
@@ -167,7 +171,17 @@ Could we have number of generations at < 50% ? Not perfect either.
 ~ test fitness_single_locus() from run_rot() and add to Rmd
 
 
-~ get Ian to pull changes
+~ check in resistance::fitnessSingleLocus() on separation of dominance of cost & selection. Was probably OK for Levick et al because we didn't have cost in. 
+But I think that dominance of cost may be set to 0 which means that the RS experiences no effect of cost.
+
+    a_dom       <- array_named(locusNum=c(1,2), exposure=c('no','lo','hi')) 
+    a_dom[1, 'hi'] <- dom1
+    a_dom[2, 'hi'] <- dom2
+    
+    #exposure 0 'no'
+    a_fitloc[ paste0('RS',locusNum), 'no'] <- 1 - (a_dom[locusNum, 'no'] * a_cost[locusNum])
+    a_fitloc[ paste0('RR',locusNum), 'no'] <- 1 - a_cost[locusNum]
+
 
 # state of play
 ~ rotations1.Rmd : example plots
