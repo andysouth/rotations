@@ -23,11 +23,11 @@
 #' #defaults
 #' fitness_single_locus()
 #' #2 different insecticides
-#' fitness_single_locus(eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+#' fitness_single_locus(eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cos=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 #' #4 same insecticides
-#' fitness_single_locus(n_insecticides=4, eff=0.5, dom_sel=0.5, dom_cost=0.5, rr=0.5, cost=0, fitSS=1)
+#' fitness_single_locus(n_insecticides=4, eff=0.5, dom_sel=0.5, dom_cos=0.5, rr=0.5, cost=0, fitSS=1)
 #' #4 pairs of the same insecticides
-#' fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cost=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
+#' fitness_single_locus(n_insecticides=8, eff=c(0.5,1), dom_sel=c(0.5,0.5), dom_cos=c(0.5,0.5), rr=c(0.5,0.5), cost=c(0,0.1), fitSS=c(1,1))
 
 #' @return fitness values
 #' @export

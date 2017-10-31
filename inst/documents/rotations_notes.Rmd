@@ -137,17 +137,30 @@ How do we deal with the problem that resistance frequenciesin the rotation scena
 
 Ian wants it to be a fair comparison.
 
-I'm nervous about making the rotation repsonsive. We both said that i unlikely to happen in the field.
+I'm nervous about making the rotation responsive. We both said that i unlikely to happen in the field.
 
 Could we have number of generations at < 50% ? Not perfect either.
 
-*11/10/17*
+~ setting dominance of cost and dominance of selection to be different in fitness_single_locus().
+
+*31/10/17*
+
+UI :
+Warning: Error in run_rot: argument 6 matches multiple formal arguments
+
+probably due to recent splitting of dominance
+
+Yes, fixed now.
+
+Increasing dominance of cost decreases resistance, 
+increasing dominance of selection increases resistance. (both as expected)
+
 
 
 
 # TODO
 
-~ set dominance of cost and dominance of selection to be different in fitness_single_locus().
+
 
 
 ~ time to 50% resistance.
@@ -185,6 +198,10 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
 
 # state of play
 ~ rotations1.Rmd : example plots
+~ UI : rotations/shiny/rotresist1/server.r
 
-                         
+
+# funding opportunities
+https://lstmed.sharepoint.com/research/RBPS/Pages/Funding%20Information/Funding-Opportunities.aspx     
+https://www.researchprofessional.com/funding/simple?q=software#1509451534514
                          
