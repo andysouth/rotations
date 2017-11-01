@@ -5,12 +5,12 @@
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
 run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
-  rotation_interval = 0, rotation_criterion = 0.5,
-  migration_rate_intervention = 0.01, coverage = 0.8, plot = TRUE,
-  start_insecticide = 1, diagnostics = FALSE, hardcode_fitness = FALSE,
-  same_insecticides = TRUE, hardcode_exposure = FALSE, expo_hi = 0.8,
-  expo_lo = 0, male_expo_prop = 1, eff = 0.5, dom_sel = 0.5,
-  dom_cos = 0.5, rr = 0.5, cost = 0.5, fitSS = 1, logy = FALSE)
+  rotation_interval = 0, rotation_criterion = 0.5, migration = 0.1,
+  coverage = 0.8, plot = TRUE, start_insecticide = 1,
+  diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
+  hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
+  male_expo_prop = 1, eff = 0.5, dom_sel = 0.5, dom_cos = 0.5,
+  rr = 0.5, cost = 0.5, fitSS = 1, logy = FALSE)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}
@@ -23,7 +23,7 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{rotation_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
 
-\item{migration_rate_intervention}{migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.}
+\item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 
 \item{coverage}{proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).}
 
@@ -66,6 +66,6 @@ but at present, input will only allow a maximumum of 5
 run_rot(rotation_interval=100)
 dfr <- run_rot(rotation_interval=50, max_generations = 300)
 dfr <- run_rot(rotation_interval=0, max_generations = 300)
-dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration_rate_intervention=0.01)
+dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.01)
 
 }

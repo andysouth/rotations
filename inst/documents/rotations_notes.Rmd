@@ -155,25 +155,124 @@ Yes, fixed now.
 Increasing dominance of cost decreases resistance, 
 increasing dominance of selection increases resistance. (both as expected)
 
+Ians document : manuscript notes.doc
+
+We will compare 4 strategies
+•	RwR (rotate when resistant.. really a sequential use policy but the term RwR emphasises that can return to insecticides used earlier in the sequence if they are now effective
+•	Periodically rotate every 10 generations (provided there replacement insecticide has resistance levels below the threshold. 10 generations is about every year
+•	Rotate every 20 generations (~ 2 years)
+•	Rotate every 50 generations (~ 5 years).
+
+Threshold for a policy change: resistance allele frequency > 50% (may also want to investigate a lower level e.g. 25% and/or a fitness criterion)
+
+End of policy life: when resistance levels to all insecticides exceed the threshold for policy change.
+
+Sensitivity analysis to test which of the policies is best will explore the parameter space defined on table 1. However, there are a few test cases we will examine first to test our understanding and illustrate the basic principles.
+
+
+Test 1. No refugia (i.e. Coverage=100%) or fitness costs.
+Would expect all policies to be equivalent.
+
+Test 2. Dominance of resistance and fitness costs both set to 0.5.
+I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
+
+Things still to consider
+RAF can go below the original defined level  due to natural selection…de we want to stop this e.g. by saying this minimum value is mutation/selection
+
+What should we do about planned rotations where RAF>50% for several generation i.e. is an ineffective deployment. This gives it an ‘unfair’ advantage over RwR
+
+We still need to set a trap so can’t rotate on the basis of a few generations e.g. every 2 gens indefinitely as selection brings RAF>0.5 and natural selection brings RAF<50%
+
+Notes:
+List of research questions (draft keep adding)
+
+•	What are the relative impacts of fitness costs and size of refugia. Presumably we find lifespan of policy then do PRC (partial rank correlation) to quantify their impact.
+
+•	Routine rotation may be better than a “rotate-when-resistant” (RwR) policy if resistance is recessive i.e. rapid rotation ensures resistance allele frequency in treated populations remains so low that resistant homozygotes are rare.
+
+•	Can contrast to mixtures. Would have to use the full model for mixtures and this one for rotation. Unfortunately, we can’t have a separate refugia in the full model at present but will build this when simulating macro-mosaics. Once that is done we can use the full model for rotations so don’t need the simple model described here, although the algebra above may be faster than running the full model.
+
+We are not necessarily recommending rotate when resistant (RwR) policy, but it serves a good baseline to compare reactive policies (such as RwR) with pro-active polices such as rotations.
+
+RwR may be good if there is an exceptionally long lived insecticide in the armoury as will find and use it. If that long-lived insecticide is part of a rotation sequence, you may never find it (until it has outlasted all the others).
+
+When RwR you know how many insecticides you have left. In a strict rotation, they may all start to exhibit resistance at roughly the same time with little fore-warning.
+
+~ looking at fixing migration rate to be between 0 & 1, where 1 is random movement.
+
+~~ currently suggestion is that it is set to (0.1-0.9)*(1- Coverage)
+
+So I want to remove dependence on the 1-coverage bit, by putting that into the code.
+
+migration_rate_intervention = 0.01, 
+
+migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
+
+First line of run_rot()
+
+migration_rate_refugia = migration_rate_intervention * coverage/(1-coverage)  
+
+This is done for all insecticides
+
+     fem_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'f', 'refugia', gen]
+      
+     male_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'm', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'm', 'refugia', gen]
+     
+     fem_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'f', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'f', 'intervention', gen]
+     
+     male_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'm', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'm', 'intervention', gen]
+     
+    RAF[temp_int, 'f', 'intervention', gen]=fem_intervention
+    RAF[temp_int, 'm', 'intervention', gen]=male_intervention 
+    RAF[temp_int, 'f', 'refugia', gen]=fem_refugia
+    RAF[temp_int, 'm', 'refugia', gen]=male_refugia
+
+Perhaps I can put this into a little spreadsheet to test ?
+Or into a little test function.
+e.g. that when migration set to 1 mixing is random ?
+Just for 1 gender.
+
+coverage
+
+migration_refugia = migration_intervention * coverage/(1-coverage)  
+
+freq_new <- (1-migration)*
+
+Nearly there, testing Ians migration :
+
+
+Ah yes 1-c is max migration, it gives equal frequencies in one generation
+
+> migration_test(migration=0.4, startfreqs=c(0.8,0.2), coverage = 0.6)
+              gen
+site             1    2    3    4    5    6    7    8    9   10
+  intervention 0.8 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56
+  refugia      0.2 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56
 
 
 
 # TODO
 
-
+~ fix migration rate to be between 0 & 1, where 1 is random movement.
 
 
 ~ time to 50% resistance.
 
+~ improve plot legend to show when insecticide in use
+
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 
-~ fix migration rate to be between 0 & 1, where 1 is random movement.
-~ read Ians document
 
+~ Ian & I talked about using fitness to determine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
 
-~ Ian & I talked about using fitness to detremine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
-
-~ Ian said we may want to 
 ~ Ian will send me grant app to assess single v multi locus insecticide resistance
 ~ Ian said we may want to put something in to stop Frequency going below initial starting value when not in use (because this could represent background balance between benefits & cost)
 

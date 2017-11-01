@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
                 rr =                input$advantage_A,
                 expo_hi =           input$exposure_A,
                 coverage =          input$coverage_A,
-                migration_rate_intervention = input$migration_A, 
+                migration =         input$migration_A, 
                 cost =              input$cost_A,
                 logy =              input$logy ) #inefficient that it reruns when changing to log
 
@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
                       "rr =",input$advantage_A,",",
                       "expo_hi =",input$exposure_A,",",
                       "coverage =",input$coverage_A,",",
-                      "migration_rate_intervention =",input$migration_A,",",
+                      "migration =",input$migration_A,",",
                       "cost =",input$cost_A,",",
                       "logy =",input$logy,
                       ")\n" )
@@ -77,7 +77,7 @@ shinyServer(function(input, output) {
                 rr =                input$advantage_B,
                 expo_hi =           input$exposure_B,
                 coverage =          input$coverage_B,
-                migration_rate_intervention = input$migration_B, 
+                migration =         input$migration_B, 
                 cost =              input$cost_B,
                 logy =              input$logy ) #inefficient that it reruns when changing to log
         
@@ -95,7 +95,7 @@ shinyServer(function(input, output) {
             "rr =",input$advantage_B,",",
             "expo_hi =",input$exposure_B,",",
             "coverage =",input$coverage_B,",",
-            "migration_rate_intervention =",input$migration_B,",",
+            "migration =",input$migration_B,",",
             "cost =",input$cost_B,",",
             "logy =",input$logy,
             ")\n" )

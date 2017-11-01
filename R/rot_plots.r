@@ -1,6 +1,7 @@
 #' rot_plot_resistance plot rotation simulation resistance results
 #'
 #' @param df_res2 dataframe of resistance results from run_rot()
+#' @param refuge whether to plot refuge as well as intervention
 #' @param logy whether to use log scale for y axis
 #'
 #'
@@ -14,10 +15,14 @@
 #' rot_plot_resistance(df_res2)
 #' 
 rot_plot_resistance <- function(df_res2,
+                                plot_refuge = TRUE,
                                 logy = TRUE) {
   
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
+  
+  # filter out refuge if not wanted
+  if (!plot_refuge) df_res2 <- filter(df_res2, active_or_refuge != 'refuge')
   
   # to allow plotting of insecticide in use
   # add column which has a value if insecticide in use & NA if not

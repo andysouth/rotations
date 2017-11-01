@@ -4,12 +4,14 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, logy = TRUE)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 
 \item{logy}{whether to use log scale for y axis}
+
+\item{refuge}{whether to plot refuge as well as intervention}
 }
 \value{
 ggplot object
