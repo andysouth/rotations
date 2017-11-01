@@ -4,7 +4,7 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = TRUE)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}

@@ -257,16 +257,26 @@ site             1    2    3    4    5    6    7    8    9   10
   intervention 0.8 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56
   refugia      0.2 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.56
 
+done ~ fix migration rate to be between 0 & 1, where 1 is random movement.
+
+~ allowed plots not to show refuge
+
 
 
 # TODO
 
-~ fix migration rate to be between 0 & 1, where 1 is random movement.
+~ improve plot legend to show when insecticide in use
+~ do a few plots for Dave Malone
+#high cost, no migration
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
+#no cost
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+#no cost and rotate when resistant
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 
 
 ~ time to 50% resistance.
 
-~ improve plot legend to show when insecticide in use
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 
