@@ -1,12 +1,13 @@
 #' migration_test to testimplementation of migration between an implementation area and refugia
 #'
-#' @param migration
-#' @param coverage
-#'
+#' @param migration migration between 0-1
+#' @param coverage proportion of popn in treated area
+#' @param startfreqs vector of 2 starting resistance frequencies, first in treated area, 2nd in refuge
+#' @param max_generations maximum number of mosquito generations to run the simulation
 #'
 # @import
 # @importFrom
-#' @return 
+#' @return array of resistance frequencies in active area and refuge
 #' @export
 #'
 # @examples

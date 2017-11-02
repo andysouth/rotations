@@ -8,7 +8,16 @@ migration_test(migration = 0.5, coverage = 0.6, startfreqs = c(0.2, 0.8),
   max_generations = 10)
 }
 \arguments{
-\item{coverage}{}
+\item{migration}{migration between 0-1}
+
+\item{coverage}{proportion of popn in treated area}
+
+\item{startfreqs}{vector of 2 starting resistance frequencies, first in treated area, 2nd in refuge}
+
+\item{max_generations}{maximum number of mosquito generations to run the simulation}
+}
+\value{
+array of resistance frequencies in active area and refuge
 }
 \description{
 migration_test to testimplementation of migration between an implementation area and refugia
