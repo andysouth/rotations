@@ -5,12 +5,12 @@
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
 run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
-  rotation_interval = 0, rotation_criterion = 0.5, migration = 0.1,
+  rotation_interval = 10, rotation_criterion = 0.5, migration = 0.01,
   coverage = 0.8, plot = TRUE, start_insecticide = 1,
   diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
   hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
-  male_expo_prop = 1, eff = 0.5, dom_sel = 0.5, dom_cos = 0.5,
-  rr = 0.5, cost = 0.5, fitSS = 1, logy = FALSE)
+  male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
+  rr = 0.5, cost = 0.1, fitSS = 1, logy = FALSE)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}

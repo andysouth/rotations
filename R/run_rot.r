@@ -24,6 +24,7 @@
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' @param logy whether to use log scale for y axis
+#' @param add_gens_under50 whether to add a label of num generations under 50% resistance
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
@@ -39,9 +40,9 @@
 run_rot <- function( max_generations = 200, #the maximum number of mosquito generations to run the simulation
                      n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
                       start_freqs = 0.001,
-                      rotation_interval = 0, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+                      rotation_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
                       rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
-                      migration = 0.1, 
+                      migration = 0.01, 
                       #migration_rate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
                       coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
                       plot = TRUE,
@@ -53,13 +54,14 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                       expo_hi = 0.8,
                       expo_lo = 0,                              
                       male_expo_prop = 1,
-                     eff = 0.5, #c(0.5, 0.7, 0.9),
+                     eff = 0.8, #c(0.5, 0.7, 0.9),
                      dom_sel = 0.5, #c(0.5, 0.5, 0.5),
                      dom_cos = 0.5, #c(0.5, 0.5, 0.5),
                      rr = 0.5, #c(0.5, 0.5, 0.5),
-                     cost = 0.5, #c(0,0,0),
+                     cost = 0.1, #c(0,0,0),
                      fitSS = 1,
-                     logy = FALSE) #c(1,1,1)
+                     logy = FALSE,
+                     add_gens_under50 = TRUE) 
   {
   
   # to allow migration to be on a scale from 0-1 (1-coverage is the max)
@@ -409,11 +411,24 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   # to get active & refuge into the same subplot
   df_res2 <- separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
   
+  # calculate number generations under 50% resistance to be used in plotting 
+  # probably should be somewhere else !
+  # ? just for active area
+  # this does give the answer, but only 1 per insecticide
+  # so all the results per generation are lost
+  df_res2 <- df_res2 %>%
+    filter(active_or_refuge=='active') %>%
+    group_by(resist_gene) %>%
+    summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    ungroup() %>%
+    left_join(df_res2, by='resist_gene')
+  
   # if migration is set to 0 don't show refuge in plots
   plot_refuge <- ifelse(migration==0,FALSE,TRUE)
   
   # do the plots
-  if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, logy = logy)
+  if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
+                                logy=logy, add_gens_under50=add_gens_under50)
   
   invisible(df_res2)
   
