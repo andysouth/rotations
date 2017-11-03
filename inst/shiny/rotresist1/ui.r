@@ -155,9 +155,9 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),  
     column(1, offset = 0,
            h5("cost"),
-           sliderInput("cost_A", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           sliderInput("cost_A", NULL, val=0.1, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
            hr(),
-           sliderInput("cost_B", NULL, val=0.1, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           sliderInput("cost_B", NULL, val=0.1, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
            hr()          
     )    
     # column(2, offset = 0,
