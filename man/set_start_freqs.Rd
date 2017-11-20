@@ -26,6 +26,10 @@ RAF[,,,1] # to view generation 1
 #frequencies different for each insecticide
 RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
 RAF[,,,1] # to view generation 1
+#testing mutliplying frequency arrays
+RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
+RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+RAF*RAF2
 
 #allowing array to be viewed differently
 as.data.frame(RAF)

@@ -12,6 +12,10 @@
 #' #frequencies different for each insecticide
 #' RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
 #' RAF[,,,1] # to view generation 1
+#' #testing mutliplying frequency arrays
+#' RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
+#' RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+#' RAF*RAF2
 #' 
 #' #allowing array to be viewed differently
 #' as.data.frame(RAF)
@@ -34,7 +38,7 @@ set_start_freqs <- function( n_insecticides = NULL,
 
   # fill generation 1
   # in this version same for m,f,intervention & refuge
-  RAF[, 'm', 'intervention', 1] = freqs
+  # RAF[, 'm', 'intervention', 1] = freqs
   # dim1 :n_insecticides
   # dim2 :sex: m,f
   # dim3 :site: intervention,refuge
