@@ -4,12 +4,15 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE,
+  add_gens_under50 = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 
 \item{logy}{whether to use log scale for y axis}
+
+\item{add_gens_under50}{whether to add a label of num generations under 50% resistance}
 
 \item{refuge}{whether to plot refuge as well as intervention}
 }
