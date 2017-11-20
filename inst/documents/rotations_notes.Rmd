@@ -261,24 +261,94 @@ done ~ fix migration rate to be between 0 & 1, where 1 is random movement.
 
 ~ allowed plots not to show refuge
 
+#high cost, no migration
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
+#no cost, no migration
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+#no cost and rotate when resistant, no migration
+run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+
+done ~ improve plot legend to show when insecticide in use
+
+*20/11/17*
+
+~ looking at refactoring the migration code in run_rot()
+
+Can do this to get the allele frequencies for generation 2 (by )
+
+RAF[,,,2]
+
+~ currently it does 4 very similar calcs for m|f, refuge|active.
+
+~ i can replace with single, except need to be acreful not to change values before they have been used in the other calculations.
+
+FROM :
+    for(temp_int in 1:n_insecticides){ 
+        
+     fem_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'f', 'refugia', gen]
+      
+     male_intervention=
+       (1-migration_rate_intervention)*RAF[temp_int, 'm', 'intervention', gen]+
+       migration_rate_intervention*RAF[temp_int, 'm', 'refugia', gen]
+     
+     fem_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'f', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'f', 'intervention', gen]
+     
+     male_refugia=
+       (1-migration_rate_refugia)*RAF[temp_int, 'm', 'refugia', gen]+
+       migration_rate_refugia*RAF[temp_int, 'm', 'intervention', gen]
+     
+    RAF[temp_int, 'f', 'intervention', gen]=fem_intervention
+    RAF[temp_int, 'm', 'intervention', gen]=male_intervention 
+    RAF[temp_int, 'f', 'refugia', gen]=fem_refugia
+    RAF[temp_int, 'm', 'refugia', gen]=male_refugia
+  
+   }
+
+TO :
+
+    mig_intervention <- (1-migration_rate_intervention)*RAF[,, 'intervention', gen]+
+                           migration_rate_intervention *RAF[,, 'refugia', gen]
+    
+    mig_refugia      <- (1-migration_rate_refugia)*RAF[,, 'refugia', gen]+
+                           migration_rate_refugia *RAF[,, 'intervention', gen]
+    
+    RAF[,, 'intervention', gen] <- mig_intervention
+    RAF[,, 'refugia', gen] <- mig_refugia
+
+
+# testing multiplying RAF arrays
+# to allow making code more concise
+
+RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
+RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+
+RAF * RAF2
+           sex
+insecticide     m     f
+          1 0.100 0.100
+          2 0.020 0.020
+          3 0.003 0.003
+
+
 
 
 # TODO
 
-~ improve plot legend to show when insecticide in use
-~ do a few plots for Dave Malone
-#high cost, no migration
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
-#no cost
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
-#no cost and rotate when resistant
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
-
-
-~ time to 50% resistance.
+~ put migration code into a function and add a test
 
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
+
+~ time under resitance threshold, e.g. 50%
+
+
+* rotations understand code better
+* rotations add catch to stop freq declining
+* rotate when resistant add catch to stop switch back to insecticide used < x years ago
 
 
 ~ Ian & I talked about using fitness to determine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
@@ -308,6 +378,9 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
 # state of play
 ~ rotations1.Rmd : example plots
 ~ UI : rotations/shiny/rotresist1/server.r
+
+~ RAF[,,,2] to get allele frequencies for generation 2 (by insecticide,sex and active|refuge)
+
 
 
 # funding opportunities
