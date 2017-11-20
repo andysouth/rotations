@@ -269,33 +269,23 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
       
      }   #end of cycling insecticides
     
-      
-    # migration between refugia and intervention site
     
-    for(temp_int in 1:n_insecticides){ 
-        
-     fem_intervention=
-       (1-migration_rate_intervention)*RAF[temp_int, 'f', 'intervention', gen]+
-       migration_rate_intervention*RAF[temp_int, 'f', 'refugia', gen]
-      
-     male_intervention=
-       (1-migration_rate_intervention)*RAF[temp_int, 'm', 'intervention', gen]+
-       migration_rate_intervention*RAF[temp_int, 'm', 'refugia', gen]
-     
-     fem_refugia=
-       (1-migration_rate_refugia)*RAF[temp_int, 'f', 'refugia', gen]+
-       migration_rate_refugia*RAF[temp_int, 'f', 'intervention', gen]
-     
-     male_refugia=
-       (1-migration_rate_refugia)*RAF[temp_int, 'm', 'refugia', gen]+
-       migration_rate_refugia*RAF[temp_int, 'm', 'intervention', gen]
-     
-    RAF[temp_int, 'f', 'intervention', gen]=fem_intervention
-    RAF[temp_int, 'm', 'intervention', gen]=male_intervention 
-    RAF[temp_int, 'f', 'refugia', gen]=fem_refugia
-    RAF[temp_int, 'm', 'refugia', gen]=male_refugia
-  
-   } #end of cycling migration for each insecticide
+    #################################################  
+    # migration between refugia and intervention site
+
+    # RAF[,, ensures calc is repeated for each insecticide and sex 
+    # more concise version of original code
+    
+    mig_intervention <- (1-migration_rate_intervention)*RAF[,, 'intervention', gen]+
+                           migration_rate_intervention *RAF[,, 'refugia', gen]
+    
+    mig_refugia      <- (1-migration_rate_refugia)*RAF[,, 'refugia', gen]+
+                           migration_rate_refugia *RAF[,, 'intervention', gen]
+    
+    RAF[,, 'intervention', gen] <- mig_intervention
+    RAF[,, 'refugia', gen] <- mig_refugia
+
+
     
     
   #do we need to switch current insecticide ?

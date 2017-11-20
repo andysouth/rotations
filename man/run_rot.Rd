@@ -10,7 +10,8 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
   diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
   hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
-  rr = 0.5, cost = 0.1, fitSS = 1, logy = FALSE)
+  rr = 0.5, cost = 0.1, fitSS = 1, logy = FALSE,
+  add_gens_under50 = TRUE)
 }
 \arguments{
 \item{max_generations}{maximum number of mosquito generations to run the simulation}
@@ -54,6 +55,8 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
 \item{fitSS}{fitness of SS if no insecticide, for all insecticides or individually}
 
 \item{logy}{whether to use log scale for y axis}
+
+\item{add_gens_under50}{whether to add a label of num generations under 50% resistance}
 }
 \value{
 dataframe of results
