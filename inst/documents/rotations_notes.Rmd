@@ -372,12 +372,22 @@ I could remove the generations under 50 bit for now to try to get run_rot() work
 
 removed add_gens_under50 and now run_rot() does run.
 
+Ians text removed from the insecticide switching portion of code
 
+  #NOTE. At the moment if all but one of the insecticides are over the threshold frequency, the one under the threshold
+  #will be repeatedly deployed. For example, if there are 3 insecticides and rotation is every 10 generations. 
+  #if #3 is being deployed and due to rotate out at generetion 100: if only #3 is under the threshold
+  #it will not rotate out, but will continue to be used util the next scheduled rotation at which point
+    #(a) it will continue to be use if it is the only one below the threshold 
+    #(b) it will be replaced if one of the other insecticides is now below the threshold due to fitness effects or migration
+    #(c) the simulation will terminate if all insecticides exceed the threshold
 
 
 # TODO
 
+~ take the insecticide switching out into its own function(s)
 
+~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 
 ~ maybe have a set_raf() function too
 

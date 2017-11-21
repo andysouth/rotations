@@ -272,60 +272,86 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
 
 
     
+    ##########################################
+    # checking if insecticide switch is needed
     
-  #do we need to switch current insecticide ?
-    if(rotation_interval==0){  #i.e.  its a RwR policy:
-          if(RAF[current_insecticide, 'f','intervention', gen] > rotation_criterion) change_insecticide=1
-          #message(sprintf("confirm. RAF=%f, change_insecticide=%d \n", RAF[current_insecticide, 'f','intervention', gen], change_insecticide))
-          }  
-    
-  if(rotation_interval!=0){ #i.e. if freq_rotation>0 then its a policy of routine, periodic rotation
-  #NOTE. At the moment if all but one of the insecticides are over the thereshold frequency, the one under the threshold
-  #will be repeatedly deployed. For example, if there are 3 insecticides and rotation is every 10 generations. 
-  #if #3 is being deployed and due to rotate out at generetion 100: if only #3 is under the threshold
-  #it will not rotate out, but will continue to be used util the next scheduled rotation at which point
-    #(a) it will continue to be use if it is the only one below the threshold 
-    #(b) it will be replaced if one of the other insecticides is now below the threshold due to fitness effects or migration
-    #(c) the simulation will terminate if all insecticides exceed the threshold
-  
-  # TODO this keeps the rotation going, if I want to add in responsive that stops the rotation if 
-  # the resistance frequency is reached then I can add it in here with &
-  if (rotation_count!=rotation_interval) rotation_count=rotation_count+1
-  else change_insecticide=1 #i.e. its time to rotate so need to identify the next insecticide in the rotation
-  }
-    
-  if(change_insecticide==1){
-  rotation_count=1; next_insecticide_found=0; candidate=current_insecticide 
+    # if rotate-when resistant
+    if (rotation_interval==0)
+    {  
+      #TOCHECK switch criterion is female only
+      if (RAF[current_insecticide, 'f','intervention', gen] > rotation_criterion)
+      {
+        change_insecticide <- 1        
+      }
+      #message(sprintf("confirm. RAF=%f, change_insecticide=%d \n", RAF[current_insecticide, 'f','intervention', gen], change_insecticide))
+
+    } else if (rotation_interval != 0)
+    # if periodic rotation  
+    {
+      if (rotation_count != rotation_interval) 
+      {
+        # keeps the rotation going
+        rotation_count <- rotation_count+1  
+        # to make responsive rotation add a check of resistance frequency here
+        # and stop the rotation if threshold exceeded
+        
+      } else 
+      {
+        # time to rotate so need to identify the next insecticide in the rotation
+        change_insecticide <- 1 
+      }
+    }      
+
+  if (change_insecticide==1)
+    {
+      rotation_count <- 1 
+      next_insecticide_found <- 0
+      candidate <- current_insecticide 
               
-  for(temp_int in 1:n_insecticides){
-    if(candidate==n_insecticides) candidate=1 else candidate=candidate+1 
-    if(RAF[candidate, 'f','intervention', gen]<rotation_criterion){
-      message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f\n",
-                      gen, current_insecticide, candidate,
-                      RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
-      next_insecticide_found=1; current_insecticide=candidate; change_insecticide=0
+      for(temp_int in 1:n_insecticides)
+      {
+        #search through insecticides and go back to start if reach end
+        candidate <- ifelse(candidate==n_insecticides, yes=1, no=candidate+1)
+        
+        if (RAF[candidate, 'f','intervention', gen] < rotation_criterion)
+        {
+          next_insecticide_found <- 1 
+          current_insecticide <- candidate 
+          change_insecticide <- 0 
+          
+          message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f\n",
+                          gen, current_insecticide, candidate,
+                          RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
         }
-  if(next_insecticide_found==1) break
-  } #end of temp_int loop
-  } #end of loop to try and change insecticide i.e. the "if(change_insecticide==1)" lopp
+        
+        if(next_insecticide_found==1) break   
+        
+      } # end of loop checking each insecticide
+    } #end if(change_insecticide==1) loop
   
-  
+  # recording the insecticide that's going to be used in next timestep
+  # TODO check that this isn't out by 1
   df_results$insecticide[gen] <- current_insecticide 
   
-  if(next_insecticide_found==0){
-  message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rotation_criterion))
-    for(temp_int in 1:n_insecticides){
-      message(sprintf("frequency of resistance in females to insecticide %d is %f\n", temp_int, RAF[temp_int, 'f','intervention', gen]))  
-    }
-  break #breaks out of looping generations and terminates the simulation
-  }    
+  # if no suitable insecticide left, break out of generations loop
+  if (next_insecticide_found==0)
+    {
+      message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rotation_criterion))
+      for (temp_int in 1:n_insecticides)
+      {
+        message(sprintf("frequency of resistance in females to insecticide %d is %f\n", temp_int, RAF[temp_int, 'f','intervention', gen]))  
+      }
+      break #breaks out of looping generations and terminates the simulation
+    }    
     
+  
    } #end of max_gen loop
-    
+
+      
   #####################################  
   # recording results of resistance frequency
   
-  #andy saving results in wide data frame  
+  # saving results in wide data frame  
   for(i_num in 1:n_insecticides)
   {
     # does calculation for all generations (final dimension in RAF array)
@@ -338,17 +364,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
     #df_res_active$resistance[[(i_num-1)*max_gen:(i_num)*max_gen]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
   }
   
-  #but if I want to facet by intervention may want to structure differently
-  #todo region is a bad name for r1_refuge etc.
-  
-  #generation, region, resistance
-  # df_res2 <- df_results %>%
-  #   gather('r1_refuge', 'r1_active',
-  #          'r2_refuge', 'r2_active',
-  #          'r3_refuge', 'r3_active',
-  #          'r4_refuge', 'r4_active',
-  #          key=region, value=resistance)
-  
+  # to enable facetting by intervention later
   df_res2 <- df_results %>%
     gather(names(l_gene_plus_activity),
            key=region, value=resistance)
