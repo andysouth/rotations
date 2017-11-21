@@ -10,11 +10,11 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE,
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 
+\item{plot_refuge}{whether to plot refuge as well as intervention}
+
 \item{logy}{whether to use log scale for y axis}
 
-\item{add_gens_under50}{whether to add a label of num generations under 50% resistance}
-
-\item{refuge}{whether to plot refuge as well as intervention}
+\item{add_gens_under50}{whether to add a label of num generations under 50percent resistance}
 }
 \value{
 ggplot object

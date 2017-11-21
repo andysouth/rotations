@@ -319,6 +319,7 @@ TO :
     RAF[,, 'intervention', gen] <- mig_intervention
     RAF[,, 'refugia', gen] <- mig_refugia
 
+Which is more concise and shows more clearly what is going on.
 
 # testing multiplying RAF arrays
 # to allow making code more concise
@@ -333,13 +334,27 @@ insecticide     m     f
           2 0.020 0.020
           3 0.003 0.003
 
+done ~ put migration code into a function 
+started ~ add a test that checks migration for diff insecticides & mf
+
+*21/11/17*
 
 
 
 # TODO
 
-~ put migration code into a function and add a test
+~ is it worth creating a get_freq() or getraf() function similar to in rtsetse but not as complex ?
+~ pass RAF
+~ get_freq(insecticide=1, site='intervention', sex='f', gen=2 )
+~ assume all for any not specified
+~ have an as_df arg to return as a dataframe
 
+~ maybe have a set_raf() function too
+
+
+~ rdpeng suggests not having non standard evaluation in package code :
+If you have any non-standard evaluation in your package code (which you’ll notice because of the “no visible bindings” warnings you’ll get when you check the package), go through and change any instances to use standard evaluation alternatives. This change prevents these warnings when you check your package and will also ensure that the functions behave like you expect them to when they are run by other users in their own R sessions.
+~ https://bookdown.org/rdpeng/RProgDA/non-standard-evaluation.html
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 

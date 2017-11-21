@@ -1,13 +1,13 @@
 #' rot_plot_resistance plot rotation simulation resistance results
 #'
 #' @param df_res2 dataframe of resistance results from run_rot()
-#' @param refuge whether to plot refuge as well as intervention
+#' @param plot_refuge whether to plot refuge as well as intervention
 #' @param logy whether to use log scale for y axis
-#' @param add_gens_under50 whether to add a label of num generations under 50% resistance
+#' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #'
-#'
-#' @import ggplot2
-#' @importFrom stringr str_detect
+# check said that namespace dependencies not required
+# @import ggplot2
+# @importFrom stringr str_detect
 #' @return ggplot object
 #' @export
 #'

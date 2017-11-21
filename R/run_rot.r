@@ -13,7 +13,9 @@
 #' @param plot whether to plot results
 #' @param start_insecticide which insecticide to start with
 #' @param diagnostics whether to output running info
+#' @param hardcode_fitness whether to use hardcoded fitness, default FALSE
 #' @param same_insecticides only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same
+#' @param hardcode_exposure whether to use hardcoded exposure, default FALSE
 #' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
 #' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
 #' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
@@ -24,13 +26,14 @@
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' @param logy whether to use log scale for y axis
-#' @param add_gens_under50 whether to add a label of num generations under 50% resistance
+#' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
 #' dfr <- run_rot(rotation_interval=50, max_generations = 300)
 #' dfr <- run_rot(rotation_interval=0, max_generations = 300)
-#' dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.01)
+#' dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, 
+#'                same_insecticides =TRUE, migration=0.01)
 #' 
 #' @import tidyverse 
 #' @return dataframe of results
@@ -43,7 +46,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                       rotation_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
                       rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
                       migration = 0.01, 
-                      #migration_rate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
+                      #migrate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
                       coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
                       plot = TRUE,
                       start_insecticide = 1,
@@ -64,10 +67,6 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
                      add_gens_under50 = TRUE) 
   {
   
-  # to allow migration to be on a scale from 0-1 (1-coverage is the max)
-  migration_rate_intervention = migration*(1-coverage)
-  
-  migration_rate_refugia=migration_rate_intervention*coverage/(1-coverage)  
     
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
   
@@ -138,7 +137,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     if (exposure[temp_int, 'f', 'no']<0) message(sprintf("warning from calibration: f exposure to no insecticide %d is <0\n", temp_int)) 
   }
   
-  if(migration_rate_intervention>(1-coverage)){
+  if(migrate_intervention>(1-coverage)){
   message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
   }
   
@@ -273,17 +272,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     #################################################  
     # migration between refugia and intervention site
 
-    # RAF[,, ensures calc is repeated for each insecticide and sex 
-    # more concise version of original code
-    
-    mig_intervention <- (1-migration_rate_intervention)*RAF[,, 'intervention', gen]+
-                           migration_rate_intervention *RAF[,, 'refugia', gen]
-    
-    mig_refugia      <- (1-migration_rate_refugia)*RAF[,, 'refugia', gen]+
-                           migration_rate_refugia *RAF[,, 'intervention', gen]
-    
-    RAF[,, 'intervention', gen] <- mig_intervention
-    RAF[,, 'refugia', gen] <- mig_refugia
+
 
 
     

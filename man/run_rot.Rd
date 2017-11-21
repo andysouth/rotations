@@ -34,7 +34,11 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{diagnostics}{whether to output running info}
 
+\item{hardcode_fitness}{whether to use hardcoded fitness, default FALSE}
+
 \item{same_insecticides}{only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same}
+
+\item{hardcode_exposure}{whether to use hardcoded exposure, default FALSE}
 
 \item{expo_hi}{exposure to insecticide in hi niche, either single or vector of 1 per insecticide}
 
@@ -56,7 +60,7 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{logy}{whether to use log scale for y axis}
 
-\item{add_gens_under50}{whether to add a label of num generations under 50% resistance}
+\item{add_gens_under50}{whether to add a label of num generations under 50 pcent resistance}
 }
 \value{
 dataframe of results
@@ -69,6 +73,7 @@ but at present, input will only allow a maximumum of 5
 run_rot(rotation_interval=100)
 dfr <- run_rot(rotation_interval=50, max_generations = 300)
 dfr <- run_rot(rotation_interval=0, max_generations = 300)
-dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.01)
+dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, 
+               same_insecticides =TRUE, migration=0.01)
 
 }

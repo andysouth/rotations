@@ -10,6 +10,8 @@ set_start_freqs(n_insecticides = NULL, max_generations = 200,
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
 
+\item{max_generations}{maximum number of mosquito generations to run the simulation}
+
 \item{freqs}{starting allele frequencies either one per insecticide or same for all
 in this version same for m,f,intervention & refuge}
 }
@@ -27,8 +29,8 @@ RAF[,,,1] # to view generation 1
 RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
 RAF[,,,1] # to view generation 1
 #testing mutliplying frequency arrays
-RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
-RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+RAF <- set_start_freqs(max_generations = 1, freqs=c(0.1,0.01,0.001))
+RAF2 <- set_start_freqs(max_generations = 1, freqs=c(1,2,3))
 RAF*RAF2
 
 #allowing array to be viewed differently

@@ -10,6 +10,8 @@ set_start_freqs_test(n_insecticides = NULL, max_generations = 200,
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
 
+\item{max_generations}{maximum number of mosquito generations to run the simulation}
+
 \item{plot}{whether to plot exposure}
 }
 \value{

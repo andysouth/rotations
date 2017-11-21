@@ -2,6 +2,7 @@
 #' 
 #' 
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
+#' @param max_generations maximum number of mosquito generations to run the simulation
 #' @param freqs starting allele frequencies either one per insecticide or same for all
 #'              in this version same for m,f,intervention & refuge    
 #' 
@@ -13,8 +14,8 @@
 #' RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
 #' RAF[,,,1] # to view generation 1
 #' #testing mutliplying frequency arrays
-#' RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
-#' RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+#' RAF <- set_start_freqs(max_generations = 1, freqs=c(0.1,0.01,0.001))
+#' RAF2 <- set_start_freqs(max_generations = 1, freqs=c(1,2,3))
 #' RAF*RAF2
 #' 
 #' #allowing array to be viewed differently
@@ -53,6 +54,7 @@ set_start_freqs <- function( n_insecticides = NULL,
 #' 
 #' 
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
+#' @param max_generations maximum number of mosquito generations to run the simulation
 #' @param plot whether to plot exposure    
 #' 
 #' @examples
