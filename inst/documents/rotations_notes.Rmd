@@ -339,6 +339,14 @@ insecticide     m     f
 done ~ put migration code into a function 
 started ~ add a test that checks migration for diff insecticides & mf
 
+~ rdpeng suggests not having non standard evaluation in package code :
+If you have any non-standard evaluation in your package code (which you’ll notice because of the “no visible bindings” warnings you’ll get when you check the package), go through and change any instances to use standard evaluation alternatives. This change prevents these warnings when you check your package and will also ensure that the functions behave like you expect them to when they are run by other users in their own R sessions.
+~ https://bookdown.org/rdpeng/RProgDA/non-standard-evaluation.html
+
+# programing with dplyr
+http://dplyr.tidyverse.org/articles/programming.html
+
+
 *21/11/17*
 ~ is it worth creating a get_freq() or getraf() function similar to in rtsetse but not as complex ?
 ~ pass RAF
@@ -366,22 +374,14 @@ removed add_gens_under50 and now run_rot() does run.
 
 
 
+
 # TODO
 
 
-Fix this :
-Error in filter(., active_or_refuge == "active") : 
-  object 'active_or_refuge' not found
 
 ~ maybe have a set_raf() function too
 
 
-~ rdpeng suggests not having non standard evaluation in package code :
-If you have any non-standard evaluation in your package code (which you’ll notice because of the “no visible bindings” warnings you’ll get when you check the package), go through and change any instances to use standard evaluation alternatives. This change prevents these warnings when you check your package and will also ensure that the functions behave like you expect them to when they are run by other users in their own R sessions.
-~ https://bookdown.org/rdpeng/RProgDA/non-standard-evaluation.html
-
-# programing with dplyr
-http://dplyr.tidyverse.org/articles/programming.html
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 

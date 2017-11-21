@@ -8,7 +8,7 @@ raf_get(RAF, insecticide = TRUE, sex = TRUE, site = TRUE, gen = TRUE,
   asdf = FALSE)
 }
 \arguments{
-\item{RAF}{array of resistance allele frequencies}
+\item{RAF}{array of resistance allele frequencies, either [insecticide, sex, site, gen] or without generationd dimension}
 
 \item{insecticide}{which insecticide, by number, default to all (TRUE), vector e.g. c(1,2)}
 

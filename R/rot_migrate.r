@@ -55,9 +55,11 @@ rot_migrate <- function( RAF1gen,
   # may remove later
   if (verbose)
   {
-    print(RAF1gen_old)
-    print(RAF1gen)    
+    #print(RAF1gen_old)
+    #print(RAF1gen) 
+    print(raf_get(RAF1gen_old,asdf=TRUE))
+    print(raf_get(RAF1gen,asdf=TRUE))
   }
   
-  return(RAF1gen)  
+  invisible(RAF1gen)  
 }

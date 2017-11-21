@@ -36,7 +36,8 @@
 #'                same_insecticides =TRUE, migration=0.01)
 #' 
 #' @import tidyverse 
-#' @importFrom rlang .data #to help with standard evaluatoin of dplyr
+#to try help with standard evaluation of dplyr couldn't get to work
+# @importFrom rlang .data 
 #' @return dataframe of results
 #' @export
 
@@ -70,17 +71,6 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   
     
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
-  
-  # df_results <- data.frame(generation=1:max_gen,
-  #                     insecticide=NA,
-  #                     r1_active=NA,
-  #                     r1_refuge=NA,
-  #                     r2_active=NA,
-  #                     r2_refuge=NA,
-  #                     r3_active=NA,
-  #                     r3_refuge=NA,
-  #                     r4_active=NA,
-  #                     r4_refuge=NA, stringsAsFactors = FALSE)
   
   # setup dataframe to store results, tricky to cope with variable number insecticides
   l_gene_plus_activity <- rep(list(rep(NA,max_gen)), n_insecticides*2) #2 because active & refuge 
@@ -154,7 +144,8 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   { 
     for(insecticide in 1:n_insecticides)
     {
-      #first the intervention site, insecticide selection taking place  
+      ###############################################
+      #intervention site, with the insecticide in use  
       if(insecticide==current_insecticide){
        
         #a function to calc these wouldn't save much code and might make less transparent 
@@ -213,17 +204,19 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
         
         
       } #end of loop that deals with this insecticide if it is being deployed
-      
-     else{ #i.e no selection for this insecticide in the intervention site
+    
+     ##################################################################### 
+     # intervention site, insecticide not in use  
+     else{ 
        
        #coefficient for RS common to equations 2 and 3
        temp_coeff <- 
          (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
           RAF[insecticide, 'f', 'intervention',gen-1]*(1-RAF[insecticide, 'm', 'intervention',gen-1]))*
           0.5*fitness[insecticide, 'RS', 'no']
-                    
+ 
+                          
        # male RR
-       #now the resistant and sensitive frequencies in untreated areas  
        F_male_r_intervention <- RAF[insecticide, 'm', 'intervention', gen-1]*
                                 RAF[insecticide, 'f', 'intervention', gen-1]*
                                 fitness[insecticide, 'RR', 'no']+temp_coeff
@@ -235,14 +228,16 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
        norm_coeff <- F_male_r_intervention + F_male_s_intervention
        RAF[insecticide, 'm', 'intervention', gen] <- F_male_r_intervention/norm_coeff
       
-       #same allele frequencies in both sexes if no differential exposure so 
+       # no insecticides in use so same frequencies for both sexes
+       # todo andy check on this
        RAF[insecticide, 'f', 'intervention', gen] <- RAF[insecticide, 'm', 'intervention', gen]
        
        if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
           
        } #end of code for insecticides that are not being deployed in the intervention site
-        
-      #now for the refugia
+      
+      ########  
+      #refugia
       
       # RS coefficient common to equations 2 and 3
       temp_coeff <- (RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
@@ -262,7 +257,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
        norm_coeff <- F_male_r_refugia + F_male_s_refugia
        RAF[insecticide, 'm', 'refugia', gen] <- F_male_r_refugia/norm_coeff
       
-       #same allele frequencies in both sexes if no differential selection so
+       # no insecticides in use so same frequencies for both sexes
        RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
       
        if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))

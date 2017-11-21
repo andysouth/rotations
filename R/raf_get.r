@@ -1,6 +1,6 @@
 #' get selected Resistance Allele Frequencies from array
 #' 
-#' @param RAF array of resistance allele frequencies
+#' @param RAF array of resistance allele frequencies, either [insecticide, sex, site, gen] or without generationd dimension
 #' @param insecticide which insecticide, by number, default to all (TRUE), vector e.g. c(1,2)
 #' @param sex 'm' or 'f', default to all (TRUE)
 #' @param site 'intervention' or 'refugia', default to all (TRUE)
@@ -27,7 +27,22 @@ raf_get <- function( RAF,
                      asdf = FALSE )
 {
   
-  toreturn <- RAF[insecticide, sex, site, gen]
+
+  # to allow selection from array with or without generations dimension  
+  if (length(dim(RAF)) == 4)
+  {
+    toreturn <- RAF[insecticide, sex, site, gen] 
+    
+  } else if (length(dim(RAF)) == 3)
+  {
+    toreturn <- RAF[insecticide, sex, site]  
+    
+  } else
+  {
+    #TODO improve checking that the array has correct dimnames
+    stop("array of resistance allele frequencies with 3 or 4 dimensions required")
+  }
+
   
   if (asdf) toreturn <- as.data.frame(toreturn)
   
