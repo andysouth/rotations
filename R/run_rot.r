@@ -36,6 +36,7 @@
 #'                same_insecticides =TRUE, migration=0.01)
 #' 
 #' @import tidyverse 
+#' @importFrom rlang .data #to help with standard evaluatoin of dplyr
 #' @return dataframe of results
 #' @export
 
@@ -64,7 +65,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
                      cost = 0.1, #c(0,0,0),
                      fitSS = 1,
                      logy = FALSE,
-                     add_gens_under50 = TRUE) 
+                     add_gens_under50 = FALSE) 
   {
   
     
@@ -359,26 +360,30 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   
   # use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
   # to get active & refuge into the same subplot
-  df_res2 <- separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
+  df_res2 <- tidyr::separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
   
   # calculate number generations under 50% resistance to be used in plotting 
-  # probably should be somewhere else !
-  # ? just for active area
+  # probably should be somewhere else ! ? just for active area
   # this does give the answer, but only 1 per insecticide
   # so all the results per generation are lost
-  df_res2 <- df_res2 %>%
-    filter(active_or_refuge=='active') %>%
-    group_by(resist_gene) %>%
-    summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
-    ungroup() %>%
-    left_join(df_res2, by='resist_gene')
+  # ARG! struggling with replacing NSE which started causing problems
+  # commented out for now
+  # df_res2 <- df_res2 %>%
+  #   filter(.data$active_or_refuge=='active') %>%
+  #   group_by(.data$resist_gene) %>%
+  #   summarise(gens_under50 = sum(.data$resistance < 0.5, na.rm=TRUE)) %>%
+  #   ungroup() %>%
+  #   left_join(df_res2, by='resist_gene')
   
   # if migration is set to 0 don't show refuge in plots
   plot_refuge <- ifelse(migration==0,FALSE,TRUE)
   
   # do the plots
+  # if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
+  #                               logy=logy, add_gens_under50=add_gens_under50)
+  #removed add_gens_under50 because of problems above
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
-                                logy=logy, add_gens_under50=add_gens_under50)
+                                logy=logy, add_gens_under50=FALSE)
   
   invisible(df_res2)
   

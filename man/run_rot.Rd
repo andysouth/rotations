@@ -11,7 +11,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
   hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
   rr = 0.5, cost = 0.1, fitSS = 1, logy = FALSE,
-  add_gens_under50 = TRUE)
+  add_gens_under50 = FALSE)
 }
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
