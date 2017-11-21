@@ -6,7 +6,7 @@ Just rough notes.
   
 How to make the dataframe that saves results in run_rot flexible to the number of insecticides ?
 
-df_results <- data.frame(generation=1:max_generations,
+df_results <- data.frame(generation=1:max_gen,
                          insecticide=NA,
                          r1_active=NA,
                          r1_refuge=NA,
@@ -34,8 +34,8 @@ names(l_) <- c( paste0("r", 1:n_insecticides, "_active"),
 df_r <- do.call(data.frame,l_)
 
 # create inflexible columns ready to add r* columns on
-max_generations <- 10
-df_results <- data.frame(generation=1:max_generations,
+max_gen <- 10
+df_results <- data.frame(generation=1:max_gen,
                          insecticide=NA)
 
 df_results <- data.frame(df_results, df_r)
@@ -93,11 +93,11 @@ dfr <- run_rot(n=2, rotation_interval=50, eff=c(1,0.1))
 
 ~ aha! the new UI helped me to see that this can be a result of the decline in resistance frequency for the later insecticides when they are not being used at the start. e.g.
 
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
 
 When cost is set to 0 all 3 insecticides give the same curves :
 
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0 )
 
 done ~ in plots change r1 to insecticide_1 etc.
 done ~ in plots add the deployment symbol to legend
@@ -121,7 +121,7 @@ correct_mix   | 0.5 - 1
 For rotations 
 
 n_insecticides    | 3,4,5
-max_generations   | 
+max_gen   | 
 rotation_interval | 5 - 50 (integer)
 male_expo_prop    | 0 - 1
 coverage          | 0.1 - 0.9
@@ -262,11 +262,11 @@ done ~ fix migration rate to be between 0 & 1, where 1 is random movement.
 ~ allowed plots not to show refuge
 
 #high cost, no migration
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
 #no cost, no migration
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 #no cost and rotate when resistant, no migration
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 
 done ~ improve plot legend to show when insecticide in use
 
@@ -324,8 +324,8 @@ Which is more concise and shows more clearly what is going on.
 # testing multiplying RAF arrays
 # to allow making code more concise
 
-RAF <- set_start_freqs(n=3, max_generations = 1, freqs=c(0.1,0.01,0.001))
-RAF2 <- set_start_freqs(n=3, max_generations = 1, freqs=c(1,2,3))
+RAF <- set_start_freqs(n=3, max_gen = 1, freqs=c(0.1,0.01,0.001))
+RAF2 <- set_start_freqs(n=3, max_gen = 1, freqs=c(1,2,3))
 
 RAF * RAF2
            sex

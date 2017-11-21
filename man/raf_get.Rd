@@ -28,7 +28,7 @@ get selected Resistance Allele Frequencies from array
 }
 \examples{
 #frequencies different for each insecticide
-RAF <- set_start_freqs(max_generations = 2, freqs=c(0.1,0.01,0.001))
+RAF <- set_start_freqs(max_gen = 2, freqs=c(0.1,0.01,0.001))
 
 raf_get(sex='f')
 raf_get(site='intervention')

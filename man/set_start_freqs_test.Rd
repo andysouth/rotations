@@ -4,13 +4,12 @@
 \alias{set_start_freqs_test}
 \title{set_start_freqs_test allows starting allele frequencies to be hardcoded}
 \usage{
-set_start_freqs_test(n_insecticides = NULL, max_generations = 200,
-  plot = FALSE)
+set_start_freqs_test(n_insecticides = NULL, max_gen = 200, plot = FALSE)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
 
-\item{max_generations}{maximum number of mosquito generations to run the simulation}
+\item{max_gen}{maximum number of mosquito generations to run the simulation}
 
 \item{plot}{whether to plot exposure}
 }

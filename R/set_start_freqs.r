@@ -2,7 +2,7 @@
 #' 
 #' 
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
-#' @param max_generations maximum number of mosquito generations to run the simulation
+#' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param freqs starting allele frequencies either one per insecticide or same for all
 #'              in this version same for m,f,intervention & refuge    
 #' 
@@ -14,8 +14,8 @@
 #' RAF <- set_start_freqs(n=3, freqs=c(0.1,0.01,0.001))
 #' RAF[,,,1] # to view generation 1
 #' #testing mutliplying frequency arrays
-#' RAF <- set_start_freqs(max_generations = 1, freqs=c(0.1,0.01,0.001))
-#' RAF2 <- set_start_freqs(max_generations = 1, freqs=c(1,2,3))
+#' RAF <- set_start_freqs(max_gen = 1, freqs=c(0.1,0.01,0.001))
+#' RAF2 <- set_start_freqs(max_gen = 1, freqs=c(1,2,3))
 #' RAF*RAF2
 #' 
 #' #allowing array to be viewed differently
@@ -25,7 +25,7 @@
 #' @export
 #' 
 set_start_freqs <- function( n_insecticides = NULL,
-                             max_generations = 200,
+                             max_gen = 200,
                              freqs = 0.001 )
 {
   
@@ -35,7 +35,7 @@ set_start_freqs <- function( n_insecticides = NULL,
   
   # create empty array
   # RAF stands for resistance allele frequency
-  RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
+  RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
 
   # fill generation 1
   # in this version same for m,f,intervention & refuge
@@ -54,7 +54,7 @@ set_start_freqs <- function( n_insecticides = NULL,
 #' 
 #' 
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
-#' @param max_generations maximum number of mosquito generations to run the simulation
+#' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param plot whether to plot exposure    
 #' 
 #' @examples
@@ -67,7 +67,7 @@ set_start_freqs <- function( n_insecticides = NULL,
 #' @export
 #' 
 set_start_freqs_test <- function( n_insecticides = NULL,
-                                  max_generations = 200,
+                                  max_gen = 200,
                                    plot = FALSE)
 {
   
@@ -75,7 +75,7 @@ set_start_freqs_test <- function( n_insecticides = NULL,
   if ( is.null(n_insecticides)) n_insecticides <- 4
   
   #RAF stands for resistance allele frequency
-  RAF <-      array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
+  RAF <-      array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
   
   #inital resistance allele frequency (i.e. generation 1) in the intervention and refugia
   #locus 1>>

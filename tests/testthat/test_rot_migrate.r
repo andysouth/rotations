@@ -8,7 +8,7 @@ context("migration")
 # test that tot freqs for sites are same before as after
 # maybe test that sum of whole array before and after is the same
 
-RAF2 <- set_start_freqs(n=3, max_generations=1, freqs=c(0.1,0.2,0.3))
+RAF2 <- set_start_freqs(n=3, max_gen=1, freqs=c(0.1,0.2,0.3))
 # set freqs in refugia to 0 to see effects of migration
 RAF2[,,"refugia",] <- 0
 bef <- RAF2[,,,1]
@@ -24,7 +24,7 @@ sum(bef[1,,]) == sum(aft[1,,])
 
 test_that("migration works for m & f ...", {
   
-  RAF2 <- set_start_freqs(n=3, max_generations=1, freqs=c(0.1,0.2,0.3))
+  RAF2 <- set_start_freqs(n=3, max_gen=1, freqs=c(0.1,0.2,0.3))
   
   # set freqs in refugia to 0 to see effects of migration
   RAF2[,,"refugia",] <- 0

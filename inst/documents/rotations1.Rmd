@@ -49,7 +49,7 @@ dfr <- run_rot(n=2, rotation_interval=100, expo_hi=c(1,0.1))
 # Interval 50, migration 0.01
 
 # TODO remove hardcode fitnesses from here
-dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.01)
+dfr <- run_rot(rotation_interval=50, max_gen = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.01)
 
 ```
 
@@ -58,7 +58,7 @@ dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = T
 
 # Decrease migration to 0.001
 
-dfr <- run_rot(rotation_interval=50, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.001)
+dfr <- run_rot(rotation_interval=50, max_gen = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, migration=0.001)
 
 ```
 
@@ -70,16 +70,16 @@ dfr <- run_rot(n=3, rotation_interval=50, eff=1, cost=0.1)
 
 ### Rotate when resistant, migration 0.01
 
-dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, expo_hi=0.5, migration=0.01)
+dfr <- run_rot(rotation_interval=0, max_gen = 300, hardcode_fitness = TRUE, same_insecticides =TRUE, expo_hi=0.5, migration=0.01)
 
 ```
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="Showing how with cost (0.1) an initial decline in the freq of the later insecticides when they are not being used can lead them to behave differently than earlier ones."}
 
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.1 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.1 )
 
 ```
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.show='hold', fig.align='left', fig.cap="When cost is set to 0 all insecticides give the same curves."}
 
-run_rot( n_insecticides = 3 , max_generations = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0 )

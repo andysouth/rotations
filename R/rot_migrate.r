@@ -12,8 +12,8 @@
 #' RAF <- set_start_freqs(freqs=c(0.1,0.01,0.001))
 #' RAF[,,,1] # to view generation 1
 #' #testing mutliplying frequency arrays
-#' RAF <- set_start_freqs(max_generations = 1, freqs=c(0.1,0.01,0.001))
-#' RAF2 <- set_start_freqs(max_generations = 1, freqs=c(1,2,3))
+#' RAF <- set_start_freqs(max_gen = 1, freqs=c(0.1,0.01,0.001))
+#' RAF2 <- set_start_freqs(max_gen = 1, freqs=c(1,2,3))
 #' RAF*RAF2
 #' 
 #' 
@@ -34,7 +34,7 @@ rot_migrate <- function( RAF1gen,
   migrate_intervention <- migration*(1-coverage)
   migrate_refugia <- migrate_intervention*coverage/(1-coverage)  
   
-  #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_generations)
+  #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
   
   # RAF[,, ensures calc is repeated for each insecticide and sex 
   # more concise version of original code

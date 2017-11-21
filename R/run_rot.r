@@ -3,7 +3,7 @@
 #' can run any number of insecticides/loci 
 #' but at present, input will only allow a maximumum of 5
 #' 
-#' @param max_generations maximum number of mosquito generations to run the simulation
+#' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param n_insecticides number of insecticides (and hence loci), current max is 5
 #' @param start_freqs starting frequencies of resistance either one per insecticide or same for all
 #' @param rotation_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
@@ -30,9 +30,9 @@
 #' 
 #' @examples 
 #' run_rot(rotation_interval=100)
-#' dfr <- run_rot(rotation_interval=50, max_generations = 300)
-#' dfr <- run_rot(rotation_interval=0, max_generations = 300)
-#' dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, 
+#' dfr <- run_rot(rotation_interval=50, max_gen = 300)
+#' dfr <- run_rot(rotation_interval=0, max_gen = 300)
+#' dfr <- run_rot(rotation_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
 #'                same_insecticides =TRUE, migration=0.01)
 #' 
 #' @import tidyverse 
@@ -40,7 +40,7 @@
 #' @export
 
 
-run_rot <- function( max_generations = 200, #the maximum number of mosquito generations to run the simulation
+run_rot <- function( max_gen = 200, #the maximum number of mosquito generations to run the simulation
                      n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
                       start_freqs = 0.001,
                       rotation_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
@@ -70,7 +70,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     
   exposure <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), amount=c('no','lo', 'hi'))
   
-  # df_results <- data.frame(generation=1:max_generations,
+  # df_results <- data.frame(generation=1:max_gen,
   #                     insecticide=NA,
   #                     r1_active=NA,
   #                     r1_refuge=NA,
@@ -82,19 +82,19 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   #                     r4_refuge=NA, stringsAsFactors = FALSE)
   
   # setup dataframe to store results, tricky to cope with variable number insecticides
-  l_gene_plus_activity <- rep(list(rep(NA,max_generations)), n_insecticides*2) #2 because active & refuge 
+  l_gene_plus_activity <- rep(list(rep(NA,max_gen)), n_insecticides*2) #2 because active & refuge 
   
   names(l_gene_plus_activity) <- c( paste0('insecticide', 1:n_insecticides, "_active"),
                                     paste0('insecticide', 1:n_insecticides, "_refuge") )
   
-  df_results <- do.call(data.frame, list(generation = 1:max_generations,
+  df_results <- do.call(data.frame, list(generation = 1:max_gen,
                                          insecticide = NA,
                                          stringsAsFactors = FALSE,
                                          l_gene_plus_activity))  
   
   
   #experimental
-  # df_res_active <- data.frame(generation=rep(1:max_generations,n_insecticides),
+  # df_res_active <- data.frame(generation=rep(1:max_gen,n_insecticides),
   #                       insecticide=NA,
   #                       region=NA,
   #                       resistance=NA, stringsAsFactors = FALSE)
@@ -102,10 +102,10 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   
   
   ### set starting allele frequencies from hardcoded test function or based on other inputs
-  #RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_generations=max_generations )  
+  #RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_gen=max_gen )  
   #todo add checks thats start_freqs is either length 1 or n_insecticides
   RAF <- set_start_freqs( n_insecticides=n_insecticides, 
-                          max_generations=max_generations, 
+                          max_gen=max_gen, 
                           freqs = start_freqs )  
     
   ### set exposures from hardcoded test function or based on other inputs
@@ -149,7 +149,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   
   
   #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
-  for(gen in 2:max_generations)
+  for(gen in 2:max_gen)
   { 
     for(insecticide in 1:n_insecticides)
     {
@@ -324,7 +324,7 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
   break #breaks out of looping generations and terminates the simulation
   }    
     
-   } #end of max_generations loop
+   } #end of max_gen loop
     
   #####################################  
   # recording results of resistance frequency
@@ -338,8 +338,8 @@ run_rot <- function( max_generations = 200, #the maximum number of mosquito gene
     df_results[[paste0('insecticide',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
                                                       RAF[i_num, 'f','refugia', ]) 
     
-    #df_res_active$region[[(i_num-1)*max_generations:(i_num)*max_generations]] <- paste0("insecticide",i_num)
-    #df_res_active$resistance[[(i_num-1)*max_generations:(i_num)*max_generations]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
+    #df_res_active$region[[(i_num-1)*max_gen:(i_num)*max_gen]] <- paste0("insecticide",i_num)
+    #df_res_active$resistance[[(i_num-1)*max_gen:(i_num)*max_gen]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
   }
   
   #but if I want to facet by intervention may want to structure differently

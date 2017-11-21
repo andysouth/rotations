@@ -4,7 +4,7 @@
 \alias{run_rot}
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
-run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
+run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
   rotation_interval = 10, rotation_criterion = 0.5, migration = 0.01,
   coverage = 0.8, plot = TRUE, start_insecticide = 1,
   diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
@@ -14,7 +14,7 @@ run_rot(max_generations = 200, n_insecticides = 4, start_freqs = 0.001,
   add_gens_under50 = TRUE)
 }
 \arguments{
-\item{max_generations}{maximum number of mosquito generations to run the simulation}
+\item{max_gen}{maximum number of mosquito generations to run the simulation}
 
 \item{n_insecticides}{number of insecticides (and hence loci), current max is 5}
 
@@ -71,9 +71,9 @@ but at present, input will only allow a maximumum of 5
 }
 \examples{
 run_rot(rotation_interval=100)
-dfr <- run_rot(rotation_interval=50, max_generations = 300)
-dfr <- run_rot(rotation_interval=0, max_generations = 300)
-dfr <- run_rot(rotation_interval=0, max_generations = 300, hardcode_fitness = TRUE, 
+dfr <- run_rot(rotation_interval=50, max_gen = 300)
+dfr <- run_rot(rotation_interval=0, max_gen = 300)
+dfr <- run_rot(rotation_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
                same_insecticides =TRUE, migration=0.01)
 
 }
