@@ -7,11 +7,13 @@
 rot_migrate(RAF1gen, migration = 0.8, coverage = 0.6, verbose = FALSE)
 }
 \arguments{
-\item{RAF}{array of resistance allele frequencies}
+\item{RAF1gen}{single generation array of resistance allele frequencies}
 
-\item{migrate_intervention}{migration from intervention}
+\item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 
-\item{migrate_refugia}{migration from refugia}
+\item{coverage}{proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).}
+
+\item{verbose}{whether to output before and after migration}
 }
 \value{
 array of resistance freqs in 1 gen following migration

@@ -27,7 +27,6 @@ raf_get <- function( RAF,
                      asdf = FALSE )
 {
   
-  
   toreturn <- RAF[insecticide, sex, site, gen]
   
   if (asdf) toreturn <- as.data.frame(toreturn)

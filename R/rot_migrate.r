@@ -1,8 +1,9 @@
 #' migration between intervention and refugia
 #' 
-#' @param RAF array of resistance allele frequencies
-#' @param migrate_intervention migration from intervention
-#' @param migrate_refugia migration from refugia
+#' @param RAF1gen single generation array of resistance allele frequencies
+#' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
+#' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
+#' @param verbose whether to output before and after migration
 #' 
 #' @examples
 #' #frequencies the same for all insecticides
@@ -25,9 +26,6 @@ rot_migrate <- function( RAF1gen,
                          coverage = 0.6,
                          verbose = FALSE)
 {
-  
-  # TODO I think I should get this to work
-  # on RAF without the generation dimension
   
   # to allow migration to be on a scale from 0-1 (1-coverage is the max)
   # calculating this in rot_migrate function allows easier testing of function

@@ -137,9 +137,9 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
     if (exposure[temp_int, 'f', 'no']<0) message(sprintf("warning from calibration: f exposure to no insecticide %d is <0\n", temp_int)) 
   }
   
-  if(migrate_intervention>(1-coverage)){
-  message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
-  }
+  # if(migrate_intervention>(1-coverage)){
+  # message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
+  # }
   
   
   current_insecticide=start_insecticide #usually start the rotation sequence at #1 but can specify any one start
@@ -272,7 +272,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
     #################################################  
     # migration between refugia and intervention site
 
-
+    RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
 
 
     

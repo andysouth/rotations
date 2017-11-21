@@ -267,6 +267,8 @@ run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_inte
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 #no cost and rotate when resistant, no migration
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+#no cost, some migration
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.05 , cost = 0 , logy = FALSE )
 
 done ~ improve plot legend to show when insecticide in use
 
@@ -338,16 +340,19 @@ done ~ put migration code into a function
 started ~ add a test that checks migration for diff insecticides & mf
 
 *21/11/17*
-
-
-
-# TODO
-
 ~ is it worth creating a get_freq() or getraf() function similar to in rtsetse but not as complex ?
 ~ pass RAF
 ~ get_freq(insecticide=1, site='intervention', sex='f', gen=2 )
 ~ assume all for any not specified
 ~ have an as_df arg to return as a dataframe
+
+
+# TODO
+
+
+Fix this :
+Error in filter(., active_or_refuge == "active") : 
+  object 'active_or_refuge' not found
 
 ~ maybe have a set_raf() function too
 
