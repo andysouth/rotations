@@ -270,15 +270,16 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
 
     RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
 
-
     
     ##########################################
     # checking if insecticide switch is needed
     
+    #insecticide_check( RAF = RAF, rotation_interval=rotation_interval, rotation_criterion=rotation_criterion, rotation_count=rotation_count)
+    
     # if rotate-when resistant
-    if (rotation_interval==0)
+    if (rotation_interval == 0)
     {  
-      #TOCHECK switch criterion is female only
+      #TODO check with Ian that switch criterion is female only
       if (RAF[current_insecticide, 'f','intervention', gen] > rotation_criterion)
       {
         change_insecticide <- 1        
@@ -302,6 +303,8 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
       }
     }      
 
+    
+  #  
   if (change_insecticide==1)
     {
       rotation_count <- 1 
@@ -324,13 +327,13 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
                           RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
         }
         
-        if(next_insecticide_found==1) break   
+        if (next_insecticide_found==1) break   
         
       } # end of loop checking each insecticide
     } #end if(change_insecticide==1) loop
   
   # recording the insecticide that's going to be used in next timestep
-  # TODO check that this isn't out by 1
+  # TODO check that this isn't out by 1 generation
   df_results$insecticide[gen] <- current_insecticide 
   
   # if no suitable insecticide left, break out of generations loop
