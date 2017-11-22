@@ -60,7 +60,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     #column(3, h6("(takes a few seconds)")),
     column(1, sliderInput("max_gen", "generations", val=150, min = 100, max = 500, step = 50, ticks=FALSE)),
     column(1, p()), 
-    column(1, checkboxInput("logy", "log y axis", FALSE)),
+    column(2, checkboxInput("logy", "log y axis", FALSE)),
     column(2, actionButton('aButtonRunB', 'Run Scenario B')),
     column(2, p())
   ), 
@@ -163,7 +163,12 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
 
   fluidRow(
     column(1, NULL),
-    column(11,h6("* setting rotation interval to 0 causes insecticde to be kept in use until resistance threshold is reached (rotate-when-resistant)"))
+    column(6, h6("* set rotation interval to 0 to use insecticides until resistance threshold reached (rotate-when-resistant)")),
+    column(1, h6("Advanced options :")),
+    column(1, checkboxInput("no_r_below_start", "no_r_below_start", FALSE)), 
+    column(1, NULL),
+    column(1, sliderInput("min_rwr_interval", "min rwr interval", val=5, min = 0, max = 20, step = 1, ticks=FALSE))
+           
   ) #end fluid row
 
   #h6("setting rotation interval to 0 causes insecticde to be kept in use until resistance threshold is reached (rotate-when-resistant)")  

@@ -34,8 +34,9 @@ shinyServer(function(input, output) {
                 coverage =          input$coverage_A,
                 migration =         input$migration_A, 
                 cost =              input$cost_A,
-                logy =              input$logy ) #inefficient that it reruns when changing to log
-
+                logy =              input$logy, #inefficient that it reruns when changing to log
+                no_r_below_start =  input$no_r_below_start,
+                min_rwr_interval =  input$min_rwr_interval )
                 
         # a hack to output the inputs, so it can be run from the console
         cat("A:\n")
@@ -52,6 +53,8 @@ shinyServer(function(input, output) {
                       "migration =",input$migration_A,",",
                       "cost =",input$cost_A,",",
                       "logy =",input$logy,
+                      "no_r_below_start =",input$no_r_below_start,
+                      "min_rwr_interval =",input$min_rwr_interval,            
                       ")\n" )
         
                
@@ -79,8 +82,9 @@ shinyServer(function(input, output) {
                 coverage =          input$coverage_B,
                 migration =         input$migration_B, 
                 cost =              input$cost_B,
-                logy =              input$logy ) #inefficient that it reruns when changing to log
-        
+                logy =              input$logy, #inefficient that it reruns when changing to log
+                no_r_below_start =  input$no_r_below_start,
+                min_rwr_interval =  input$min_rwr_interval )
         
         
         # a hack to output the inputs, so it can be run from the console
@@ -98,6 +102,8 @@ shinyServer(function(input, output) {
             "migration =",input$migration_B,",",
             "cost =",input$cost_B,",",
             "logy =",input$logy,
+            "no_r_below_start =",input$no_r_below_start,
+            "min_rwr_interval =",input$min_rwr_interval,
             ")\n" )
         
       }) #end isolate  
