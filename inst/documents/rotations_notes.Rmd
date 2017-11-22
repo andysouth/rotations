@@ -383,7 +383,53 @@ Ians text removed from the insecticide switching portion of code
     #(c) the simulation will terminate if all insecticides exceed the threshold
 
 *22/11/17*
+~ added sentence about interval 0 RwR to the UI
 
+~ removed this commented out alternative to df_results
+  #experimental
+  # df_res_active <- data.frame(generation=rep(1:max_gen,n_insecticides),
+  #                       insecticide=NA,
+  #                       region=NA,
+  #                       resistance=NA, stringsAsFactors = FALSE)
+  # df_res_refuge <- df_res_active
+
+~ I can redesign the insecticide switch function slightly :
+
+to pass :
+current_insecticide
+n_insecticides
+RAF1gen
+df_results : to allow assessment of which insecticides have been used previously
+
+return :
+current_insecticide : if it has failed to find one then return 0
+
+BUT i need to allow ability to assess when insecticides have been used previously so may need to pass df_results too
+
+      rot_count <- 1 
+      next_insecticide_found <- 0
+      candidate <- current_insecticide 
+              
+      for(temp_int in 1:n_insecticides)
+      {
+        #search through insecticides and go back to start if reach end
+        candidate <- ifelse(candidate==n_insecticides, yes=1, no=candidate+1)
+        
+        if (RAF[candidate, 'f','intervention', gen] < rot_criterion)
+        {
+          next_insecticide_found <- 1 
+          current_insecticide <- candidate 
+          change_insecticide <- 0 
+          
+          message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f\n",
+                          gen, current_insecticide, candidate,
+                          RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
+        }
+        
+        if (next_insecticide_found==1) break   
+        
+      } # end of loop checking each insecticide
+    
 
 
 
@@ -396,12 +442,13 @@ Ians text removed from the insecticide switching portion of code
 insecticide_check()
 insecticide_switch()
 
+~ rename rot_count to gens_this_insecticide
 
 ~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 
 ~ maybe have a set_raf() function too
 
-
+~ get an online version up on shinyapps
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 

@@ -32,6 +32,11 @@ rot_migrate <- function( RAF1gen,
   migrate_intervention <- migration*(1-coverage)
   migrate_refugia <- migrate_intervention*coverage/(1-coverage)  
   
+  # not needed because now calculated
+  # if(migrate_intervention>(1-coverage)){
+  # message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
+  # }
+  
   #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
   
   # RAF[,, ensures calc is repeated for each insecticide and sex 

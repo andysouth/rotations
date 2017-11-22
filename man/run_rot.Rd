@@ -16,7 +16,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
 
-\item{n_insecticides}{number of insecticides (and hence loci), current max is 5}
+\item{n_insecticides}{number of insecticides (and hence loci)}
 
 \item{start_freqs}{starting frequencies of resistance either one per insecticide or same for all}
 
@@ -66,14 +66,12 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
 dataframe of results
 }
 \description{
-can run any number of insecticides/loci 
-but at present, input will only allow a maximumum of 5
+can run any number of insecticides/loci
 }
 \examples{
 run_rot(rot_interval=100)
 dfr <- run_rot(rot_interval=50, max_gen = 300)
 dfr <- run_rot(rot_interval=0, max_gen = 300)
-dfr <- run_rot(rot_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
-               same_insecticides =TRUE, migration=0.01)
+dfr <- run_rot(rot_interval=0, max_gen = 300, migration=0.01)
 
 }
