@@ -5,7 +5,7 @@
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
 run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
-  rotation_interval = 10, rotation_criterion = 0.5, migration = 0.01,
+  rot_interval = 10, rot_criterion = 0.5, migration = 0.01,
   coverage = 0.8, plot = TRUE, start_insecticide = 1,
   diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
   hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
@@ -20,9 +20,9 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{start_freqs}{starting frequencies of resistance either one per insecticide or same for all}
 
-\item{rotation_interval}{frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant}
+\item{rot_interval}{frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant}
 
-\item{rotation_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
+\item{rot_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
 
 \item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 
@@ -70,10 +70,10 @@ can run any number of insecticides/loci
 but at present, input will only allow a maximumum of 5
 }
 \examples{
-run_rot(rotation_interval=100)
-dfr <- run_rot(rotation_interval=50, max_gen = 300)
-dfr <- run_rot(rotation_interval=0, max_gen = 300)
-dfr <- run_rot(rotation_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
+run_rot(rot_interval=100)
+dfr <- run_rot(rot_interval=50, max_gen = 300)
+dfr <- run_rot(rot_interval=0, max_gen = 300)
+dfr <- run_rot(rot_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
                same_insecticides =TRUE, migration=0.01)
 
 }

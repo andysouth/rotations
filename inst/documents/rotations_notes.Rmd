@@ -72,14 +72,14 @@ done : Next, get active and refuge onto the same plots.
 done : allowed starting frequencies to be set
 
 implemented set_expsoure_rot() now working
-dfr <- run_rot(rotation_interval=50, expo_hi=0.9)
-dfr <- run_rot(rotation_interval=50, expo_hi=0.2)
+dfr <- run_rot(rot_interval=50, expo_hi=0.9)
+dfr <- run_rot(rot_interval=50, expo_hi=0.2)
 # diff frequency curves for r1 & r2
-dfr <- run_rot(n=2, rotation_interval=50, expo_hi=c(1,0.1))
+dfr <- run_rot(n=2, rot_interval=50, expo_hi=c(1,0.1))
 
 started fitness_single_locus() from run_rot()
 
-dfr <- run_rot(n=2, rotation_interval=50, eff=c(1,0.1))
+dfr <- run_rot(n=2, rot_interval=50, eff=c(1,0.1))
 
 *9/10/17*
 ~ started first shiny UI : rotresist1
@@ -93,11 +93,11 @@ dfr <- run_rot(n=2, rotation_interval=50, eff=c(1,0.1))
 
 ~ aha! the new UI helped me to see that this can be a result of the decline in resistance frequency for the later insecticides when they are not being used at the start. e.g.
 
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rot_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0.1 )
 
 When cost is set to 0 all 3 insecticides give the same curves :
 
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rotation_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0 )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.1 , rot_interval = 50 , eff = 0.6 , dom = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration_rate_intervention = 0.01 , cost = 0 )
 
 done ~ in plots change r1 to insecticide_1 etc.
 done ~ in plots add the deployment symbol to legend
@@ -122,7 +122,7 @@ For rotations
 
 n_insecticides    | 3,4,5
 max_gen   | 
-rotation_interval | 5 - 50 (integer)
+rot_interval | 5 - 50 (integer)
 male_expo_prop    | 0 - 1
 coverage          | 0.1 - 0.9
 migration         |  
@@ -262,13 +262,13 @@ done ~ fix migration rate to be between 0 & 1, where 1 is random movement.
 ~ allowed plots not to show refuge
 
 #high cost, no migration
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0.1 , logy = FALSE )
 #no cost, no migration
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 #no cost and rotate when resistant, no migration
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 0 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0 , cost = 0 , logy = FALSE )
 #no cost, some migration
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rotation_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.05 , cost = 0 , logy = FALSE )
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 10 , eff = 1 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.05 , cost = 0 , logy = FALSE )
 
 done ~ improve plot legend to show when insecticide in use
 
@@ -382,10 +382,20 @@ Ians text removed from the insecticide switching portion of code
     #(b) it will be replaced if one of the other insecticides is now below the threshold due to fitness effects or migration
     #(c) the simulation will terminate if all insecticides exceed the threshold
 
+*22/11/17*
+
+
+
+
+# check with Ian
+~ insecticide switch criterion is female only
 
 # TODO
 
 ~ take the insecticide switching out into its own function(s)
+insecticide_check()
+insecticide_switch()
+
 
 ~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 

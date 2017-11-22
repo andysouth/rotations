@@ -6,8 +6,8 @@
 #' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param n_insecticides number of insecticides (and hence loci), current max is 5
 #' @param start_freqs starting frequencies of resistance either one per insecticide or same for all
-#' @param rotation_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-#' @param rotation_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+#' @param rot_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+#' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
 #' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
 #' @param plot whether to plot results
@@ -29,10 +29,10 @@
 #' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
 #' 
 #' @examples 
-#' run_rot(rotation_interval=100)
-#' dfr <- run_rot(rotation_interval=50, max_gen = 300)
-#' dfr <- run_rot(rotation_interval=0, max_gen = 300)
-#' dfr <- run_rot(rotation_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
+#' run_rot(rot_interval=100)
+#' dfr <- run_rot(rot_interval=50, max_gen = 300)
+#' dfr <- run_rot(rot_interval=0, max_gen = 300)
+#' dfr <- run_rot(rot_interval=0, max_gen = 300, hardcode_fitness = TRUE, 
 #'                same_insecticides =TRUE, migration=0.01)
 #' 
 #' @import tidyverse 
@@ -45,8 +45,8 @@
 run_rot <- function( max_gen = 200, #the maximum number of mosquito generations to run the simulation
                      n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
                       start_freqs = 0.001,
-                      rotation_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-                      rotation_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+                      rot_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
+                      rot_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
                       migration = 0.01, 
                       #migrate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
                       coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
@@ -136,7 +136,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   current_insecticide=start_insecticide #usually start the rotation sequence at #1 but can specify any one start
   next_insecticide_found=1
   change_insecticide=0;
-  rotation_count=1
+  rot_count=1
   
   
   #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
@@ -274,25 +274,25 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
     ##########################################
     # checking if insecticide switch is needed
     
-    #insecticide_check( RAF = RAF, rotation_interval=rotation_interval, rotation_criterion=rotation_criterion, rotation_count=rotation_count)
+    #insecticide_check( RAF = RAF, rot_interval=rot_interval, rot_criterion=rot_criterion, rot_count=rot_count)
     
     # if rotate-when resistant
-    if (rotation_interval == 0)
+    if (rot_interval == 0)
     {  
       #TODO check with Ian that switch criterion is female only
-      if (RAF[current_insecticide, 'f','intervention', gen] > rotation_criterion)
+      if (RAF[current_insecticide, 'f','intervention', gen] > rot_criterion)
       {
         change_insecticide <- 1        
       }
       #message(sprintf("confirm. RAF=%f, change_insecticide=%d \n", RAF[current_insecticide, 'f','intervention', gen], change_insecticide))
 
-    } else if (rotation_interval != 0)
+    } else if (rot_interval != 0)
     # if periodic rotation  
     {
-      if (rotation_count != rotation_interval) 
+      if (rot_count != rot_interval) 
       {
         # keeps the rotation going
-        rotation_count <- rotation_count+1  
+        rot_count <- rot_count+1  
         # to make responsive rotation add a check of resistance frequency here
         # and stop the rotation if threshold exceeded
         
@@ -307,7 +307,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   #  
   if (change_insecticide==1)
     {
-      rotation_count <- 1 
+      rot_count <- 1 
       next_insecticide_found <- 0
       candidate <- current_insecticide 
               
@@ -316,7 +316,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
         #search through insecticides and go back to start if reach end
         candidate <- ifelse(candidate==n_insecticides, yes=1, no=candidate+1)
         
-        if (RAF[candidate, 'f','intervention', gen] < rotation_criterion)
+        if (RAF[candidate, 'f','intervention', gen] < rot_criterion)
         {
           next_insecticide_found <- 1 
           current_insecticide <- candidate 
@@ -339,7 +339,7 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
   # if no suitable insecticide left, break out of generations loop
   if (next_insecticide_found==0)
     {
-      message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rotation_criterion))
+      message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
       for (temp_int in 1:n_insecticides)
       {
         message(sprintf("frequency of resistance in females to insecticide %d is %f\n", temp_int, RAF[temp_int, 'f','intervention', gen]))  

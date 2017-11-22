@@ -52,7 +52,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     column(6, plotOutput('plotA')),
     column(6, plotOutput('plotB'))
     #column(1)    
-  ), #end fixed row
+  ), 
   
   fluidRow(
     column(2, p()),
@@ -63,8 +63,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     column(1, checkboxInput("logy", "log y axis", FALSE)),
     column(2, actionButton('aButtonRunB', 'Run Scenario B')),
     column(2, p())
-  ), #end fixed row
-  
+  ), 
   
   hr(),
   
@@ -91,10 +90,10 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     #        hr()
     # ),  
     column(1, offset = 0,
-           h5("interval"),
-           sliderInput("rotation_interval_A", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           h5("rotation interval*"),
+           sliderInput("rot_interval_A", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
            hr(), #hr(),hr(),
-           sliderInput("rotation_interval_B", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           sliderInput("rot_interval_B", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
            hr()
     ),     
     column(1,
@@ -159,12 +158,14 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),
            sliderInput("cost_B", NULL, val=0.1, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
            hr()          
-    )    
-    # column(2, offset = 0,
-    #        h5("Extra params not included in Curtis"),
-    #        numericInput("correct_mix_deploy", "Mixture correct deployment", 1, min = 0, max = 1, step = 0.1),
-    #        checkboxInput("addCombinedStrategy", "plot adaptive strategy",FALSE)
-    # )
-  ) #end fixed row
+    )
+  ), #end fluid row
+
+  fluidRow(
+    column(1, NULL),
+    column(11,h6("* setting rotation interval to 0 causes insecticde to be kept in use until resistance threshold is reached (rotate-when-resistant)"))
+  ) #end fluid row
+
+  #h6("setting rotation interval to 0 causes insecticde to be kept in use until resistance threshold is reached (rotate-when-resistant)")  
 
 ))
