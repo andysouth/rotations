@@ -27,6 +27,7 @@
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
+#' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
 #' 
 #' @examples 
 #' run_rot(rot_interval=100)
@@ -66,7 +67,8 @@ run_rot <- function( max_gen = 200,
                      fitSS = 1,
                      logy = FALSE,
                      add_gens_under50 = FALSE,
-                     min_rwr_interval = 5 ) 
+                     min_rwr_interval = 5,
+                     no_r_below_start = TRUE ) 
   {
   
   
@@ -122,9 +124,7 @@ run_rot <- function( max_gen = 200,
   
   # usually start the rotation sequence at #1 but can specify any one start
   current_insecticide <- start_insecticide 
-  next_insecticide_found <- 1
   gens_this_insecticide <- 1
-  
   
   #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
   for(gen in 2:max_gen)
@@ -255,6 +255,28 @@ run_rot <- function( max_gen = 200,
     # migration between refugia and intervention site
     RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
 
+    ######
+    # ensure that resistance stays above starting values if the option selected
+    # TODO check with Ian that this goes after migration
+    
+    # to work with single start_freqs value too
+    if (length(start_freqs) == 1) start_freqs <- rep(start_freqs, n_insecticides)
+    if ( no_r_below_start )
+    {
+      for(insecticide in 1:n_insecticides)
+      {
+        for(sex in dimnames(RAF)[[2]])
+        {
+          for(site in dimnames(RAF)[[3]])
+          {
+           if ( RAF[insecticide,sex,site,gen] < start_freqs[insecticide]) 
+             
+             RAF[insecticide,sex,site,gen] <- start_freqs[insecticide]
+          }         
+        }
+      }
+    }
+    
     
     ######
     # check if insecticide switch is needed
@@ -282,13 +304,8 @@ run_rot <- function( max_gen = 200,
                                                 df_results=df_results )
     } 
   
-    
-  # recording the insecticide that's going to be used in next timestep
-  # TODO check that this isn't out by 1 generation
-  df_results$insecticide[gen] <- current_insecticide 
-  
-  # if no suitable insecticide left, break out of generations loop
-  if (current_insecticide == 0) #(next_insecticide_found==0)
+    # if no suitable insecticide left, break out of generations loop
+    if (current_insecticide == 0) #(next_insecticide_found==0)
     {
       message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
       for (temp_int in 1:n_insecticides)
@@ -297,7 +314,10 @@ run_rot <- function( max_gen = 200,
       }
       break #breaks out of looping generations and terminates the simulation
     }    
-    
+ 
+    # recording the insecticide that's going to be used in next timestep
+    # TODO check that this isn't out by 1 generation
+    df_results$insecticide[gen] <- current_insecticide    
   
    } #### end of max_gen loop
 

@@ -399,7 +399,8 @@ insecticide_switch()
 
 ~ rename rot_count to gens_this_insecticide
 
-
+~ add in an option to limit switch back to previous insecticides
+~ added something to put a lower limit on length of rotations for rwr
 
     
 
@@ -410,8 +411,8 @@ insecticide_switch()
 
 # TODO
 
-~ add in an option to limit switch back to previous insecticides
-~ could add something to put a lower limit on length of rotations
+~ add option to stop resistance frequencies going below starting value (the thinking being that they could be maintained at this value by selection). It happens in the simulation when there is a cost and the insecticide is not in use. 
+
 
 ~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 
