@@ -26,6 +26,7 @@
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
+#' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' 
 #' @examples 
 #' run_rot(rot_interval=100)
@@ -40,14 +41,14 @@
 #' @export
 
 
-run_rot <- function( max_gen = 200, #the maximum number of mosquito generations to run the simulation
-                     n_insecticides = 4, #MAX is 5<<<<the number of insecticides (and hence loci) in the simuation MAX IS 5<<<
+run_rot <- function( max_gen = 200, 
+                     n_insecticides = 4, 
                       start_freqs = 0.001,
-                      rot_interval = 10, #frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-                      rot_criterion = 0.5, #resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+                      rot_interval = 10, 
+                      rot_criterion = 0.5, 
                       migration = 0.01, 
-                      #migrate_intervention = 0.01, # migration rate into and out-of the treated area. It is the proportion of the treated population that migrates. We assume that immigration=emigration.
-                      coverage = 0.8, # "coverage" of the intervention is defined as the proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
+                      #migrate_intervention = 0.01, 
+                      coverage = 0.8, 
                       plot = TRUE,
                       start_insecticide = 1,
                       diagnostics = FALSE,
@@ -64,7 +65,8 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
                      cost = 0.1, #c(0,0,0),
                      fitSS = 1,
                      logy = FALSE,
-                     add_gens_under50 = FALSE) 
+                     add_gens_under50 = FALSE,
+                     min_rwr_interval = 5 ) 
   {
   
   
@@ -260,7 +262,8 @@ run_rot <- function( max_gen = 200, #the maximum number of mosquito generations 
                                              current_insecticide, 
                                              rot_interval=rot_interval, 
                                              rot_criterion=rot_criterion, 
-                                             gens_this_insecticide=gens_this_insecticide )
+                                             gens_this_insecticide=gens_this_insecticide,
+                                             min_rwr_interval=min_rwr_interval)
 
     
     if (! change_insecticide)
