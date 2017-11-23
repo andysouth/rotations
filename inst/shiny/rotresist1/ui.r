@@ -91,9 +91,9 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     # ),  
     column(1, offset = 0,
            h5("rotation interval*"),
-           sliderInput("rot_interval_A", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           sliderInput("rot_interval_A", NULL, val=10, min = 0, max = 100, step = 10, ticks=FALSE),
            hr(), #hr(),hr(),
-           sliderInput("rot_interval_B", NULL, val=50, min = 0, max = 100, step = 10, ticks=FALSE),
+           sliderInput("rot_interval_B", NULL, val=0, min = 0, max = 100, step = 10, ticks=FALSE),
            hr()
     ),     
     column(1,
@@ -154,9 +154,9 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),  
     column(1, offset = 0,
            h5("cost"),
-           sliderInput("cost_A", NULL, val=0.1, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
+           sliderInput("cost_A", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
            hr(),
-           sliderInput("cost_B", NULL, val=0.1, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
+           sliderInput("cost_B", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
            hr()          
     )
   ), #end fluid row
