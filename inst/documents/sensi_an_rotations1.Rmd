@@ -1,0 +1,90 @@
+---
+title: "sensi_an_rotations1 : start of sensitivity analysis for rotations"
+output: pdf_document:
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+  library(rotations)
+  library(ggplot2)
+
+  outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+```
+
+Starting question : is there any benefit to rotations when there are no costs and no migration to an untreated area ?
+
+Test 1. No refugia (i.e. Coverage=100%) or fitness costs. Would expect all policies to be equivalent.
+
+Test 2. Dominance of resistance and fitness costs both set to 0.5.
+I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
+
+```{r, eval=TRUE}
+
+#start small & build it up
+#maybe create an equiv. of resistance::sensiAnPaperPart.r later
+
+# example for 1 run
+# linputs <- list(max_gen = 50, n_insecticides = 2)
+# do.call(run_rot, linputs)
+# dfinputs <- as.data.frame(linputs)
+
+# So one way of doing is to create an linputs list for each run & pass to run_rot()
+# so run_rot() only ever runs for 1 scenario
+# in contrast resistance::runModel2() accepted an input matrix & would run for multiple scenarios
+# not sure which is better
+
+n_scenarios <- 5
+
+df_res_all <- data.frame()
+
+for(i in 1:n_scenarios)
+{
+  # expo_hi 0.1 – 0.9
+  # eff 0.3 - 1
+  linputs <- list()
+  
+  linputs$expo_hi <-  runif(1, min=0.1, max=0.9)
+  linputs$eff <-      runif(1, min=0.3, max=1)
+  
+  # run one scenario
+  dfres <- do.call(run_rot, linputs)
+  
+  # summarise results per scenario
+  res <- dfres %>%
+  dplyr::filter(active_or_refuge=='active') %>%
+  group_by(resist_gene) %>%
+  summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+  summarise(mean_gens_under50 = mean(gens_under50)) %>%
+  unlist()
+  
+  # add results onto inputs list
+  linputs <- c(linputs, res)
+  
+  # change list to dataframe
+  df_in_out <- as.data.frame(linputs)
+  
+  # rbind this scenario inputs & results onto previous
+  # not a good speed or memory way of doing ... but a start
+  df_res_all <- rbind(df_res_all, df_in_out)
+  
+}
+
+
+```
+
+<!-- eval=FALSE to stop slow code being executed after 1st time --> 
+```{r, eval=FALSE}
+
+  # this is how it was done for resistance paper1
+  # nScenarios <- 10  
+  # ## do model runs
+  # listOutMix <- sensiAnPaperPart( nScenarios, insecticideUsed = 'mixture', experiment=experiment )
+  # ## save results objects as rda for re-use
+  # save(listOutMix, file=paste0(outFolder,'listOutMix_rr_10.rda'))
+
+     
+  
+```  
