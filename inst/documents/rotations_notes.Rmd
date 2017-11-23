@@ -402,7 +402,121 @@ insecticide_switch()
 ~ add in an option to limit switch back to previous insecticides
 ~ added something to put a lower limit on length of rotations for rwr
 
-    
+~ added option to stop resistance frequencies going below starting value (the thinking being that they could be maintained at this value by selection). It happens in the simulation when there is a cost and the insecticide is not in use.     
+
+~ deployed to shinyapps : working well now
+https://andysouth.shinyapps.io/rotresist1/
+
+*23/11/17*
+~ sent draft model-data gap workshop invite to IVCC
+
+~ tweaked UI input defaults to show a comparison of fixed rotation versus sequence (rwr)
+
+start protocol for sensitivity analysis. 
+
+Currently run_rot() outputs :
+'data.frame':	1600 obs. of  5 variables:
+ $ generation      : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ insecticide     : num  NA 1 1 1 1 1 1 1 1 1 ...
+ $ resist_gene     : chr  "insecticide1" "insecticide1" "insecticide1" "insecticide1" ...
+ $ active_or_refuge: chr  "active" "active" "active" "active" ...
+ $ resistance      : num  0.001 0.00141 0.002 0.00283 0.00399 ...
+ 
+ insecticide : indicates which is in use
+ resist_gene : which gene does this frequency relate to
+ 
+ from run_rot() now commented out 
+ 
+  # calculate number generations under 50% resistance 
+  
+  df_res2 <- df_res2 %>%
+    dplyr::filter(active_or_refuge=='active') %>%
+    group_by(resist_gene) %>%
+    summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    ungroup() %>%
+    left_join(df_res2, by='resist_gene')
+
+
+tst <- run_rot()
+
+tst %>%
+dplyr::filter(active_or_refuge=='active') %>%
+group_by(resist_gene) %>%
+summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE))
+
+This gives generations under 50% resistance for each insecticide in the active area
+
+1 insecticide1          134
+2 insecticide2          144
+3 insecticide3          154
+4 insecticide4          164
+
+I could then calculate the mean gens_under50 across all the insecticides.
+
+tst %>%
+dplyr::filter(active_or_refuge=='active') %>%
+group_by(resist_gene) %>%
+summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+summarise(mean_gens_under50 = mean(gens_under50))
+
+  mean_gens_under50
+              <dbl>
+1               149
+
+Look back at the resistance sensitivity code and see how much of it I can use.
+
+# resistance files to do runs
+1. sensiAnPaper1All.Rmd : code to run whole sensitivity analysis & produce plots 
+1. sensiAnPaperPart.r   : sets up param values and runs for one treatment (e.g. mixture, insecticide1)
+1. setInputOneScenario.r: creates input object for each run
+1. runModel2.r          : runs model for the passed scenarios
+
+I would like to modify setInputOneScenario.r so I'm not referencing inputs by there location in the matrix which seems dangerous, but I might not be able to get around ?
+
+Can I store the inputs in a dataframe with a name column, or with rownames ?
+Or probably it should be a dataframe with a column name for each input, this will make it easy to add multiple runs together.
+
+resistance::runModel2() just accepts an input matrix (i.e. not individually specified params) you need to call setInputOneScenario() first.
+input <- setInputOneScenario()
+listOut <- runModel2(input)
+
+rotations::run_rot() does currently accept individually specified params
+
+I want to make rotations reasonably similar to resistance but make improvements where I can.
+
+I can possibly 
+1. create a set_input_one_scenario() function that returns a dataframe (or list ?) of the inputs.
+1. continue to allow run_rot() to accept individual inputs with an optional list
+
+maybe a diff way of doing too using ... operator, if I have as a list can I pass directly without having to write them all out ?
+
+in resistance this function passes all it's arguments onto another. 
+
+resistSimple <- function(...)
+{
+  input <- setInputOneScenario(...)
+
+can I create a list and then pass that to run_rot() (yes using do.call) and also save as a dataframe ?
+This use of do.call given in Hadleys advanced R.
+
+linputs <- list(max_gen = 50, n_insecticides = 2)
+do.call(run_rot, linputs)
+dfinputs <- as.data.frame(linputs)
+
+This is good in that I don't have to specify all the inputs.
+Also easy afterwards to rbind dfinputs together.
+
+Can I make the rotations workflow with fewer files than the resistance one ? :
+rotations workflow :
+1. sensi_an_rotation1.Rmd : run whole sensi analysis including setting input ranges, & analysing outputs
+1. run_rot.r              : a single model run
+
+resistance workflow
+1. sensiAnPaper1All.Rmd : code to run whole sensitivity analysis & produce plots 
+1. sensiAnPaperPart.r   : sets up param values and runs for one treatment (e.g. mixture, insecticide1)
+1. setInputOneScenario.r: creates input object for each run
+1. runModel2.r          : runs model for the passed scenarios
+
 
 
 
@@ -411,36 +525,45 @@ insecticide_switch()
 
 # TODO
 
-~ add option to stop resistance frequencies going below starting value (the thinking being that they could be maintained at this value by selection). It happens in the simulation when there is a cost and the insecticide is not in use. 
+Look back at the resistance sensitivity code and see how much of it I can use.
+
+start thinking about how best to run sensitivty analysis & collect or post-process to get num gens under 50% threshold.
+
+*Ian said first question is to assess whether there is any benefit to rotations when there are no costs and no emigration*
+
+*protocol for sensitivity analysis*
+~ store input ranges
+~ generate inputs for each run
+~ run
+~ store outputs
+~ calculate output summary stats per run
+~ concatenate inputs & outputs
+~ relate outputs to inputs
 
 
 ~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 
 ~ maybe have a set_raf() function too
 
-~ get an online version up on shinyapps
-
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 
 ~ time under resitance threshold, e.g. 50%
 
+Test 1. No refugia (i.e. Coverage=100%) or fitness costs.
+Would expect all policies to be equivalent.
 
-* rotations understand code better
-* rotations add catch to stop freq declining
-* rotate when resistant add catch to stop switch back to insecticide used < x years ago
+Test 2. Dominance of resistance and fitness costs both set to 0.5.
+I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
 
 
 ~ Ian & I talked about using fitness to determine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
 
-~ Ian will send me grant app to assess single v multi locus insecticide resistance
-~ Ian said we may want to put something in to stop Frequency going below initial starting value when not in use (because this could represent background balance between benefits & cost)
 
 
 
-*Ian said first question is to assess whether there is any benefit to rotations when there are no costs and no emigration*
+
 
 ~ test fitness_single_locus() from run_rot() and add to Rmd
-
 
 ~ check in resistance::fitnessSingleLocus() on separation of dominance of cost & selection. Was probably OK for Levick et al because we didn't have cost in. 
 But I think that dominance of cost may be set to 0 which means that the RS experiences no effect of cost.

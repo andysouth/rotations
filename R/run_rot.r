@@ -9,12 +9,7 @@
 #' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
 #' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
-#' @param plot whether to plot results
 #' @param start_insecticide which insecticide to start with
-#' @param diagnostics whether to output running info
-#' @param hardcode_fitness whether to use hardcoded fitness, default FALSE
-#' @param same_insecticides only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same
-#' @param hardcode_exposure whether to use hardcoded exposure, default FALSE
 #' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
 #' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
 #' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
@@ -24,10 +19,16 @@
 #' @param rr resistance restoration, for all insecticides or individually 
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
-#' @param logy whether to use log scale for y axis
-#' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
+#' 
+#' @param plot whether to plot results
+#' @param diagnostics whether to output running info
+# @param hardcode_fitness whether to use hardcoded fitness, default FALSE
+# @param same_insecticides only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same
+# @param hardcode_exposure whether to use hardcoded exposure, default FALSE
+#' @param logy whether to use log scale for y axis
+#' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
 #' 
 #' @examples 
 #' run_rot(rot_interval=100)
@@ -42,33 +43,35 @@
 #' @export
 
 
-run_rot <- function( max_gen = 200, 
-                     n_insecticides = 4, 
-                      start_freqs = 0.001,
-                      rot_interval = 10, 
-                      rot_criterion = 0.5, 
-                      migration = 0.01, 
-                      #migrate_intervention = 0.01, 
-                      coverage = 0.8, 
-                      plot = TRUE,
-                      start_insecticide = 1,
-                      diagnostics = FALSE,
-                      hardcode_fitness = FALSE,
-                      same_insecticides = TRUE,
-                      hardcode_exposure = FALSE,
-                      expo_hi = 0.8,
-                      expo_lo = 0,                              
-                      male_expo_prop = 1,
-                     eff = 0.8, #c(0.5, 0.7, 0.9),
-                     dom_sel = 0.5, #c(0.5, 0.5, 0.5),
-                     dom_cos = 0.5, #c(0.5, 0.5, 0.5),
-                     rr = 0.5, #c(0.5, 0.5, 0.5),
-                     cost = 0.1, #c(0,0,0),
-                     fitSS = 1,
-                     logy = FALSE,
-                     add_gens_under50 = FALSE,
-                     min_rwr_interval = 5,
-                     no_r_below_start = TRUE ) 
+run_rot <- function(max_gen = 200, 
+                    n_insecticides = 4, 
+                    start_freqs = 0.001,
+                    rot_interval = 10, 
+                    rot_criterion = 0.5, 
+                    migration = 0.01, 
+                    #migrate_intervention = 0.01, 
+                    coverage = 0.8, 
+                    start_insecticide = 1,
+                    expo_hi = 0.8,
+                    expo_lo = 0,                              
+                    male_expo_prop = 1,
+                    eff = 0.8, #c(0.5, 0.7, 0.9),
+                    dom_sel = 0.5, #c(0.5, 0.5, 0.5),
+                    dom_cos = 0.5, #c(0.5, 0.5, 0.5),
+                    rr = 0.5, #c(0.5, 0.5, 0.5),
+                    cost = 0.1, #c(0,0,0),
+                    fitSS = 1,
+                    min_rwr_interval = 5,
+                    no_r_below_start = TRUE,
+                    
+                    #inputs below not needed to run model itself
+                    plot = TRUE,
+                    diagnostics = FALSE,
+                    #hardcode_fitness = FALSE,
+                    #same_insecticides = TRUE,
+                    #hardcode_exposure = FALSE,
+                    logy = FALSE,
+                    add_gens_under50 = FALSE ) 
   {
   
   
@@ -100,21 +103,19 @@ run_rot <- function( max_gen = 200,
   #old hardcoded test function
   #exposure <- set_exposure_rot_test( n_insecticides=n_insecticides )
   
-  ### set fitnesses from hardcoded test function or based on other inputs
-  if (hardcode_fitness)
-  {
-    fitness <- fitness_single_locus_test( n_insecticides=n_insecticides, same_insecticides = same_insecticides )
-  } else
-  {
-    fitness <- fitness_single_locus(n_insecticides=n_insecticides, 
-                                    eff=eff, 
-                                    dom_sel=dom_sel, 
-                                    dom_cos=dom_cos, 
-                                    rr=rr, 
-                                    cost=cost, 
-                                    fitSS=fitSS)
-  }
+  ### set fitnesses 
+  fitness <- fitness_single_locus(n_insecticides=n_insecticides, 
+                                  eff=eff, 
+                                  dom_sel=dom_sel, 
+                                  dom_cos=dom_cos, 
+                                  rr=rr, 
+                                  cost=cost, 
+                                  fitSS=fitSS)
   
+  #old hardcoded test function
+  #if (hardcode_fitness)
+  #  fitness <- fitness_single_locus_test( n_insecticides=n_insecticides, same_insecticides = same_insecticides )
+
   # check that exposure(none) is not less than zero
   for(temp_int in 1:n_insecticides){
     if (exposure[temp_int, 'm', 'no']<0) message(sprintf("warning from calibration: m exposure to no insecticide %d is <0\n", temp_int)) 
@@ -351,24 +352,23 @@ run_rot <- function( max_gen = 200,
   # probably should be somewhere else ! ? just for active area
   # this does give the answer, but only 1 per insecticide
   # so all the results per generation are lost
-  # ARG! struggling with replacing NSE which started causing problems
-  # commented out for now
-  # df_res2 <- df_res2 %>%
-  #   filter(.data$active_or_refuge=='active') %>%
-  #   group_by(.data$resist_gene) %>%
-  #   summarise(gens_under50 = sum(.data$resistance < 0.5, na.rm=TRUE)) %>%
-  #   ungroup() %>%
-  #   left_join(df_res2, by='resist_gene')
+  # NSE problem fixed by dplyr::filter commented out for now
+  df_res2 <- df_res2 %>%
+    dplyr::filter(active_or_refuge=='active') %>%
+    group_by(resist_gene) %>%
+    summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    ungroup() %>%
+    left_join(df_res2, by='resist_gene')
   
   # if migration is set to 0 don't show refuge in plots
   plot_refuge <- ifelse(migration==0,FALSE,TRUE)
   
   # do the plots
-  # if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
-  #                               logy=logy, add_gens_under50=add_gens_under50)
-  #removed add_gens_under50 because of problems above
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
-                                logy=logy, add_gens_under50=FALSE)
+                                 logy=logy, add_gens_under50=add_gens_under50)
+  #removed add_gens_under50 because of problems above
+  # if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
+  #                               logy=logy, add_gens_under50=FALSE)
   
   invisible(df_res2)
   
