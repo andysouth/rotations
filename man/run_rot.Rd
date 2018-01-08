@@ -6,12 +6,11 @@
 \usage{
 run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
   rot_interval = 10, rot_criterion = 0.5, migration = 0.01,
-  coverage = 0.8, plot = TRUE, start_insecticide = 1,
-  diagnostics = FALSE, hardcode_fitness = FALSE, same_insecticides = TRUE,
-  hardcode_exposure = FALSE, expo_hi = 0.8, expo_lo = 0,
+  coverage = 0.8, start_insecticide = 1, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
-  rr = 0.5, cost = 0.1, fitSS = 1, logy = FALSE,
-  add_gens_under50 = FALSE, min_rwr_interval = 5, no_r_below_start = TRUE)
+  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 5,
+  no_r_below_start = TRUE, plot = TRUE, diagnostics = FALSE,
+  logy = FALSE, add_gens_under50 = FALSE)
 }
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
@@ -28,17 +27,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{coverage}{proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).}
 
-\item{plot}{whether to plot results}
-
 \item{start_insecticide}{which insecticide to start with}
-
-\item{diagnostics}{whether to output running info}
-
-\item{hardcode_fitness}{whether to use hardcoded fitness, default FALSE}
-
-\item{same_insecticides}{only used with hardcode_fitness, whether to just set fitnesses for all insecticides the same}
-
-\item{hardcode_exposure}{whether to use hardcoded exposure, default FALSE}
 
 \item{expo_hi}{exposure to insecticide in hi niche, either single or vector of 1 per insecticide}
 
@@ -58,13 +47,17 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
 
 \item{fitSS}{fitness of SS if no insecticide, for all insecticides or individually}
 
-\item{logy}{whether to use log scale for y axis}
-
-\item{add_gens_under50}{whether to add a label of num generations under 50 pcent resistance}
-
 \item{min_rwr_interval}{minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.}
 
 \item{no_r_below_start}{to stop resistance frequencies going below starting values TRUE or FALSE}
+
+\item{plot}{whether to plot results}
+
+\item{diagnostics}{whether to output running info}
+
+\item{logy}{whether to use log scale for y axis}
+
+\item{add_gens_under50}{whether to add a label of num generations under 50 pcent resistance}
 }
 \value{
 dataframe of results

@@ -308,10 +308,10 @@ run_rot <- function(max_gen = 200,
     # if no suitable insecticide left, break out of generations loop
     if (current_insecticide == 0) #(next_insecticide_found==0)
     {
-      message(sprintf("simulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
+      message(sprintf("\nsimulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
       for (temp_int in 1:n_insecticides)
       {
-        message(sprintf("frequency of resistance in females to insecticide %d is %f\n", temp_int, RAF[temp_int, 'f','intervention', gen]))  
+        message(sprintf("frequency of resistance in females to insecticide %d is %f", temp_int, RAF[temp_int, 'f','intervention', gen]))  
       }
       break #breaks out of looping generations and terminates the simulation
     }    
@@ -352,11 +352,18 @@ run_rot <- function(max_gen = 200,
   # probably should be somewhere else ! ? just for active area
   # this does give the answer, but only 1 per insecticide
   # so all the results per generation are lost
-  # NSE problem fixed by dplyr::filter commented out for now
+  # NSE problem fixed by dplyr::filter 
   df_res2 <- df_res2 %>%
     dplyr::filter(active_or_refuge=='active') %>%
     group_by(resist_gene) %>%
-    summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    # for all insecticides in all generations  
+    # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    # just for deployed insecticides 
+    summarise(gens_dep_under50 = sum(resistance < 0.5 &
+                                       #finds insecticide in use = this one
+                                       #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots  
+                                       resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+    #summarise(tot_dep_gens_under50 = sum(gens_dep_under50)) %>%    
     ungroup() %>%
     left_join(df_res2, by='resist_gene')
   
