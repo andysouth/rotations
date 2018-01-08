@@ -28,6 +28,9 @@ insecticide_check <- function( RAF1gen,
   if (rot_interval == 0)
   {  
     #TODO check with Ian that switch criterion is female only
+    
+    #TODO later alternative stop switching back to insecticide that has been used within 5 generations
+    
     if ( RAF1gen[current_insecticide, 'f','intervention'] > rot_criterion &
          #to add a min interval to stop lots short switches
          gens_this_insecticide > min_rwr_interval )
