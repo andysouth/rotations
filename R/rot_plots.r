@@ -68,7 +68,7 @@ rot_plot_resistance <- function(df_res2,
   
   if (add_gens_under50)
     #can I add text of num gens below 50%
-    gg <- gg + geom_text(aes(x=Inf, y=-Inf, label=gens_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
+    gg <- gg + geom_text(aes(x=Inf, y=-Inf, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
     
   
   
