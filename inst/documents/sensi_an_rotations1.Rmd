@@ -53,11 +53,25 @@ for(i in 1:n_scenarios)
   dfres <- do.call(run_rot, linputs)
   
   # summarise results per scenario
+  # NOTE this is also currently calc at end of run_rot() prob better to calc there
+  # and put in the output dfres, but its then repeated per 
+  # TODO first AG fix this maybe go for non dplyr solution
+  # if I do calc in run_rot then just find value at first row for each gene
+  # Error in dplyr::filter(active_or_refuge == "active") : 
+  # object 'active_or_refuge' not found
   res <- dfres %>%
+  # only assess in control areas not in refugia  
   dplyr::filter(active_or_refuge=='active') %>%
   group_by(resist_gene) %>%
-  summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
-  summarise(mean_gens_under50 = mean(gens_under50)) %>%
+  # for all insecticides in all generations  
+  # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+  # summarise(mean_gens_under50 = mean(gens_under50)) %>%
+  # just for deployed insecticides 
+  summarise(gens_dep_under50 = sum(resistance < 0.5 &
+                                   #finds insecticide in use = this one
+                                   #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots
+                                   resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+  summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
   unlist()
   
   # add results onto inputs list
