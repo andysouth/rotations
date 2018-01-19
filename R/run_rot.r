@@ -91,7 +91,9 @@ run_rot <- function(max_gen = 200,
   #todo add checks thats start_freqs is either length 1 or n_insecticides
   RAF <- set_start_freqs( n_insecticides=n_insecticides, 
                           max_gen=max_gen, 
-                          freqs = start_freqs )
+                          freqs = start_freqs,
+                          coverage = coverage )
+  
   #old hardcoded test function
   #RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_gen=max_gen )    
     
@@ -226,42 +228,51 @@ run_rot <- function(max_gen = 200,
       ######  
       # refugia
       
-      # RS coefficient common to equations 2 and 3
-      temp_coeff <- (RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
-                     RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm', 'refugia',gen-1]))*
-                     0.5*fitness[insecticide, 'RS', 'no']
+      # andy adding a condition, refugia not needed if coverage=1
+      if ( coverage < 1 )
+      {
+        # RS coefficient common to equations 2 and 3
+        temp_coeff <- (RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
+                         RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm', 'refugia',gen-1]))*
+          0.5*fitness[insecticide, 'RS', 'no']
+        
+        # male RR   
+        F_male_r_refugia <- RAF[insecticide, 'm', 'refugia',gen-1]*
+          RAF[insecticide, 'f', 'refugia',gen-1]*
+          fitness[insecticide, 'RR', 'no']+temp_coeff
+        # male SS
+        F_male_s_refugia  <- (1-RAF[insecticide, 'm', 'refugia',gen-1])*
+          (1-RAF[insecticide, 'f', 'refugia',gen-1])*
+          fitness[insecticide, 'SS', 'no']+temp_coeff 
+        
+        #normalise and store results
+        norm_coeff <- F_male_r_refugia + F_male_s_refugia
+        RAF[insecticide, 'm', 'refugia', gen] <- F_male_r_refugia/norm_coeff
+        
+        # no insecticides in use so same frequencies for both sexes
+        RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
+        
+        if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
-       # male RR   
-       F_male_r_refugia <- RAF[insecticide, 'm', 'refugia',gen-1]*
-                           RAF[insecticide, 'f', 'refugia',gen-1]*
-                           fitness[insecticide, 'RR', 'no']+temp_coeff
-       # male SS
-       F_male_s_refugia  <- (1-RAF[insecticide, 'm', 'refugia',gen-1])*
-                            (1-RAF[insecticide, 'f', 'refugia',gen-1])*
-                            fitness[insecticide, 'SS', 'no']+temp_coeff 
-      
-       #normalise and store results
-       norm_coeff <- F_male_r_refugia + F_male_s_refugia
-       RAF[insecticide, 'm', 'refugia', gen] <- F_male_r_refugia/norm_coeff
-      
-       # no insecticides in use so same frequencies for both sexes
-       RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
-      
-       if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
-      
-     }   #end of cycling insecticides
+      } # end if coverage < 1
+     } #end of cycling insecticides
     
     
     ######  
     # migration between refugia and intervention site
-    RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
-
+    # andy adding a condition, refugia not needed if coverage=1
+    if ( coverage < 1 )
+    {
+      RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
+    }
+    
     ######
     # ensure that resistance stays above starting values if the option selected
     # TODO check with Ian that this goes after migration
     
     # to work with single start_freqs value too
     if (length(start_freqs) == 1) start_freqs <- rep(start_freqs, n_insecticides)
+    
     if ( no_r_below_start )
     {
       for(insecticide in 1:n_insecticides)
@@ -281,7 +292,10 @@ run_rot <- function(max_gen = 200,
     
     ######
     # check if insecticide switch is needed
-    change_insecticide <- insecticide_check( RAF1gen = RAF[,,,gen],
+    # drop=FALSE imp to preserve site dimension when coverage=1
+    # ARRRG but then it doesn't drop the gen dimension either
+    # so may need to modify insecticide_check() 
+    change_insecticide <- insecticide_check( RAF1gen = RAF[,,,gen, drop=FALSE],
                                              current_insecticide, 
                                              rot_interval=rot_interval, 
                                              rot_criterion=rot_criterion, 
@@ -331,9 +345,15 @@ run_rot <- function(max_gen = 200,
   {
     # does calculation for all generations (final dimension in RAF array)
     df_results[[paste0('insecticide',i_num,'_active')]] <- 0.5*(RAF[i_num, 'm','intervention', ]+
-                                                      RAF[i_num, 'f','intervention', ])
-    df_results[[paste0('insecticide',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
-                                                      RAF[i_num, 'f','refugia', ]) 
+                                                                RAF[i_num, 'f','intervention', ])
+    
+    # andy refugia not done if coverage==1                                                                                                                RAF[i_num, 'f','intervention', ])
+    if ( coverage < 1 )
+    {
+      df_results[[paste0('insecticide',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
+                                                                  RAF[i_num, 'f','refugia', ])       
+    }
+
     
     #df_res_active$region[[(i_num-1)*max_gen:(i_num)*max_gen]] <- paste0("insecticide",i_num)
     #df_res_active$resistance[[(i_num-1)*max_gen:(i_num)*max_gen]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
@@ -367,8 +387,8 @@ run_rot <- function(max_gen = 200,
     ungroup() %>%
     left_join(df_res2, by='resist_gene')
   
-  # if migration is set to 0 don't show refuge in plots
-  plot_refuge <- ifelse(migration==0,FALSE,TRUE)
+  # if migration is set to 0, or coverage==1 don't show refuge in plots
+  plot_refuge <- ifelse(migration==0 | coverage==1,FALSE,TRUE)
   
   # do the plots
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 

@@ -23,8 +23,9 @@ rot_plot_resistance <- function(df_res2,
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
   
-  # filter out refuge if not wanted
-  if (!plot_refuge) df_res2 <- filter(df_res2, active_or_refuge != 'refuge')
+  # filter out refuge if not wanted (if coverage=1 no refuge anyway)
+  #if (!plot_refuge) df_res2 <- filter(df_res2, active_or_refuge != 'refuge')
+  if (!plot_refuge) df_res2 <- df_res2[df_res2$active_or_refuge=='active',]
   
   # to allow plotting of insecticide in use
   # add column which has a value if insecticide in use & NA if not
@@ -35,10 +36,18 @@ rot_plot_resistance <- function(df_res2,
     #now that active & refuge on same plot
     mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide),1.05,NA))    
   
-    
-  gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge') ) + 
+  # only colour by active_or_refuge if their is a refuge
+  if (plot_refuge) {
+    gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge') ) +
+    geom_line( alpha=0.5, lwd=1.5 )
+  }   else
+  {
+    gg <- ggplot( df_res2, aes_string(x='generation',y='resistance')) +
+    geom_line( alpha=0.5, lwd=1.5, colour='darkred' )    
+  }
 
-    geom_line( alpha=0.5, lwd=1.5 ) + 
+    
+  gg <- gg + 
     
     facet_wrap('resist_gene', ncol=1) +
     

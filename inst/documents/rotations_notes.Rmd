@@ -471,7 +471,7 @@ Look back at the resistance sensitivity code and see how much of it I can use.
 1. setInputOneScenario.r: creates input object for each run
 1. runModel2.r          : runs model for the passed scenarios
 
-I would like to modify setInputOneScenario.r so I'm not referencing inputs by there location in the matrix which seems dangerous, but I might not be able to get around ?
+I would like to modify setInputOneScenario.r so I'm not referencing inputs by their location in the matrix which seems dangerous, but I might not be able to get around ?
 
 Can I store the inputs in a dataframe with a name column, or with rownames ?
 Or probably it should be a dataframe with a column name for each input, this will make it easy to add multiple runs together.
@@ -517,17 +517,147 @@ resistance workflow
 1. setInputOneScenario.r: creates input object for each run
 1. runModel2.r          : runs model for the passed scenarios
 
+But may make sense to keep closer to the resistance workflow.
 
 
+*27/11/17*
 
-# check with Ian
-~ insecticide switch criterion is female only
+~ talked to Ian fine to send out invite for IVCC workshop now
+~ ask Hilary & Martin if they have any other staff that can come
+~ do a doodle poll for dates
+
+~ checked with Ian, fine that insecticide switch criterion is female only
+
+#Q for Ian :
+Is it mean generations under 50 for all insecticides that we want ?
+
+#discussion
+Probably just for the currently active insecticide. Might be called total effectively controlled generations.
+
+but then how do we compare multiple insecticides.
+
+We might also be interested in the other insecticides recovering.
+
+So we might want more than one output.
+
+Output1 : Total well controlled generations.
+For each generation count whether the active insecticide is below the resistance threshold of 50%.
+
+Output2 : (may not be as useful) Mean number of generations below resistance threshold across all insecticides at all times. 
+
+Scenarios.
+
+
+Ian not that keen on my minimum timespan for rotate-when-resistant, because that potentially forces continued use of an insecticide that is ineffective. He would rather that something that stops switching back to an insecticide which has been used less than e.g. 5 generations ago. But I asked whether testing for resistance is likely to be tht frequent ? If testing is only once per year than changes can perhaps only be made every 10 generations. 
+
+We agreed that we could come back to this later, because it only really becomes relevant when there are fairly high costs that being resistance down when insecticides are not in use.
+
+gens_dep_under50 : is the 
+tot_gens_dep_under50 : summed across all insecticides
+
+Good meeting with Rosemary about spray data.
+
+*28/11/17*
+Planning IVCC workshop.
+potential dates :
+8,9,11,12 and 29th January are best.
+
+8th is a monday I'd like to miss.
+
+2 hour or half day ? I'm inclined to 2 hours. More likely to get people.
+
+Sent invite.
+
+started a word doc with outline
+
+Decisions to make before : 
+~ Focus on mix v sequence, or rotations, or both
+
+*29/11/17*
+From WHO World Malaria report 2017 Q&A.
+About insecticide resistance & malria burden :
+http://www.who.int/malaria/media/world-malaria-report-2017-qa/en/
+A large multicountry evaluation coordinated by WHO between 2011 and 2016 showed that insecticides continue to be an effective tool for malaria prevention, even in areas where mosquitoes have developed resistance to pyrethroids. Further, there is no clear correlation between insecticide resistance and trends in malaria burden: some countries with resistance to pyrethroids have shown reductions in disease burden; others with less resistance have shown an increase. Ultimately, we need more data on the public health impact of insecticide resistance and further investments in this area.
+
+Also IRS coverage gone down probably because switching to more expensive insecticides :
+
+The proportion of the population at risk protected by indoor residual spraying (IRS), an intervention that involves spraying the inside walls of dwellings with insecticides, declined globally from a peak of 5.8% in 2010 to 2.9% in 2016, with decreases seen in all WHO regions. The number of people protected in 2010 was 180 million globally, reducing to about 100 million in 2016. While there is yet no clear evidence of why this is happening, the decreases in coverage with IRS insecticides are occurring as countries change or rotate the chemicals they are using to try to prevent the spread of mosquitoes resistant to pyrethroids. Because alternative insecticides are more expensive than pyrethroids, increased funding for IRS is needed to maintain high coverage levels.
+
+*8/1/2018*
+assessing where I am with rotations
+
+sensi_an_rotations1.Rmd is starting to do what I want.
+
+When I set coverage to 1 and cost to 0 I get this :
+
+run_rot(coverage=1)
+Error in if (RAF[insecticide, sex, site, gen] < start_freqs[insecticide]) RAF[insecticide, : missing value where TRUE/FALSE needed
+
+I suspect because when coverage=1 site='refugia' is not populated.
+
+BEWARE I've added a few changes with major implications in to try to fix this ...
+
+Might want to just put a condition in to not run migration when coverage=1
+
+    # migration between refugia and intervention site
+    RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
+
+*9/1/2018*
+
+getting there with model working with no refugia
+this works 
+run_rot(coverage=1)
+
+But knitting sensi_an_rotations1.Rmd
+gives error in RAF1gen[] incorrect number of dimension calls
+from insecticide_check() and I suspect because the site dimension has been dropped because it is just length 1
+
+added drop=FALSE in insecticide_check()
+but still seem to get error
+
+may need to add drop=FALSE at other places in 
+or maybe the build hasn't worked yet
+
+I think working now.
+
+*12/1/2018*
+
+run_rot(coverage=1, rot_interval=0)
+
+Error in RAF1gen[current_insecticide, "f", "intervention"] : 
+  incorrect number of dimensions
+Called from: insecticide_check(RAF1gen = RAF[, , , gen, drop = FALSE]
+
+
+*19/1/2018*
+
+model is now working with a coverage of 1
+
+From GPIRM :
+Idea that cost of resistance likely to decline when ferquency of resistance gene has been high. (We don't have this in our models).
+Insecticide resistance management strategies must, however, be implemented before the resistance gene becomes common and stable in the population; otherwise, the resistant gene will not recede even if use of the insecticide causing selection pressure is discontinued. As demonstrated by a study of blowflies by McKenzie and Whitten in 1982 (3), fitness cost is not an intrinsic property of the gene. Therefore, if that gene is allowed sufficient time to become common in a population, the rest of the genome will adapt to incorporate it without a significant fitness cost. At this point, even if the selection pressure is removed, the resistance gene will remain in the population.
+
+Example of sequential use and cost from GPIRM
+Example in Colombia: resistance genes disappeared from the vector population when selection pressure was removed. A report submitted by WHO AMRO regional entomologists showed that, in 2005–2006, resistance to pyrethroids and DDT was identified in An. darlingi. A decision was quickly made to change to fenitrothion, an organophosphate with a different mode of action, for IRS. Rapid implementation of this alternative, which thereby removed the selection pressure, reduced the
+frequency of resistance. In 2010, susceptibility tests showed that the frequency of resistance genes in the vector population had dropped below the level of detection, and pyrethroids were once again introduced into the IRS programme, albeit on a more limited scale.
+
+
+Working on rotations_story.Rmd to create visuals about rotations we can use in upcoming talks.
+
+
 
 # TODO
 
-Look back at the resistance sensitivity code and see how much of it I can use.
 
-start thinking about how best to run sensitivty analysis & collect or post-process to get num gens under 50% threshold.
+
+
+~ get sensi_an_rotations1.Rmd working for Ians Q1
+
+
+gens_dep_under50 is ugly and I need to rewrite in sensi_an_rotations !
+
+BEWARE active in active_or_refuge is potentially confusing, does not mean that insecticide is active/deployed, just means its is the active area (a different insecticide may be deployed)
+
 
 *Ian said first question is to assess whether there is any benefit to rotations when there are no costs and no emigration*
 
@@ -578,11 +708,18 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
 
 
 # state of play
+~ sensi_an_rotations1.Rmd : starting on sensitivity analysis
+~~  produces an output dataframe containing both inputs and outputs
+
 ~ rotations1.Rmd : example plots
 ~ UI : rotations/shiny/rotresist1/server.r
-
+      https://andysouth.shinyapps.io/rotresist1/
 ~ RAF[,,,2] to get allele frequencies for generation 2 (by insecticide,sex and active|refuge)
 
+~ c 15 generations per year for mosquitos, 25 day generation time.
+~ 3 years = 45 generations
+~ https://www.cdc.gov/malaria/about/biology/mosquitoes/
+~
 
 
 # funding opportunities

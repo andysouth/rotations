@@ -1,0 +1,86 @@
+---
+title: "Rotations and Insecticide Resistance the story"
+output:
+  pdf_document:
+    keep_tex: false
+    fig_caption: true
+    latex_engine: pdflatex
+
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+
+```{r, eval=TRUE, include=FALSE}
+
+library(knitr)
+#https://stackoverflow.com/a/36234023/1718356 for fig.pos = 'h'
+opts_chunk$set(fig.height=3, fig.width=7, fig.pos = 'h', echo=FALSE, warning=FALSE, message=FALSE)
+# opts_chunk$set(dev="tiff",
+#                dev.args=list(compression="lzw"),
+#                dpi=300,
+#                cache=FALSE,
+#                fig.path='pap2figs/')
+```
+
+```{r, results='hide'}
+  library(rotations)
+  library(ggplot2)
+```
+
+In **sequential use** an insecticide is changed when it reaches a resistance threshold, in contrast in a **rotation** an insecticide is changed before it reaches a resistant threshold.
+
+If there are no costs of resistance or migration from untreated areas then rotations and sequences are likely to result in a similar effect on resistance frequencies as seen in the following plots.
+
+*Question to myself* why do rotations last c 5 generations longer in all comparisons ?
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=7, fig.align='left', fig.cap="A sequence, insecticide changed when resistance threshold reached."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 15 generations (c 1 year)."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+
+```
+
+```{r, eval=FALSE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 45 generations (c 3 years)."}
+#eval=FALSE
+dfr <- run_rot(n_insecticides=2, rot_interval=45, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+
+```
+
+\newpage
+If there are costs of resistance then we would expect resistance frequencies to decline when an insecticide is not in use. However this may not make much difference between the effect of a sequence and a rotation. In a sequence the resistance frequency builds up once and then gets a long period to decline when not in use. In a rotation resistance frequency increases as a series of small steps with short declines in between (see following plots).  
+
+(This is assuming that costs don't change according to the frequency of the resistance allele - there is some evidence to suggest that costs may decline when a resistance allele has been at a high frequency for a long time).
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with resistance cost of 0.01."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with resistance cost of 0.01."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+
+```
+
+\newpage
+Even without costs of resistance we might expect resistance frequencies to decline when an insecticide is not in use due to immigration from nearby areas that were not treated originally. This is shown in the following two plots where a neighbouring untreated area and exchange of migrants is represented.
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with dispersal between treated and untreated areas (no resistance costs)."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0, coverage=0.8, migration = 0.01)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with with dispersal between treated and untreated areas (no resistance costs)."}
+
+dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0, coverage=0.8, migration = 0.01)
+
+```
+

@@ -1,6 +1,6 @@
 ---
-title: "sensi_an_rotations1 : start of sensitivity analysis for rotations"
-output: pdf_document:
+title: "sensi_an_rotations1. Start of sensitivity analysis for rotations."
+output: pdf_document
 #output: word_document
 author: "Andy South and Ian Hastings"
 date: "`r Sys.Date()`"
@@ -21,7 +21,13 @@ Test 1. No refugia (i.e. Coverage=100%) or fitness costs. Would expect all polic
 Test 2. Dominance of resistance and fitness costs both set to 0.5.
 I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
 
-```{r, eval=TRUE}
+
+Testing sensitvity analysis to answer question 1. Are sequences and rotations equivalent when coverage 100% and no fitness costs. On each page should see a run with 1 set of inputs first for sequence then for rotation.
+
+\pagebreak
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=4}
+#results='hide',
 
 #start small & build it up
 #maybe create an equiv. of resistance::sensiAnPaperPart.r later
@@ -42,63 +48,81 @@ df_res_all <- data.frame()
 
 for(i in 1:n_scenarios)
 {
-  # expo_hi 0.1 – 0.9
-  # eff 0.3 - 1
+  # inputs (could also be saved to a dataframe first & extracted one row at a time)
   linputs <- list()
-  
+  # constant inputs
+  # for Ians Q1 set coverage to 1 & cost to 0 
+  linputs$coverage <- 1
+  linputs$cost <- 0  
+  # variable inputs
   linputs$expo_hi <-  runif(1, min=0.1, max=0.9)
   linputs$eff <-      runif(1, min=0.3, max=1)
   
-  # run one scenario
-  dfres <- do.call(run_rot, linputs)
+  # because I want to compare sequence rot_when_r to rotation
+  # I could run all the scenarios above for both seq & rot
+  # (and filter out later)
   
-  # summarise results per scenario
-  # NOTE this is also currently calc at end of run_rot() prob better to calc there
-  # and put in the output dfres, but its then repeated per 
-  # TODO first AG fix this maybe go for non dplyr solution
-  # if I do calc in run_rot then just find value at first row for each gene
-  # Error in dplyr::filter(active_or_refuge == "active") : 
-  # object 'active_or_refuge' not found
-  res <- dfres %>%
-  # only assess in control areas not in refugia  
-  dplyr::filter(active_or_refuge=='active') %>%
-  group_by(resist_gene) %>%
-  # for all insecticides in all generations  
-  # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
-  # summarise(mean_gens_under50 = mean(gens_under50)) %>%
-  # just for deployed insecticides 
-  summarise(gens_dep_under50 = sum(resistance < 0.5 &
-                                   #finds insecticide in use = this one
-                                   #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots
-                                   resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
-  summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
-  unlist()
-  
-  # add results onto inputs list
-  linputs <- c(linputs, res)
-  
-  # change list to dataframe
-  df_in_out <- as.data.frame(linputs)
-  
-  # rbind this scenario inputs & results onto previous
-  # not a good speed or memory way of doing ... but a start
-  df_res_all <- rbind(df_res_all, df_in_out)
-  
-}
+  for(rot_or_not in 0:1)
+  {  
+    #TODO look up about generating random integers in R
+    
+    #beware currently interval generated one more time than it is needed
+    #random rot interval
+    linputs$rot_interval <- round( runif(1,min=5,max=50), 0 )
+    
+    #multiply by rot_or_not to get rot_int of 0 every other run
+    linputs$rot_interval <- linputs$rot_interval * rot_or_not
+    
+    #print scenario num and inputs to doc for exploration
+    cat("scenario",i,
+        " expo_hi",linputs$expo_hi,
+        " eff",linputs$eff,
+        " rot_interval",linputs$rot_interval,
+        "\n")
+    
+    ##################
+    # run one scenario
+    dfres <- do.call(run_rot, linputs)
+    
+    # summarise results per scenario
+    # NOTE this is also currently calc at end of run_rot() prob better to calc there
+    # and put in the output dfres, but its then repeated per 
+    # TODO first AG fix this maybe go for non dplyr solution
+    # if I do calc in run_rot then just find value at first row for each gene
+    # Error in dplyr::filter(active_or_refuge == "active") : 
+    # object 'active_or_refuge' not found
+    res <- dfres %>%
+    # only assess in control areas not in refugia  
+    dplyr::filter(active_or_refuge=='active') %>%
+    group_by(resist_gene) %>%
+    # for all insecticides in all generations  
+    # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+    # summarise(mean_gens_under50 = mean(gens_under50)) %>%
+    # just for deployed insecticides 
+    summarise(gens_dep_under50 = sum(resistance < 0.5 &
+                                     #finds insecticide in use = this one
+                                     #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots
+                                     resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+    summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
+    unlist()
+    
+    #print results in doc for diagnostics
+    cat("tot gens deployed under freq 0.5 =", res,"\n\n")
+    
+    # create dataframe from inputs and outputs
+    df_in_out <- as.data.frame(c(linputs, res))
+    
+    # rbind this scenario inputs & results onto previous
+    # not a good speed or memory way of doing ... but a start
+    df_res_all <- rbind(df_res_all, df_in_out)
+    
+  } #end rot_or_not loop
+} #end scenario loop
 
+# save object containing inputs and results as rda for analysis
+save(df_res_all, file='listOutMix_rr_10.rda') #paste0(outFolder,'*.rda'))
 
 ```
 
-<!-- eval=FALSE to stop slow code being executed after 1st time --> 
-```{r, eval=FALSE}
 
-  # this is how it was done for resistance paper1
-  # nScenarios <- 10  
-  # ## do model runs
-  # listOutMix <- sensiAnPaperPart( nScenarios, insecticideUsed = 'mixture', experiment=experiment )
-  # ## save results objects as rda for re-use
-  # save(listOutMix, file=paste0(outFolder,'listOutMix_rr_10.rda'))
-
-     
   
-```  

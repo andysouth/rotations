@@ -4,7 +4,8 @@
 \alias{set_start_freqs}
 \title{set_start_freqs allows starting allele frequencies to be set}
 \usage{
-set_start_freqs(n_insecticides = NULL, max_gen = 200, freqs = 0.001)
+set_start_freqs(n_insecticides = NULL, max_gen = 200, freqs = 0.001,
+  coverage = 0.5)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}
@@ -13,6 +14,8 @@ set_start_freqs(n_insecticides = NULL, max_gen = 200, freqs = 0.001)
 
 \item{freqs}{starting allele frequencies either one per insecticide or same for all
 in this version same for m,f,intervention & refuge}
+
+\item{coverage}{proportion of mosquitoes that are covered by the intervention, if coverage==1 no refuge}
 }
 \value{
 array of allele frequencies with just first record filled

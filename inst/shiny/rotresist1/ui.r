@@ -102,28 +102,14 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),
            sliderInput("frequency_B", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr()          
-    ),    
-    column(1, offset = 0,
-           h5("dominance, cost"),
-           sliderInput("dom_cos_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr(),
-           sliderInput("dom_cos_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr()
     ),
-    column(1, offset = 0,
-           h5("dom., selection"),
-           sliderInput("dom_sel_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr(),
-           sliderInput("dom_sel_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
-           hr()
-    ),    
     column(1, offset = 0,
            h5("exposure"),
            sliderInput("exposure_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),#hr(),hr(),
            sliderInput("exposure_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
-     ),    
+    ),    
     column(1, offset = 0,
            h5("effectiveness"),
            sliderInput("effectiveness_A", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
@@ -132,11 +118,32 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr()           
     ),
     column(1, offset = 0,
-           h5("RR restoration"),
+           h5("R. restoration"),
            sliderInput("advantage_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("advantage_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()          
+    ),
+    column(1, offset = 0,
+           h5("dom., selection"),
+           sliderInput("dom_sel_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr(),
+           sliderInput("dom_sel_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr()
+    ), 
+    column(1, offset = 0,
+           h5("cost"),
+           sliderInput("cost_A", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
+           hr(),
+           sliderInput("cost_B", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
+           hr()          
+    ),
+    column(1, offset = 0,
+           h5("dominance, cost"),
+           sliderInput("dom_cos_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr(),
+           sliderInput("dom_cos_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           hr()
     ),
     column(1, offset = 0,
            h5("coverage"),
@@ -151,14 +158,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),#hr(),hr(),
            sliderInput("migration_B", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
            hr()
-    ),  
-    column(1, offset = 0,
-           h5("cost"),
-           sliderInput("cost_A", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
-           hr(),
-           sliderInput("cost_B", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
-           hr()          
-    )
+    )  
   ), #end fluid row
 
   fluidRow(

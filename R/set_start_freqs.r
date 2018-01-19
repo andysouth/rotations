@@ -4,7 +4,8 @@
 #' @param n_insecticides number of insecticides, optional can just be specified by number of items in vector expo
 #' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param freqs starting allele frequencies either one per insecticide or same for all
-#'              in this version same for m,f,intervention & refuge    
+#'              in this version same for m,f,intervention & refuge 
+#' @param coverage proportion of mosquitoes that are covered by the intervention, if coverage==1 no refuge            
 #' 
 #' @examples
 #' #frequencies the same for all insecticides
@@ -26,7 +27,8 @@
 #' 
 set_start_freqs <- function( n_insecticides = NULL,
                              max_gen = 200,
-                             freqs = 0.001 )
+                             freqs = 0.001,
+                             coverage = 0.5)
 {
   
   #get n_insecticides if it is not specified
@@ -35,8 +37,20 @@ set_start_freqs <- function( n_insecticides = NULL,
   
   # create empty array
   # RAF stands for resistance allele frequency
-  RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
+  #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
 
+  # BEWARE
+  # andy if coverage==1 don't need refugia
+  # can I create the RAF array with no refugia ? or might that cause problems elsewhere
+  # it depends how the array is accessed
+  # in some cases is OK
+  if ( coverage < 1 ) site <- c('intervention','refugia')
+  else site <- c('intervention')
+  
+  RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=site, gen=1:max_gen)
+  
+  
+  
   # fill generation 1
   # in this version same for m,f,intervention & refuge
   # RAF[, 'm', 'intervention', 1] = freqs
