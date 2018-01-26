@@ -5,7 +5,7 @@
 \title{insecticide_check check if insecticide needs to be changed}
 \usage{
 insecticide_check(RAF1gen, current_insecticide, rot_interval, rot_criterion,
-  gens_this_insecticide, min_rwr_interval)
+  gens_this_insecticide, min_rwr_interval, exit_rot)
 }
 \arguments{
 \item{RAF1gen}{single generation array of resistance allele frequencies}
@@ -19,6 +19,8 @@ insecticide_check(RAF1gen, current_insecticide, rot_interval, rot_criterion,
 \item{gens_this_insecticide}{num generations this insecticide has been used for}
 
 \item{min_rwr_interval}{minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.}
+
+\item{exit_rot}{whether to exit rotation interval if rot_criterion is reached}
 }
 \value{
 TRUE/FALSE whether to change

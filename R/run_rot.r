@@ -21,6 +21,7 @@
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
+#' @param exit_rot whether to exit rotation interval if rot_criterion is reached
 #' 
 #' @param plot whether to plot results
 #' @param diagnostics whether to output running info
@@ -63,6 +64,7 @@ run_rot <- function(max_gen = 200,
                     fitSS = 1,
                     min_rwr_interval = 5,
                     no_r_below_start = TRUE,
+                    exit_rot = TRUE,
                     
                     #inputs below not needed to run model itself
                     plot = TRUE,
@@ -70,7 +72,7 @@ run_rot <- function(max_gen = 200,
                     #hardcode_fitness = FALSE,
                     #same_insecticides = TRUE,
                     #hardcode_exposure = FALSE,
-                    logy = FALSE,
+                    logy = TRUE,
                     add_gens_under50 = FALSE ) 
   {
   
@@ -300,7 +302,8 @@ run_rot <- function(max_gen = 200,
                                              rot_interval=rot_interval, 
                                              rot_criterion=rot_criterion, 
                                              gens_this_insecticide=gens_this_insecticide,
-                                             min_rwr_interval=min_rwr_interval)
+                                             min_rwr_interval=min_rwr_interval,
+                                             exit_rot=exit_rot)
 
     
     if (! change_insecticide)

@@ -30,57 +30,150 @@ opts_chunk$set(fig.height=3, fig.width=7, fig.pos = 'h', echo=FALSE, warning=FAL
 
 In **sequential use** an insecticide is changed when it reaches a resistance threshold, in contrast in a **rotation** an insecticide is changed before it reaches a resistant threshold.
 
-If there are no costs of resistance or migration from untreated areas then rotations and sequences are likely to result in a similar effect on resistance frequencies as seen in the following plots.
+If there are no costs of resistance or migration from untreated areas then rotations and sequences are likely to result in very similar effect on resistance frequencies as seen in the following plots.
 
-*Question to myself* why do rotations last c 5 generations longer in all comparisons ?
+These plots assume that an insecticide is changed when it reaches the resistance frequency threshold even if the rotation interval has yet to be reached. Without this assumption then rotations always take a little longer time than sequences but at the expense of reaching slightly higher resistance frequencies. 
+
+The plots here are for 2 insecticides to keep things simple however the model can be run for any number of insecticides. Effectiveness of insecticides at killing SS is set to 0.8 unless indicated.
+
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=2.5, fig.width=7, fig.align='left', fig.cap="A sequence, insecticide changed when resistance threshold reached."}
 
-dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+dfrot0 <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0, coverage=1)
 
 ```
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 15 generations (c 1 year)."}
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 10 generations (c 1 year)."}
 
-dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+dfrot15 <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0, coverage=1)
 
 ```
 
-```{r, eval=FALSE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 45 generations (c 3 years)."}
+```{r, eval=FALSE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A rotation, insecticide changed every 30 generations (c 3 years)."}
 #eval=FALSE
-dfr <- run_rot(n_insecticides=2, rot_interval=45, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=30, expo_hi=0.5, eff=0.8, cost=0, coverage=1)
 
 ```
 
 \newpage
-If there are costs of resistance then we would expect resistance frequencies to decline when an insecticide is not in use. However this may not make much difference between the effect of a sequence and a rotation. In a sequence the resistance frequency builds up once and then gets a long period to decline when not in use. In a rotation resistance frequency increases as a series of small steps with short declines in between (see following plots).  
+###costs of resistance
 
-(This is assuming that costs don't change according to the frequency of the resistance allele - there is some evidence to suggest that costs may decline when a resistance allele has been at a high frequency for a long time).
+If there are costs of resistance then we would expect resistance frequencies to decline when an insecticide is not in use. However this may not make much difference between the effect of a sequence and a rotation. In a sequence the resistance frequency builds up once and then gets a long period to decline when not in use. In a rotation resistance frequency increases as a series of small steps with short declines in between (see following plots). The time it takes for both insecticides to reach the resistance threshold of 50% is still very similar for a sequence and a rotation.  
+
+(This is assuming that costs don't change according to the frequency of the resistance allele - there is some evidence to suggest that costs may decline when a resistance allele has been at a high frequency for a long time (mentioned in GPIRM), if this is the case then it could indeed provide an advantage for rotations over sequences).
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with resistance cost of 0.01."}
 
-dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+dfseq <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.01, coverage=1)
 
 ```
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with resistance cost of 0.01."}
 
-dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+dfrot <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.01, coverage=1)
+
+#to compare 2 previous scenarios
+#rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 
 ```
 
 \newpage
-Even without costs of resistance we might expect resistance frequencies to decline when an insecticide is not in use due to immigration from nearby areas that were not treated originally. This is shown in the following two plots where a neighbouring untreated area and exchange of migrants is represented.
+###costs of resistance
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with dispersal between treated and untreated areas (no resistance costs)."}
+Costs increased to 5%.
 
-dfr <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0, coverage=0.8, migration = 0.01)
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with resistance cost of 0.05."}
 
-```
-
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with with dispersal between treated and untreated areas (no resistance costs)."}
-
-dfr <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0, coverage=0.8, migration = 0.01)
+dfseq <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.05, coverage=1)
 
 ```
 
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with resistance cost of 0.05."}
+
+dfrot <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.05, coverage=1)
+
+#to compare 2 previous scenarios
+#rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
+```
+
+\newpage
+###immigration from untreated areas
+
+Even without costs of resistance we might expect resistance frequencies to decline when an insecticide is not in use due to immigration from nearby areas that were not treated originally. This is shown in the following two plots where a neighbouring untreated area ('refuge') and exchange of migrants is represented. In this example the treated and untreated areas are set to the same size and migration at 1%. The time it takes for both insecticides to reach the resistance threshold of 50% is still very similar for a sequence and a rotation.  
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with 1 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.01)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with 1 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.01)
+
+```
+
+\newpage
+###costs and immigration
+
+Including both costs of resistance and immigration from an untreated area, still results in little difference between a sequence and rotation in terms of time-to-resistance to both insecticides.  
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with dispersal between treated and untreated areas and resistance cost of 0.005."}
+
+#upped max_gen because migration and cost decrease rise in resistance
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=0.5, migration = 0.01)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with with dispersal between treated and untreated areas and resistance cost of 0.005."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=0.5, migration = 0.01)
+
+```
+
+\newpage
+###dominance
+
+In all the preceeding plots dominance of resistance and dominance of cost were set to 0.5. Here we check whether changing the dominance of cost between 0 and 1 has an effect on rotations. It does not appear to change time to the 50% resistance threshold, on the following page we try increasing the threshold.
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with a resistance cost of 0.005 and dominance of cost set to 0 (recessive)."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with a resistance cost of 0.005 and dominance of cost set to 1 (dominant)."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1)
+
+```
+
+\newpage
+###dominance of cost effects with increased resistance threshold (90%)
+
+Still little difference between sequence and rotation.
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 0"}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, rot_criterion = 0.9, start_freqs = 0.001)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 0."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, rot_criterion = 0.9, start_freqs = 0.001)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 1."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, rot_criterion = 0.9, start_freqs = 0.001)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 1."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, rot_criterion = 0.9, start_freqs = 0.001)
+
+```

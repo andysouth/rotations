@@ -8,6 +8,8 @@
 #' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param gens_this_insecticide num generations this insecticide has been used for
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
+#' @param exit_rot whether to exit rotation interval if rot_criterion is reached
+
 # @examples 
 #' 
 #' @return TRUE/FALSE whether to change 
@@ -19,15 +21,16 @@ insecticide_check <- function( RAF1gen,
                                rot_interval, 
                                rot_criterion,
                                gens_this_insecticide,
-                               min_rwr_interval
+                               min_rwr_interval,
+                               exit_rot
                               ) 
 {
   change_insecticide <- FALSE
   
-  # if rotate-when resistant
-  if (rot_interval == 0)
+  # if rotate-when resistant OR exit_rot==TRUE so rotation can be exited
+  if (rot_interval == 0 | exit_rot == TRUE)
   {  
-    #TODO check with Ian that switch criterion is female only
+    #BEWARE that switch criterion is female only
     
     #TODO later alternative stop switching back to insecticide that has been used within 5 generations
     
@@ -40,9 +43,11 @@ insecticide_check <- function( RAF1gen,
       change_insecticide <- TRUE        
     }
     #message(sprintf("confirm. RAF=%f, change_insecticide=%d \n", RAF1gen[current_insecticide, 'f','intervention'], change_insecticide))
-    
-  } else if (rot_interval != 0)
-    # if periodic rotation  
+  } 
+
+  # even if in a rotation it my have assessed in previous loop that insecticide needs to be changed  
+  if (rot_interval != 0)
+  # if a rotation  
   {
     if (gens_this_insecticide != rot_interval) 
     {

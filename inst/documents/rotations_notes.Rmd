@@ -634,8 +634,11 @@ Called from: insecticide_check(RAF1gen = RAF[, , , gen, drop = FALSE]
 model is now working with a coverage of 1
 
 From GPIRM :
-Idea that cost of resistance likely to decline when ferquency of resistance gene has been high. (We don't have this in our models).
+Idea that cost of resistance likely to decline when frequency of resistance gene has been high. (We don't have this in our models).
 Insecticide resistance management strategies must, however, be implemented before the resistance gene becomes common and stable in the population; otherwise, the resistant gene will not recede even if use of the insecticide causing selection pressure is discontinued. As demonstrated by a study of blowflies by McKenzie and Whitten in 1982 (3), fitness cost is not an intrinsic property of the gene. Therefore, if that gene is allowed sufficient time to become common in a population, the rest of the genome will adapt to incorporate it without a significant fitness cost. At this point, even if the selection pressure is removed, the resistance gene will remain in the population.
+
+But I looked at the 1982 paper and not sure it supports that ?
+Seems to me that McKenzie1982 shows that relative fitness of the susceptible genotypes increase over time as would be expected by a decline in the concentration of the active ingredient ? (and similar to our WoS paper)
 
 Example of sequential use and cost from GPIRM
 Example in Colombia: resistance genes disappeared from the vector population when selection pressure was removed. A report submitted by WHO AMRO regional entomologists showed that, in 2005–2006, resistance to pyrethroids and DDT was identified in An. darlingi. A decision was quickly made to change to fenitrothion, an organophosphate with a different mode of action, for IRS. Rapid implementation of this alternative, which thereby removed the selection pressure, reduced the
@@ -644,15 +647,146 @@ frequency of resistance. In 2010, susceptibility tests showed that the frequency
 
 Working on rotations_story.Rmd to create visuals about rotations we can use in upcoming talks.
 
+*22/1/2018*
+
+Why do rotations last longer than sequences ? (even when coverage=1 & cost=0)
+
+I think it's just because the rotation interval continues to its end.
+
+e.g. added an option to plot a 2nd scenario to rot_plot_resistance()
+
+dfrot0 <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+dfrot15 <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0, coverage=1)
+rot_plot_resistance(dfrot0, df_resanother=dfrot15, plot_refuge=FALSE)
+
+So maybe we should have assessment of the resistance frequency in the rotation strategy too ?
+I could add it as a flag.
+
+done, now works for simple scenario
+
+BUT rotations still lasting a few generations longer in later scenarios ?
+dfseq <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+dfrot <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
+rotation
+insecticide2 192 2 active 0.46672149
+insecticide2 193 2 active 0.48524932
+insecticide2 194 NA active 0.50379224
+
+sequence
+insecticide1 187 0.4710576
+insecticide1 188 0.4895936
+insecticide1 189 0.5081326
+
+
+Could it be because an extra generation is slipped in at each rotation switchover ?
+Or might be that more decline happens in rotations
+
+Actually I think it's due to min_rwr_interval which was set at 5 by default and in the current code is implemented for sequence but not for rotation.
+
+hmmm but even when I set min_rwr_interval to 1 there seems to be the difference ?
+is there any info in the console messages ?
+
+###rotation :
+generation 166, switch from insecticide 1 to 2; frequencies = 0.402193 and 0.178446
+generation 181, switch from insecticide 2 to 1; frequencies = 0.402193 and 0.384221
+generation 188, switch from insecticide 1 to 2; frequencies = 0.512362 and 0.393770
+
+simulation terminating at generation 194 because all RAFs above threshold of 0.500000
+
+frequency of resistance in females to insecticide 1 is 0.504826
+frequency of resistance in females to insecticide 2 is 0.503792
+
+###sequence :
+generation 92, switch from insecticide 1 to 2; frequencies = 0.510798 and 0.001000
+generation 183, switch from insecticide 2 to 1; frequencies = 0.510798 and 0.397957
+
+simulation terminating at generation 189 because all RAFs above threshold of 0.500000
+
+frequency of resistance in females to insecticide 1 is 0.508133
+frequency of resistance in females to insecticide 2 is 0.503261
+
+
+
+Hi Ian,
+
+I'm looking into rotations and mostly I find very little difference from sequences even with costs or refuges. In a sequence resistance builds up once and then declines, in rotations it builds up in steps and declines in between but the time-to-resistance is the same for both.  
+
+Then I refound this idea in GPIRM that costs of resistance are likely to decline when frequency of resistance gene has been high. 
+
+"Insecticide resistance management strategies must, however, be implemented before the resistance gene becomes common and stable in the population; otherwise, the resistant gene will not recede even if use of the insecticide causing selection pressure is discontinued. As demonstrated by a study of blowflies by McKenzie and Whitten in 1982 (3), fitness cost is not an intrinsic property of the gene. Therefore, if that gene is allowed sufficient time to become common in a population, the rest of the genome will adapt to incorporate it without a significant fitness cost. At this point, even if the selection pressure is removed, the resistance gene will remain in the population."
+
+If this was the case it would probably favour rotations over sequences.
+
+Do you have any thoughts ? Do you think it likely that costs will decline over time at high resistance frequencies ?
+
+I looked at the 1982 paper (attached) and I don't think it supports the idea that costs decline over time (but it does seem to have data on relative fitness of RR,RS,SS that we could use in the WoS paper, gives evidence for dominance changing over time and could be used to derive our model parameters.)
+
+Andy
+
+Thanks Andy
+ 
+That results should put the cat amongst the pigeons i.e. little difference between sequences and rotations.
+ 
+There are examples of “compensatory” mutations offsetting the fitness cost of a mutation. Often from bacteria where populations can be very high and the population is asexual so that the mutation and modifier are always linked. It is less well studied in larger animals. There may be examples from IR but I am unaware. Often it is a post hoc explanation plucked out the air to explain why there is no apparent fitness effect i.e. “there were fitness effect, but they must have been modified”.
+ 
+I like the 1982 paper… I have put it in the WoS folder with a note to discuss it.
+
+*25/1/2018*
+
+noticed that rotation plots don't have a log y axis where resistance plots do.
+There is a logy option in run_rot() should probably set that TRUE by default.
+yes fixed
+
+Rowland(1981) has some good stuff on costs of resistance and selection coefficients and putting these into a model and testing against field data :
+
+Withdrawal of dieldrin in two regions of India led to the frequency of SS increasing from 0.31 to 0.62 within 7 months (Rao et al., 1960) and from 0.11 to 0.85 within 9 months (Bhatia & Deobhankar, 1963).
+In Fig. 9 the computed reversions in An.garnbiae and Anstephemi have been redrawn, expressed in terms of SS rather than R frequency. Superimposed on these are the An. culicifacies field reversions. Assuming that one generation takes 1 month (cf. Curtis et al., 1978), the computer
+predictions seem to be consistent with the field reversions. 
+
+Having established why and to what extent resistance should revert when cyclodiene usage is ended, the question remains could yHCH be effectively re-introduced at a later date as part of a insecticide-rotation resistance management strategy? Because RR is the most deleterious genotype, the rate of reversion should be rapid initially. Only when R is predominantly carried by heterozygotes would the rate of reversion begin to slow down. For this reason resistance cannot be expected to revert completely, but it should nevertheless revert sufficiently to warrant the useful re-introduction of yHCH for several generations at a time. An unresolved question, potentially damagingto the long-term future of the rotation strategy,is would modifiers of fitness evolve if cyclodieneusage was prolonged?
+
+It seems, then, that rotation strategies might prolong dieldrin efficacy indefinitely, not just against anophelines but against many species of insect. 
+
+[because the combination of selection coefficient, cost and dominance means that resistance doesn't rise too fast when used and declines when not in use].
+
+Rowland2013 data on hut trials of actellic - pirimphos-methyl - an OP. Includes monthly change and at diff concentrations so could be useful for WoS, but doesn't have resistant & susceptible (does have resistance frequencies).
+
+Matowo2015 selection of insecticide resistance, seems to show changing insecticide resistance in response to interventions. but only shows mortality change not resistance frequency change.
+
+Kim2016 interesting risk paper :
+The main policy implication of this analysis is that evolutionary speed of insecticide resistance and
+maximal larviciding efficacy strongly affect the preferred actions implied by our decision analysis tool and that these parameters jointly offer the largest potential benefits from reduced uncertainty
+
+*26/1/2018*
+
+what to call new UI resistrot consistent with resistmixseq
 
 
 # TODO
 
+Explore idea from Rowland (1981) that resistance declines faster when it is mostly held by the RR (i.e. at higher allele frequencies) 
 
+
+
+Look into data on changing allele frequencies over time (e.g. for Kdr)...
+
+It occurred to me that maybe a benefit of rotations is that if it is difficult to measure resistance allele frequencies they provide a lower risk of reaching resistance thresholds for any insecticide. i.e. are they a better strategy in light of uncertainty in resistance allele frequencies ?
+
+
+~ check again on current small differences between rotations & sequences
+
+
+
+
+~ maybe I can write a function to plot 2 scenarios on the same graph (in the same way that curtis fig2 plots mix & seq on same graph) ?
+~ I could have the insecticide use still along the top but with diff colours showing the two alternatives
 
 
 ~ get sensi_an_rotations1.Rmd working for Ians Q1
 
+~ can we get cost to decrease over time at high frequency as suggested in GPIRM ?
 
 gens_dep_under50 is ugly and I need to rewrite in sensi_an_rotations !
 

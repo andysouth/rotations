@@ -4,8 +4,8 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE,
-  add_gens_under50 = TRUE)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = TRUE,
+  add_gens_under50 = TRUE, df_resanother = NULL)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
@@ -15,6 +15,8 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = FALSE,
 \item{logy}{whether to use log scale for y axis}
 
 \item{add_gens_under50}{whether to add a label of num generations under 50percent resistance}
+
+\item{df_resanother}{exploratory option to plot results of another scenario on the same graph}
 }
 \value{
 ggplot object
@@ -25,5 +27,6 @@ rot_plot_resistance plot rotation simulation resistance results
 \examples{
 df_res2 <- run_rot()
 rot_plot_resistance(df_res2)
+
 
 }
