@@ -52,6 +52,6 @@ can be used in 2 ways
 2) by passing separate inputs (e.g. eff1) for a single niche for testing & vis
 }
 \examples{
-fitnessSingleLocus()
-fitnessSingleLocus(eff1 = 0.8)
+#fitnessSingleLocus()
+#fitnessSingleLocus(eff1 = 0.8)
 }

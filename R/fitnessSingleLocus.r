@@ -23,8 +23,8 @@
 #' @param plot whether to plot fitness
 #' 
 #' @examples 
-#' fitnessSingleLocus()
-#' fitnessSingleLocus(eff1 = 0.8)
+#' #fitnessSingleLocus()
+#' #fitnessSingleLocus(eff1 = 0.8)
 
 #' @return fitness values
 #' @export
