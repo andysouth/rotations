@@ -80,49 +80,27 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),
            h2("B")
     ),
-    column(1, offset = 0,
-           h5("n. insecticides"),
-           sliderInput("n_A", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
-           hr(), #hr(),hr(),
-           sliderInput("n_B", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
-           hr()
-    ), 
-    # moved up to one slider for both scenarios
-    # column(1, offset = 0,
-    #        h5("generations"),
-    #        sliderInput("max_gen_A", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
-    #        hr(), #hr(),hr(),
-    #        sliderInput("max_gen_B", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
-    #        hr()
-    # ),  
-    column(1, offset = 0,
-           h5("rotation interval*"),
-           sliderInput("rot_interval_A", NULL, val=10, min = 0, max = 100, step = 10, ticks=FALSE),
-           hr(), #hr(),hr(),
-           sliderInput("rot_interval_B", NULL, val=0, min = 0, max = 100, step = 10, ticks=FALSE),
-           hr()
-    ),     
     column(1,
            h5("start freq."),
            sliderInput("frequency_A", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr(),
            sliderInput("frequency_B", NULL, val=0.01, min = 0.0001, max = 0.1, step = 0.001, ticks=FALSE),
            hr()          
-    ),
+    ),    
     column(1, offset = 0,
            h5("exposure"),
            sliderInput("exposure_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),#hr(),hr(),
            sliderInput("exposure_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
-    ),    
+    ),  
     column(1, offset = 0,
            h5("effectiveness"),
            sliderInput("effectiveness_A", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("effectiveness_B", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()           
-    ),
+    ),  
     column(1, offset = 0,
            h5("R. restoration"),
            sliderInput("advantage_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
@@ -131,12 +109,12 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr()          
     ),
     column(1, offset = 0,
-           h5("dom., selection"),
+           h5("dominance of R."),
            sliderInput("dom_sel_A", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr(),
            sliderInput("dom_sel_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
-    ), 
+    ),     
     column(1, offset = 0,
            h5("cost"),
            sliderInput("cost_A", NULL, val=0.01, min = 0, max = 0.2, step = 0.01, ticks=FALSE),
@@ -150,7 +128,23 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),
            sliderInput("dom_cos_B", NULL, val=0.5, min = 0, max = 1, step = 0.1, ticks=FALSE),
            hr()
-    ),
+    ),    
+    
+    #inputs after here were not included in mixtures
+    column(1, offset = 0,
+           h5("n. insecticides"),
+           sliderInput("n_A", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           hr(), #hr(),hr(),
+           sliderInput("n_B", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           hr()
+    ), 
+    column(1, offset = 0,
+           h5("rotation interval*"),
+           sliderInput("rot_interval_A", NULL, val=10, min = 0, max = 100, step = 10, ticks=FALSE),
+           hr(), #hr(),hr(),
+           sliderInput("rot_interval_B", NULL, val=0, min = 0, max = 100, step = 10, ticks=FALSE),
+           hr()
+    ),     
     column(1, offset = 0,
            h5("coverage"),
            sliderInput("coverage_A", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
@@ -164,16 +158,25 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            hr(),#hr(),hr(),
            sliderInput("migration_B", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
            hr()
-    )  
+    )
+    # moved up to one slider for both scenarios
+    # column(1, offset = 0,
+    #        h5("generations"),
+    #        sliderInput("max_gen_A", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
+    #        hr(), #hr(),hr(),
+    #        sliderInput("max_gen_B", NULL, val=150, min = 100, max = 500, step = 50, ticks=FALSE),
+    #        hr()
+    # ),    
+    
   ), #end fluid row
 
   fluidRow(
     column(1, NULL),
     column(6, h6("* set rotation interval to 0 to use insecticides until resistance threshold reached (rotate-when-resistant)")),
     column(1, h6("Advanced options :")),
-    column(1, checkboxInput("no_r_below_start", "no_r_below_start", FALSE)), 
+    column(1, checkboxInput("no_r_below_start", "no_r_below_start", TRUE)), 
     column(1, NULL),
-    column(1, sliderInput("min_rwr_interval", "min rwr interval", val=5, min = 0, max = 20, step = 1, ticks=FALSE))
+    column(1, sliderInput("min_rwr_interval", "min insecticide interval", val=5, min = 0, max = 20, step = 1, ticks=FALSE))
            
   ) #end fluid row
 
