@@ -12,10 +12,10 @@ library(rotations)
 
 shinyServer(function(input, output) {
     
-  
-  output$plotA <- renderPlot({
+  #default resolution is 72, increasing it makes plot elements crisper but bigger
+  output$plotA <- renderPlot(res = 82, {
     
-    #add dependency on the button
+    #add dependency on the button, make this 1 if don't want it to appear first time
     if ( input$aButtonRunA >= 0 ) 
     {
       #isolate reactivity of other objects
@@ -63,10 +63,10 @@ shinyServer(function(input, output) {
     } #end button
   })
 
-  output$plotB <- renderPlot({
+  output$plotB <- renderPlot(res = 82,{
     
-    #add dependency on the button
-    if ( input$aButtonRunB >= 1 ) 
+    #add dependency on the button, make this 1 if don't want it to appear first time
+    if ( input$aButtonRunB >= 0 ) 
     {
       #isolate reactivity of other objects
       isolate({

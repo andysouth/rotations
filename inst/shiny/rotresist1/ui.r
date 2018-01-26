@@ -1,9 +1,9 @@
 #rotations/shiny/rotresist1/ui.r
 #andy south 9/10/17
-#initially copied from resistance/resistmopb2
+
 
 library(shiny)
-
+library(markdown)
 
 shinyUI(fluidPage( theme = "bootstrap_simplex.css",
 #shinyUI(fixedPage( theme = "bootstrap_simplex.css",
@@ -43,8 +43,14 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),  
      
   title = "insecticide rotations effects on resistance",
+
+  #navbarPage sets up navbar, title appears on left
+  navbarPage("insecticide resistance evolution with rotations and sequences", id="selectedTab",
+           
+           # tab UI
+           tabPanel("UI", 
   
-  h6("Evolution of resistance to insecticides used in rotations. Needs to be run on a widescreen. Modify inputs and compare 2 scenarios. by @southmapr"),  
+  h6("Needs to be run on a widescreen. Modify inputs and compare 2 scenarios. Select About for outline."),  
   
   #fixedRow(
   fluidRow(
@@ -60,7 +66,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     #column(3, h6("(takes a few seconds)")),
     column(1, sliderInput("max_gen", "generations", val=150, min = 100, max = 500, step = 50, ticks=FALSE)),
     column(1, p()), 
-    column(2, checkboxInput("logy", "log y axis", FALSE)),
+    column(2, checkboxInput("logy", "log y axis", TRUE)),
     column(2, actionButton('aButtonRunB', 'Run Scenario B')),
     column(2, p())
   ), 
@@ -171,6 +177,9 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            
   ) #end fluid row
 
-  #h6("setting rotation interval to 0 causes insecticde to be kept in use until resistance threshold is reached (rotate-when-resistant)")  
-
+           ), # end tabPanel("UI")
+  # tab "About" ---------------------------
+  tabPanel("About", includeMarkdown("about.md"))
+  
+  ) # end navbarPage  
 ))
