@@ -1,5 +1,7 @@
 A model to investigate the evolution of insecticide resistance in rotations and sequences.
 
+Warning! This is a research tool and not for making operational decisions.
+
 Andy South (@southmapr) and Ian Hastings [2018]
 
 **To use**
@@ -10,6 +12,8 @@ Andy South (@southmapr) and Ian Hastings [2018]
 The curves on the plots show the change in frequency of the alleles giving resistance to the different insecticides. The shaded boxes show when the insecticide is in use.
 
 Setting 'rotation interval' to 0 specifies a sequence where each insecticide is used until a resistance frequency threshold is reached. 
+
+To keep this interface manageable the insecticides within each scenario are set to have the same inputs, the model itself allows for insecticides within a scenario to have different inputs.
 
 The inputs that can be changed are :
 

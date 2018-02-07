@@ -760,15 +760,39 @@ The main policy implication of this analysis is that evolutionary speed of insec
 maximal larviciding efficacy strongly affect the preferred actions implied by our decision analysis tool and that these parameters jointly offer the largest potential benefits from reduced uncertainty
 
 *26/1/2018*
+new UI resistrot, similar name to resistmixseq
 
-what to call new UI resistrot consistent with resistmixseq
+
+*1/2/2018*
+
+I want to create a figure that shows effect of untreated area, refugia
+Can I do this in ggplot2, or do it in powerpoint ?
+see : resistance-dispersal-dilution-figure.pptx
+
+How to create a greater effect of dispersal, reduce the coverage.
+
+run_rot(n_insecticides = 1)
+Error in RAF1gen[, , "intervention"] : incorrect number of dimensions
+Called from: rot_migrate(RAF[, , , gen], migration = migration, coverage = coverage)
+
+but this is OK
+run_rot(n_insecticides = 1, coverage=1)
+
+I suspect problem is with dropping dimensions in rot_migrate when there's just one insecticide
+For now just force n_insecticides > 1 from the UI
 
 
 # TODO
 
-Explore idea from Rowland (1981) that resistance declines faster when it is mostly held by the RR (i.e. at higher allele frequencies) 
+~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? 
+
+~ something not right, when run with coverage=0 still get increase in resistance in treated areas, even though technically there is no treated area, maybe I just need to force coverage to be > 0 :
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 0 , eff = 0.8 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0 , migration = 0.01 , cost = 0.01 , logy = TRUE no_r_below_start = TRUE min_rwr_interval = 5 )
 
 
+~ add error-check to run_rot if n.insecticides=1 & migration > 0 
+
+Maybe explore idea from Rowland (1981) that resistance declines faster when it is mostly held by the RR (i.e. at higher allele frequencies) 
 
 Look into data on changing allele frequencies over time (e.g. for Kdr)...
 

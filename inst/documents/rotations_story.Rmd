@@ -15,12 +15,16 @@ date: "`r Sys.Date()`"
 
 library(knitr)
 #https://stackoverflow.com/a/36234023/1718356 for fig.pos = 'h'
+
 opts_chunk$set(fig.height=3, fig.width=7, fig.pos = 'h', echo=FALSE, warning=FALSE, message=FALSE)
-# opts_chunk$set(dev="tiff",
-#                dev.args=list(compression="lzw"),
-#                dpi=300,
-#                cache=FALSE,
-#                fig.path='pap2figs/')
+
+# #these options make the pdf fail but do create the tiffs
+opts_chunk$set(fig.height=3, fig.width=7, fig.pos = 'h', echo=FALSE, warning=FALSE, message=FALSE,
+               dev="tiff",
+               dev.args=list(compression="lzw"),
+               dpi=300,
+               cache=FALSE,
+               fig.path='figs/')
 ```
 
 ```{r, results='hide'}
@@ -102,15 +106,31 @@ dfrot <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, 
 
 Even without costs of resistance we might expect resistance frequencies to decline when an insecticide is not in use due to immigration from nearby areas that were not treated originally. This is shown in the following two plots where a neighbouring untreated area ('refuge') and exchange of migrants is represented. In this example the treated and untreated areas are set to the same size and migration at 1%. The time it takes for both insecticides to reach the resistance threshold of 50% is still very similar for a sequence and a rotation.  
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with 1 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
+```{r, eval=TRUE, fig.height=2.5, fig.width=5, fig.show='hold', fig.align='left', fig.cap="A sequence with 2 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.01)
+dfr <- run_rot(n_insecticides=2, max_gen = 130, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.02)
 
 ```
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with 1 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
+```{r, eval=TRUE, fig.height=2.5, fig.width=5, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with 2 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.01)
+dfr <- run_rot(n_insecticides=2, max_gen = 130, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0, coverage=0.5, migration = 0.02)
+
+```
+
+\newpage
+### more insecticides
+
+
+```{r, eval=TRUE, fig.height=5, fig.width=5, fig.show='hold', fig.align='left', fig.cap="A sequence with 10 percent coverage and 5 perecnt dispersal."}
+
+dfr <- run_rot(n_insecticides=4, max_gen = 130, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0, coverage=0.1, migration = 0.05)
+
+```
+
+```{r, eval=TRUE, fig.height=5, fig.width=5, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with 1 percent dispersal between treated and untreated areas of equal size (no resistance costs)."}
+
+dfr <- run_rot(n_insecticides=4, max_gen = 130, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0, coverage=0.1, migration = 0.05)
 
 ```
 
@@ -119,18 +139,23 @@ dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, ef
 
 Including both costs of resistance and immigration from an untreated area, still results in little difference between a sequence and rotation in terms of time-to-resistance to both insecticides.  
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with dispersal between treated and untreated areas and resistance cost of 0.005."}
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A sequence with dispersal between treated and untreated areas and resistance cost of 0.05."}
 
-#upped max_gen because migration and cost decrease rise in resistance
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=0.5, migration = 0.01)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.05, coverage=0.5, migration = 0.01)
+
+```
+
+```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with with dispersal between treated and untreated areas and resistance cost of 0.05."}
+
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.05, coverage=0.5, migration = 0.01)
 
 ```
 
-```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="A 1 year rotation with with dispersal between treated and untreated areas and resistance cost of 0.005."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=0.5, migration = 0.01)
 
-```
+knitr::knit_exit() 
+### plots after this don't show much interesting
+
 
 \newpage
 ###dominance

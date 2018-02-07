@@ -27,6 +27,10 @@ rot_migrate <- function( RAF1gen,
                          verbose = FALSE)
 {
   
+  # Ian suggested we could allow migration to be greater than 1
+  # which might be the case if insects killed in the treated area caused greater than 
+  # random migration in from the untreated area
+  
   # to allow migration to be on a scale from 0-1 (1-coverage is the max)
   # calculating this in rot_migrate function allows easier testing of function
   migrate_intervention <- migration*(1-coverage)
@@ -34,7 +38,7 @@ rot_migrate <- function( RAF1gen,
   
   # not needed because now calculated
   # if(migrate_intervention>(1-coverage)){
-  # message(sprintf("warning from calibration: migration rate in/out of intervenation exceed 1 minus coverage\n"))   
+  # message(sprintf("warning from calibration: migration rate in/out of intervention exceed 1 minus coverage\n"))   
   # }
   
   #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)

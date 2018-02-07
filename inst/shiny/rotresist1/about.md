@@ -11,8 +11,9 @@ The curves on the plots show the change in frequency of the alleles giving resis
 
 Setting 'rotation interval' to 0 specifies a sequence where each insecticide is used until a resistance frequency threshold is reached. 
 
+To keep this interface manageable the insecticides within each scenario are set to have the same inputs, the model itself allows for insecticides within a scenario to have different inputs.
 
-This is the devlopment user interface, there is a simpler one.   
+This is the development user interface, there is a simpler one.   
 
 
 The code is hosted here : https://github.com/ian-hastings/rotations

@@ -265,6 +265,8 @@ run_rot <- function(max_gen = 200,
     # andy adding a condition, refugia not needed if coverage=1
     if ( coverage < 1 )
     {
+      #BEWARE if only on insecticide the insecticide dimension gets dropped and that causes an error
+      #but I can't do drop=FALSE because I currently rely on the generation dimension being dropped
       RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
     }
     

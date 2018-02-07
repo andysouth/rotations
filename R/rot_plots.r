@@ -46,7 +46,7 @@ rot_plot_resistance <- function(df_res2,
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge') ) +
     geom_line( alpha=0.5, lwd=1.5 ) +
     #legend for the lines, allows me to set title & labels  
-    scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated"))
+    scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
   }   else
   {
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance')) +

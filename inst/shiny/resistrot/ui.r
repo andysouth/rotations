@@ -1,6 +1,7 @@
-#rotations/shiny/rotresist1/ui.r
-#andy south 9/10/17
+#rotations/shiny/resistrot/ui.r
+#andy south 01/18
 
+# USER version of rotations UI
 
 library(shiny)
 library(markdown)
@@ -50,7 +51,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
            # tab UI
            tabPanel("UI", 
   
-  h6("Needs to be run on a widescreen. Modify inputs and compare 2 scenarios. Select About for outline."),  
+  h6("Warning! This is a research tool and not for making operational decisions.  Needs to be run on a widescreen. Modify inputs and compare 2 scenarios. Select About for outline."),  
   
   #fixedRow(
   fluidRow(
@@ -131,11 +132,13 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),    
     
     #inputs after here were not included in mixtures
+    
+    #min insecticides set to 2 to avoid error in rot_migrate
     column(1, offset = 0,
            h5("n. insecticides"),
-           sliderInput("n_A", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           sliderInput("n_A", NULL, val=3, min = 2, max = 5, step = 1, ticks=FALSE),
            hr(), #hr(),hr(),
-           sliderInput("n_B", NULL, val=3, min = 1, max = 5, step = 1, ticks=FALSE),
+           sliderInput("n_B", NULL, val=3, min = 2, max = 5, step = 1, ticks=FALSE),
            hr()
     ), 
     column(1, offset = 0,
@@ -147,16 +150,17 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     ),     
     column(1, offset = 0,
            h5("coverage"),
-           sliderInput("coverage_A", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           sliderInput("coverage_A", NULL, val=0.8, min = 0.01, max = 1, step = 0.1, ticks=FALSE),
            hr(),#hr(),hr(),
-           sliderInput("coverage_B", NULL, val=0.8, min = 0, max = 1, step = 0.1, ticks=FALSE),
+           sliderInput("coverage_B", NULL, val=0.8, min = 0.01, max = 1, step = 0.1, ticks=FALSE),
            hr()
     ),     
     column(1, offset = 0,
            h5("migration"),
-           sliderInput("migration_A", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
+           #migration can go up to 1, in practice 0.3 gives nearly complete mixing
+           sliderInput("migration_A", NULL, val=0.01, min = 0, max = 0.3, step = 0.01, ticks=FALSE),
            hr(),#hr(),hr(),
-           sliderInput("migration_B", NULL, val=0.01, min = 0, max = 0.1, step = 0.001, ticks=FALSE),
+           sliderInput("migration_B", NULL, val=0.01, min = 0, max = 0.3, step = 0.01, ticks=FALSE),
            hr()
     )
     # moved up to one slider for both scenarios
@@ -172,7 +176,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
 
   fluidRow(
     column(1, NULL),
-    column(6, h6("* set rotation interval to 0 to use insecticides until resistance threshold reached (rotate-when-resistant)")),
+    column(6, h6("* set rotation interval to 0 to use insecticides until resistance threshold reached (sequence or rotate-when-resistant)")),
     column(1, h6("Advanced options :")),
     column(1, checkboxInput("no_r_below_start", "no_r_below_start", TRUE)), 
     column(1, NULL),
