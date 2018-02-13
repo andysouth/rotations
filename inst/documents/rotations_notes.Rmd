@@ -784,6 +784,44 @@ For now just force n_insecticides > 1 from the UI
 
 # TODO
 
+re-read this 
+Sternberg & Thomas 2017
+Insights from agriculture for the management of insecticide resistance in disease vectors
+Because of the situation-specific nature of insecticide resistance management plans, public health may have an advantage over agriculture. Agricultural pest management is concerned with hundreds
+of species, and in many cases, detailed data are not available for each pest species (and potential nontarget organisms). Compared to agriculture, public health is concerned with a small number of insect species. This should enable a strongly data-driven approach to selecting resistance management strategies, but in reality, very little is currently known.
+
+• The success of an IRM strategy is highly dependent on ecological and biological specifics; there is not yet a solid evidence base of recommending one strategy over another.
+• If control is achieved via the use of multiple tools with diverse modes of action, not only will selection for insecticide resistance be reduced but also, the impact of resistance will likely be less severe. The pending resistance crisis creates an urgent need to develop and implement integrated, multitactic IVM strategies that parallel IPM in agriculture.
+
+To our knowledge, there is only one field trial aimed specifically at testing resistance management strategies against malaria mosquitoes (Penilla et al., 2007). Perhaps worryingly, this trial revealed no clear benefit of either insecticide rotations or mosaics in slowing the spread of resistance when compared to monotherapy. However, these results do not necessarily mean that rotations or mosaics cannot be effective, but rather highlights a critical gap in understanding when, how, and why such strategies might work.
+
+
+Download papers on modelling oxitech
+Insectcide resistance
+https://doi.org/10.1093/jee/100.5.1642
+https://doi.org/10.1603/029.102.0233
+
+These are not about insecticide resistance (they are about resistance to the gene itself but may have useful pointers)
+Alphey2011. Modeling resistance to genetic control of insects
+https://doi.org/10.1016/j.jtbi.2010.11.016
+
+Watkinson-Powell2017 Resistance to genetic insect control: Modelling the effects of space
+https://doi.org/10.1016/j.jtbi.2016.10.014
+
+Type of fitness cost influences the rate of evolution of resistance to transgenic Bt crops
+Looks like could be very interesting :
+DOI: 10.1111/1365-2664.12680
+
+Combining the high-dose/refuge strategy and self-limiting transgenic
+insects in resistance management- a test in experimental mesocosms 
+Zhou2017
+
+
+submit links to UIs and paper once it is published to :
+vectorlearningxchange.com
+
+send Rowland rotation paper to Ian.
+
 ~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? 
 
 ~ something not right, when run with coverage=0 still get increase in resistance in treated areas, even though technically there is no treated area, maybe I just need to force coverage to be > 0 :
