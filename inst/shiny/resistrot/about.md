@@ -35,7 +35,6 @@ Advanced options :
 no_r_below_start : allows turning off stopping resistance frequencies from going below their starting values
 min insecticide interval : a minimum number of generations for insecticide use, to stop rapid switching between insecticides
 
-The code is hosted here : https://github.com/ian-hastings/rotations
 
 
 

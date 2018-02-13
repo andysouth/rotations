@@ -3,6 +3,10 @@
 
 # USER version of rotations UI
 
+#before deploying to shinyapps need to install rotations from github
+#library(devtools)
+#install_github('ian-hastings/rotations')
+
 library(shiny)
 library(markdown)
 
