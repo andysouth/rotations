@@ -8,6 +8,7 @@
 #' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param gen generation number
 #' @param df_results results of sim so far
+#' @param diagnostics whether to output running info
 # @param rot_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
 # @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 # @param rot_count num generations this insecticide has been used for
@@ -23,7 +24,8 @@ insecticide_switch <- function( RAF,
                                 n_insecticides,
                                 rot_criterion,
                                 gen,
-                                df_results )
+                                df_results,
+                                diagnostics)
 {
   next_insecticide_found <- 0
   candidate <- current_insecticide 
@@ -37,7 +39,8 @@ insecticide_switch <- function( RAF,
     
     if (RAF[candidate, 'f','intervention', gen] < rot_criterion)
     {
-      message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f",
+      
+      if (diagnostics) message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f",
                       gen, current_insecticide, candidate,
                       RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
       
