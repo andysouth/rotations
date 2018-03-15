@@ -192,7 +192,7 @@ run_rot <- function(max_gen = 200,
         norm_coeff <- F_female_r_intervention + F_female_s_intervention
         RAF[insecticide, 'f', 'intervention', gen] <- F_female_r_intervention/norm_coeff
         
-        if(diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
+        if (diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
         
       } #end of loop that deals with this insecticide if it is being deployed
     
@@ -223,7 +223,7 @@ run_rot <- function(max_gen = 200,
        # todo andy check on this
        RAF[insecticide, 'f', 'intervention', gen] <- RAF[insecticide, 'm', 'intervention', gen]
        
-       if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
+       if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
           
        } #end of code for insecticides that are not being deployed in the intervention site
       
@@ -254,7 +254,7 @@ run_rot <- function(max_gen = 200,
         # no insecticides in use so same frequencies for both sexes
         RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
         
-        if(diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
+        if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
       } # end if coverage < 1
      } #end of cycling insecticides
@@ -321,16 +321,17 @@ run_rot <- function(max_gen = 200,
                                                 n_insecticides=n_insecticides, 
                                                 rot_criterion=rot_criterion,
                                                 gen=gen,
-                                                df_results=df_results )
+                                                df_results=df_results,
+                                                diagnostics=diagnostics)
     } 
   
     # if no suitable insecticide left, break out of generations loop
     if (current_insecticide == 0) #(next_insecticide_found==0)
     {
-      message(sprintf("\nsimulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
+      if (diagnostics) message(sprintf("\nsimulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
       for (temp_int in 1:n_insecticides)
       {
-        message(sprintf("frequency of resistance in females to insecticide %d is %f", temp_int, RAF[temp_int, 'f','intervention', gen]))  
+        if (diagnostics) message(sprintf("frequency of resistance in females to insecticide %d is %f", temp_int, RAF[temp_int, 'f','intervention', gen]))  
       }
       break #breaks out of looping generations and terminates the simulation
     }    
