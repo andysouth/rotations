@@ -191,7 +191,6 @@ run_rot <- function(max_gen = 200,
                      raf_f * (1-raf_m)) *
                      0.5*fitness[insecticide, 'RS', 'no']
  
-                          
        # male RR
        raf_m_r_new <- raf_m * raf_f *
                                 fitness[insecticide, 'RR', 'no'] + temp_coeff
@@ -201,9 +200,8 @@ run_rot <- function(max_gen = 200,
        # normalise
        norm_coeff <- raf_m_r_new + raf_m_s_new
        RAF[insecticide, 'm', 'intervention', gen] <- raf_m_r_new / norm_coeff
-      
        # no insecticides in use so same frequencies for both sexes
-       RAF[insecticide, 'f', 'intervention', gen] <- RAF[insecticide, 'm', 'intervention', gen]
+       RAF[insecticide, 'f', 'intervention', gen] <- raf_m_r_new / norm_coeff
        
        if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
           
