@@ -116,13 +116,17 @@ rot_plot_resistance <- function(df_res2,
   
   else     gg <- gg + scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1))
   
-  
-  if (add_gens_under50)
-    #can I add text of num gens below 50%
-    gg <- gg + geom_text(aes(x=Inf, y=-Inf, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
+  # add text of num gens below 50%  
+  if (add_gens_under50) {
     
-  
-  
+    # without this didn't work for log scale
+    if (logy) y <- 0
+    else y <- -Inf
+    
+    gg <- gg + geom_text(aes(x=Inf, y=y, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
+    
+  }
+    
   plot(gg)
   
   invisible(gg)
