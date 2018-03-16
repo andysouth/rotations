@@ -42,7 +42,7 @@ Testing sensitvity analysis to answer question 1. Are sequences and rotations eq
 # in contrast resistance::runModel2() accepted an input matrix & would run for multiple scenarios
 # not sure which is better
 
-n_scenarios <- 5
+n_scenarios <- 100
 
 df_res_all <- data.frame()
 
@@ -53,7 +53,9 @@ for(i in 1:n_scenarios)
   # constant inputs
   # for Ians Q1 set coverage to 1 & cost to 0 
   linputs$coverage <- 1
-  linputs$cost <- 0  
+  #linputs$migration <- 0.1
+  linputs$cost <- 0.1 #0
+  linputs$max_gen <- 400
   # variable inputs
   linputs$expo_hi <-  runif(1, min=0.1, max=0.9)
   linputs$eff <-      runif(1, min=0.3, max=1)
@@ -61,24 +63,15 @@ for(i in 1:n_scenarios)
   # because I want to compare sequence rot_when_r to rotation
   # I could run all the scenarios above for both seq & rot
   # (and filter out later)
-  
+
+  #random rot interval integer
+  linputs$rot_interval <- sample( 5:50, 1 )  #beware set replace=T if more than 1
+    
   for(rot_or_not in 0:1)
   {  
-    #TODO look up about generating random integers in R
+    #to get rot_int of 0 every other run
+    if (rot_or_not == 0) linputs$rot_interval <- 0
     
-    #beware currently interval generated one more time than it is needed
-    #random rot interval
-    linputs$rot_interval <- round( runif(1,min=5,max=50), 0 )
-    
-    #multiply by rot_or_not to get rot_int of 0 every other run
-    linputs$rot_interval <- linputs$rot_interval * rot_or_not
-    
-    #print scenario num and inputs to doc for exploration
-    cat("scenario",i,
-        " expo_hi",linputs$expo_hi,
-        " eff",linputs$eff,
-        " rot_interval",linputs$rot_interval,
-        "\n")
     
     ##################
     # run one scenario
@@ -101,15 +94,23 @@ for(i in 1:n_scenarios)
     # just for deployed insecticides 
     summarise(gens_dep_under50 = sum(resistance < 0.5 &
                                      #finds insecticide in use = this one
-                                     #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots
                                      resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
-    summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
-    unlist()
+                                 summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
+                                 unlist()
+    
+    #print scenario num and inputs to doc for exploration
+    cat("scenario",i,
+        " expo_hi",signif(linputs$expo_hi,2),
+        " eff",signif(linputs$eff,2),
+        " rot_interval",linputs$rot_interval,
+        "\n")
     
     #print results in doc for diagnostics
     cat("tot gens deployed under freq 0.5 =", res,"\n\n")
     
     # create dataframe from inputs and outputs
+    # first add scenario column onto results
+    res$scenario <- i
     df_in_out <- as.data.frame(c(linputs, res))
     
     # rbind this scenario inputs & results onto previous
@@ -120,9 +121,29 @@ for(i in 1:n_scenarios)
 } #end scenario loop
 
 # save object containing inputs and results as rda for analysis
-save(df_res_all, file='listOutMix_rr_10.rda') #paste0(outFolder,'*.rda'))
+save(df_res_all, file='df_res_all_rot.rda') #paste0(outFolder,'*.rda'))
 
 ```
 
+\pagebreak
 
-  
+# summary plot of all runs, would show any differences between sequence & rotations as non horizontal lines
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=6}
+
+# want to plot line between sequence and rotation value
+# any deviation from horizontal will be obvious
+# could use rotation interval as the x axis, so that longer intervals will be clearer
+
+# maybe not for publication
+# but useful for quick view
+
+    gg <- ggplot( df_res_all, aes_string(x='rot_interval',
+                                         y='tot_gens_dep_under50',
+                                         group='scenario',
+                                         colour='scenario') ) +
+          geom_line( alpha=0.5, lwd=1 )
+
+    plot(gg)
+
+```  

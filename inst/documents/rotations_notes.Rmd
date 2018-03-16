@@ -762,9 +762,7 @@ maximal larviciding efficacy strongly affect the preferred actions implied by ou
 *26/1/2018*
 new UI resistrot, similar name to resistmixseq
 
-
 *1/2/2018*
-
 I want to create a figure that shows effect of untreated area, refugia
 Can I do this in ggplot2, or do it in powerpoint ?
 see : resistance-dispersal-dilution-figure.pptx
@@ -781,10 +779,12 @@ run_rot(n_insecticides = 1, coverage=1)
 I suspect problem is with dropping dimensions in rot_migrate when there's just one insecticide
 For now just force n_insecticides > 1 from the UI
 
+~ c 15 generations per year for mosquitos, 25 day generation time.
+~ 3 years = 45 generations
+~ https://www.cdc.gov/malaria/about/biology/mosquitoes/
 
-# TODO
-
-re-read this 
+*14/3/2018*
+re-red this 
 Sternberg & Thomas 2017
 Insights from agriculture for the management of insecticide resistance in disease vectors
 Because of the situation-specific nature of insecticide resistance management plans, public health may have an advantage over agriculture. Agricultural pest management is concerned with hundreds
@@ -795,9 +795,71 @@ of species, and in many cases, detailed data are not available for each pest spe
 
 To our knowledge, there is only one field trial aimed specifically at testing resistance management strategies against malaria mosquitoes (Penilla et al., 2007). Perhaps worryingly, this trial revealed no clear benefit of either insecticide rotations or mosaics in slowing the spread of resistance when compared to monotherapy. However, these results do not necessarily mean that rotations or mosaics cannot be effective, but rather highlights a critical gap in understanding when, how, and why such strategies might work.
 
+*15/3/2018* back from Peru and Geneva
+~ get trial run of sensitivity analysis going
+~ sensi_an_rotations1.Rmd
+
+~ now have 500 runs working, max gens up to 400
+~ seems that generations are identical for sequence and rotations
+~ results saved in df_res_all_rot.rda
+
+Setting coverage to <1 (0.5) and migration to 0.01 does result in rotations lasting longer than sequences in some scenarios. Particularly shorter ones. Greatest slope is when rot_interval set to 5, one scenario gives 300 for sequence and 350 for rotation. 
+
+So maybe difference is created by the changeover, and more frequent changeovers create greater difference.
+
+Also when coverage set to 1 again and cost > 0 there was 1 scenario with a very short rot-interval where the rotation lasts fair bit longer than the sequence.
+
+## scenario 79 expo_hi 0.79 eff 0.72 rot_interval 0
+## tot gens deployed under freq 0.5 = 199
+
+## scenario 79 expo_hi 0.79 eff 0.72 rot_interval 6
+## tot gens deployed under freq 0.5 = 251
+
+run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
+run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
+
+It could perhaps be just a rounding thing, because the number of generations is an integer there will always be some overshooting, when you have more switches there is the potential for more overshooting and the runs will last for longer.
+
+~ checking on coverage=0, currently resistance frequencies increase when they shouldn't do 
+run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=0, add_gens_under50=TRUE)
+
+in run_rot() 
+
+coverage is passed to :
+set_start_freqs() but only to determine whether the 
+
+RAF 3rd dimension site is set to : c('intervention','refugia') or just 'intervention'
+
+actually if coverage=0 perhaps dimension should just be set to refuge.
+
+So maybe it doesn't point to an error that resistance rises when coverage=0 just a property of the model structure.
+
+
+
+
+
+# TODO
+
+~ in run_rot finish code condensing around :
+      raf_m <- RAF[insecticide, 'm', 'intervention',gen-1]
+      raf_f <- RAF[insecticide, 'f', 'intervention',gen-1] 
+
+~ sensi_an_rotations1.Rmd
+
+~ Maybe don't allow coverage to be set to 0 ? or put in some kind of warning.
+
+~ how to deal with 'overshooting' leading to more generations under 50 when rotation intervals are shorter ? 
+run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
+run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
+
+~ can I create an easy function to compare two scenarios (seq & rotate) with otherwise same params ?
+
+
+
+
 
 Download papers on modelling oxitech
-Insectcide resistance
+Insecticide resistance
 https://doi.org/10.1093/jee/100.5.1642
 https://doi.org/10.1603/029.102.0233
 
@@ -816,17 +878,14 @@ Combining the high-dose/refuge strategy and self-limiting transgenic
 insects in resistance management- a test in experimental mesocosms 
 Zhou2017
 
-
 submit links to UIs and paper once it is published to :
 vectorlearningxchange.com
 
-send Rowland rotation paper to Ian.
 
 ~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? 
 
 ~ something not right, when run with coverage=0 still get increase in resistance in treated areas, even though technically there is no treated area, maybe I just need to force coverage to be > 0 :
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 0 , eff = 0.8 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0 , migration = 0.01 , cost = 0.01 , logy = TRUE no_r_below_start = TRUE min_rwr_interval = 5 )
-
 
 ~ add error-check to run_rot if n.insecticides=1 & migration > 0 
 
@@ -838,8 +897,6 @@ It occurred to me that maybe a benefit of rotations is that if it is difficult t
 
 
 ~ check again on current small differences between rotations & sequences
-
-
 
 
 ~ maybe I can write a function to plot 2 scenarios on the same graph (in the same way that curtis fig2 plots mix & seq on same graph) ?
@@ -912,10 +969,8 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
       https://andysouth.shinyapps.io/rotresist1/
 ~ RAF[,,,2] to get allele frequencies for generation 2 (by insecticide,sex and active|refuge)
 
-~ c 15 generations per year for mosquitos, 25 day generation time.
-~ 3 years = 45 generations
-~ https://www.cdc.gov/malaria/about/biology/mosquitoes/
-~
+
+
 
 
 # funding opportunities

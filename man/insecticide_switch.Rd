@@ -5,7 +5,7 @@
 \title{insecticide_switch choose a new insecticide to switch to}
 \usage{
 insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion, gen,
-  df_results)
+  df_results, diagnostics)
 }
 \arguments{
 \item{RAF}{array of resistance allele frequencies}
@@ -19,6 +19,8 @@ insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion, gen,
 \item{gen}{generation number}
 
 \item{df_results}{results of sim so far}
+
+\item{diagnostics}{whether to output running info}
 }
 \value{
 integer : insecticide number to switch to, if 0 none found
