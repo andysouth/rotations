@@ -77,6 +77,9 @@ run_rot <- function(max_gen = 200,
   {
   
   
+  if ( coverage <= 0 ) stop("the model cannot represent 0 (or less) coverage\n")
+  
+  
   # setup dataframe to store results, tricky to cope with variable number insecticides
   l_gene_plus_activity <- rep(list(rep(NA,max_gen)), n_insecticides*2) #2 because active & refuge 
   
@@ -178,7 +181,7 @@ run_rot <- function(max_gen = 200,
         norm_coeff <- raf_f_r_new + raf_f_s_new
         RAF[insecticide, 'f', 'intervention', gen] <- raf_f_r_new / norm_coeff
         
-        if (diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
+        #if (diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
         
       } #end of loop that deals with this insecticide if it is being deployed
     
@@ -203,7 +206,7 @@ run_rot <- function(max_gen = 200,
        # no insecticides in use so same frequencies for both sexes
        RAF[insecticide, 'f', 'intervention', gen] <- raf_m_r_new / norm_coeff
        
-       if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
+       #if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
           
        } #end of code for insecticides that are not being deployed in the intervention site
       
@@ -218,8 +221,8 @@ run_rot <- function(max_gen = 200,
         
         # RS coefficient common to equations 2 and 3
         rs_coeff <- (raf_m*(1-raf_f) +
-                      raf_f*(1-raf_m)) *
-                      0.5*fitness[insecticide, 'RS', 'no']
+                    raf_f*(1-raf_m)) *
+                    0.5*fitness[insecticide, 'RS', 'no']
         
         # male RR   
         raf_m_r_new <- raf_m * raf_f * 
@@ -237,7 +240,7 @@ run_rot <- function(max_gen = 200,
         # no insecticides in use so same frequencies for both sexes
         RAF[insecticide, 'f', 'refugia', gen] <- RAF[insecticide, 'm', 'refugia', gen]
         
-        if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
+        #if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
       } # end if coverage < 1
      } #end of cycling insecticides
