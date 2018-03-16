@@ -5,6 +5,7 @@
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
+#' @param lwd line thickness for resistance curves
 #'
 # check said that namespace dependencies not required
 # @import ggplot2
@@ -22,7 +23,8 @@ rot_plot_resistance <- function(df_res2,
                                 plot_refuge = TRUE,
                                 logy = TRUE,
                                 add_gens_under50 = TRUE,
-                                df_resanother = NULL) {
+                                df_resanother = NULL,
+                                lwd = 1.5) {
   
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
@@ -50,7 +52,7 @@ rot_plot_resistance <- function(df_res2,
   }   else
   {
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance')) +
-    geom_line( alpha=0.5, lwd=1.5, colour='red3' ) 
+    geom_line( alpha=0.5, lwd=lwd, colour='red3' ) 
     #legend for the lines  
     #scale_colour_manual("",values=c("red3"))      
   }
@@ -101,7 +103,17 @@ rot_plot_resistance <- function(df_res2,
     
     gg <- gg +
           #geom_line( data=df_resanother, alpha=0.5, lwd=2, colour='blue' )    
-          geom_line( data=df_resanother, aes_string(x='generation',y='resistance'), alpha=0.5, lwd=1, colour='blue' )    
+          geom_line( data=df_resanother, aes_string(x='generation',y='resistance'), alpha=0.5, lwd=lwd, colour='red3', linetype=3 )    
+
+    # try adding insecticide use for 2nd scenario
+    df_resanother <- df_resanother %>%
+      mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA))  
+    
+    gg <- gg +    
+          geom_ribbon( data=df_resanother, aes_string(x='generation', ymin=0, ymax='i_in_use'), colour="grey30", fill = "grey80", alpha=0.2, linetype=3 ) 
+      
+    
+    
   }
   
   
