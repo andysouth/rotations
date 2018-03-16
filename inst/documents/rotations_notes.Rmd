@@ -834,25 +834,64 @@ actually if coverage=0 perhaps dimension should just be set to refuge.
 
 So maybe it doesn't point to an error that resistance rises when coverage=0 just a property of the model structure.
 
+*16/3/18*
+~ code condensing in run_rot()
+
+~ added stop in run_rot() for if coverage=0
+
+~ looking at comparing two scenarios (rot & seq) on same plot
+
+I tried this before with : df_resanother in rot_plots. It puts on the resistance curves for the 2 scenarios, but doesn't show the insecticide use for each
+dfseq <- run_rot(n_insecticides=2, rot_interval=0, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+dfrot <- run_rot(n_insecticides=2, rot_interval=15, expo_hi=0.5, eff=0.5, cost=0.01, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
+dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
+I have improved plotting of 2 scenarios together.
+Seems that overshooting problem occurs in rotations. Possibly because rotations are not stopped when the threshold is reached. See dfrot from prev e.g. whichj keeps going up to 0.62 at gen 127. This may not matter if the counting of gens only includes those < 0.5. The other option is to stop rotations early,m which I thought I was already doing with exit_rot = TRUE ??
+
+in insecticide_check() exit_rot should prompt exit from rotation when 0.5 threshold is exceeded. 
+
+dfrot2 <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, diagnostics=TRUE)
+
+Aha! It could be a problem with min_rwr_interval, which is 5 by default and so may force staying within rotations and thus cause overshooting of threshold.
+
+But i thought that only gens under thresh are counted ???
+
+
+
+
 
 
 
 
 # TODO
 
-~ in run_rot finish code condensing around :
-      raf_m <- RAF[insecticide, 'm', 'intervention',gen-1]
-      raf_f <- RAF[insecticide, 'f', 'intervention',gen-1] 
-
-~ sensi_an_rotations1.Rmd
-
-~ Maybe don't allow coverage to be set to 0 ? or put in some kind of warning.
+~ check how gens_under_thresh are counted in sensi_an_rotations1
+    summarise(gens_dep_under50 = sum(resistance < 0.5 &
+                                     #finds insecticide in use = this one
+                                     resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+                                 summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
+                                 unlist()
 
 ~ how to deal with 'overshooting' leading to more generations under 50 when rotation intervals are shorter ? 
 run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
 run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
 
-~ can I create an easy function to compare two scenarios (seq & rotate) with otherwise same params ?
+~ move github repo back to mine
+~~ From Github I merged changes from Ians with a pull request after comparing across the forks.
+~~ Now I can possibly change RStudio to point to the repo on my Github (do when I have a bit more time)
+~~ update R
+
+~ sensi_an_rotations1.Rmd
+
+
+
+
+
 
 
 
