@@ -187,16 +187,16 @@ run_rot <- function(max_gen = 200,
      else{ 
        
        #coefficient for RS common to equations 2 and 3
-       temp_coeff <- (raf_m * (1-raf_f) +
-                     raf_f * (1-raf_m)) *
-                     0.5*fitness[insecticide, 'RS', 'no']
+       rs_coeff <- (raf_m * (1-raf_f) +
+                   raf_f * (1-raf_m)) *
+                   0.5*fitness[insecticide, 'RS', 'no']
  
        # male RR
        raf_m_r_new <- raf_m * raf_f *
-                                fitness[insecticide, 'RR', 'no'] + temp_coeff
+                                fitness[insecticide, 'RR', 'no'] + rs_coeff
        # male SS
        raf_m_s_new <- (1-raf_m) * (1-raf_f) *
-                                fitness[insecticide, 'SS', 'no'] + temp_coeff
+                                fitness[insecticide, 'SS', 'no'] + rs_coeff
        # normalise
        norm_coeff <- raf_m_r_new + raf_m_s_new
        RAF[insecticide, 'm', 'intervention', gen] <- raf_m_r_new / norm_coeff
@@ -212,28 +212,30 @@ run_rot <- function(max_gen = 200,
       
       if ( coverage < 1 )
       {
-        
+        # extract resistance allele freqs (raf) for previous timestep
+        raf_m <- RAF[insecticide, 'm', 'refugia', gen-1]
+        raf_f <- RAF[insecticide, 'f', 'refugia', gen-1]  
         
         # RS coefficient common to equations 2 and 3
-        temp_coeff <- (RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
-                         RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm', 'refugia',gen-1]))*
-          0.5*fitness[insecticide, 'RS', 'no']
+        rs_coeff <- (raf_m*(1-raf_f) +
+                      raf_f*(1-raf_m)) *
+                      0.5*fitness[insecticide, 'RS', 'no']
         
         # male RR   
-        F_male_r_refugia <- RAF[insecticide, 'm', 'refugia',gen-1]*
-          RAF[insecticide, 'f', 'refugia',gen-1]*
-          fitness[insecticide, 'RR', 'no']+temp_coeff
+        raf_m_r_new <- raf_m * raf_f * 
+                                    fitness[insecticide, 'RR', 'no'] + rs_coeff
         # male SS
-        F_male_s_refugia  <- (1-RAF[insecticide, 'm', 'refugia',gen-1])*
-          (1-RAF[insecticide, 'f', 'refugia',gen-1])*
-          fitness[insecticide, 'SS', 'no']+temp_coeff 
+        raf_m_s_new  <- (1-raf_m) * (1-raf_f) *
+                                    fitness[insecticide, 'SS', 'no'] + rs_coeff 
         
         #normalise and store results
-        norm_coeff <- F_male_r_refugia + F_male_s_refugia
-        RAF[insecticide, 'm', 'refugia', gen] <- F_male_r_refugia/norm_coeff
+        norm_coeff <- raf_m_r_new + raf_m_s_new
+        # TODO check with Ian, raf_m_s_new not used except in normalisation
+        
+        RAF[insecticide, 'm', 'refugia', gen] <- raf_m_r_new / norm_coeff
         
         # no insecticides in use so same frequencies for both sexes
-        RAF[insecticide, 'f', 'refugia', gen]=RAF[insecticide, 'm', 'refugia', gen]
+        RAF[insecticide, 'f', 'refugia', gen] <- RAF[insecticide, 'm', 'refugia', gen]
         
         if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
@@ -246,7 +248,7 @@ run_rot <- function(max_gen = 200,
     # andy adding a condition, refugia not needed if coverage=1
     if ( coverage < 1 )
     {
-      #BEWARE if only on insecticide the insecticide dimension gets dropped and that causes an error
+      #BEWARE if only one insecticide the insecticide dimension gets dropped and that causes an error
       #but I can't do drop=FALSE because I currently rely on the generation dimension being dropped
       RAF[,,,gen] <- rot_migrate(RAF[,,,gen], migration=migration, coverage=coverage)
     }
