@@ -136,61 +136,47 @@ run_rot <- function(max_gen = 200,
   { 
     for(insecticide in 1:n_insecticides)
     {
+      # extract resistance allele freqs (raf) for previous timestep
+      raf_m <- RAF[insecticide, 'm', 'intervention', gen-1]
+      raf_f <- RAF[insecticide, 'f', 'intervention', gen-1]  
+      
+      # later var names
+      # raf_f_r_new resistance_allele_frequency_female_resistant, m_s male_susceptible
+      
       ######
       # intervention site, with the insecticide in use  
       if(insecticide==current_insecticide){
        
-        #a function to calc these wouldn't save much code and might make less transparent 
-        
-        coeff_1 <-
-         (  RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
-         (1-RAF[insecticide, 'm', 'intervention',gen-1]) * RAF[insecticide, 'f', 'intervention',gen-1])*0.5
+        coeff_1 <- (raf_m * (1-raf_f) +
+                   (1-raf_m) * raf_f) * 0.5
        
         coeff_2 <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RS', ] )
         coeff_3 <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RS', ] )
-         
-        #andy todo, almost identical code is repeated below for m & f
-        #only difference is that coeff_2 used for m & 3 for f
-        #i could create a mf loop to reduce code by half
         
         # male RR (Eqn 4)
         temp_coeff <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RR', ] )
-          
-        F_male_r_intervention <- 
-          RAF[insecticide, 'm', 'intervention', gen-1]*
-          RAF[insecticide, 'f', 'intervention', gen-1]* temp_coeff+
-          coeff_1*coeff_2
-      
+        raf_m_r_new <- raf_m * raf_f * temp_coeff + coeff_1*coeff_2
+        
         # male SS (Eqn 5)
         temp_coeff <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SS', ] )
-       
-        F_male_s_intervention=
-          (1-RAF[insecticide, 'm', 'intervention', gen-1])*
-          (1-RAF[insecticide, 'f', 'intervention', gen-1])*temp_coeff+
-          coeff_1*coeff_2
+        raf_m_s_new <- (1-raf_m) * (1-raf_f) * temp_coeff + coeff_1*coeff_2
     
         #normalise the male gamete frequencies and store the results
-        norm_coeff <- F_male_r_intervention + F_male_s_intervention
-        RAF[insecticide, 'm', 'intervention', gen] <- F_male_r_intervention/norm_coeff
+        norm_coeff <- raf_m_r_new + raf_m_s_new
+        RAF[insecticide, 'm', 'intervention', gen] <- raf_m_r_new / norm_coeff
     
-        #female RR
+        
+        # female RR
         temp_coeff <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RR', ] )    
-     
-        F_female_r_intervention <-
-        RAF[insecticide, 'm', 'intervention', gen-1]*RAF[insecticide, 'f', 'intervention',gen-1]*temp_coeff+
-          coeff_1*coeff_3
+        raf_f_r_new <- raf_m * raf_f * temp_coeff + coeff_1*coeff_3
         
         #female SS 
         temp_coeff <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SS', ] )  
-        
-        F_female_s_intervention <-
-          (1-RAF[insecticide, 'm', 'intervention', gen-1])*
-          (1-RAF[insecticide, 'f', 'intervention', gen-1])*temp_coeff+
-          coeff_1*coeff_3 
+        raf_f_s_new <- (1-raf_m) * (1-raf_f) * temp_coeff + coeff_1*coeff_3 
       
         #normalise female gamete frequencies and store the results
-        norm_coeff <- F_female_r_intervention + F_female_s_intervention
-        RAF[insecticide, 'f', 'intervention', gen] <- F_female_r_intervention/norm_coeff
+        norm_coeff <- raf_f_r_new + raf_f_s_new
+        RAF[insecticide, 'f', 'intervention', gen] <- raf_f_r_new / norm_coeff
         
         if (diagnostics) message(sprintf("generation %d: completed insecticide selection for locus/insecticide %d\n", gen, insecticide))
         
@@ -201,26 +187,22 @@ run_rot <- function(max_gen = 200,
      else{ 
        
        #coefficient for RS common to equations 2 and 3
-       temp_coeff <- 
-         (RAF[insecticide, 'm', 'intervention',gen-1]*(1-RAF[insecticide, 'f', 'intervention',gen-1])+
-          RAF[insecticide, 'f', 'intervention',gen-1]*(1-RAF[insecticide, 'm', 'intervention',gen-1]))*
-          0.5*fitness[insecticide, 'RS', 'no']
+       temp_coeff <- (raf_m * (1-raf_f) +
+                     raf_f * (1-raf_m)) *
+                     0.5*fitness[insecticide, 'RS', 'no']
  
                           
        # male RR
-       F_male_r_intervention <- RAF[insecticide, 'm', 'intervention', gen-1]*
-                                RAF[insecticide, 'f', 'intervention', gen-1]*
-                                fitness[insecticide, 'RR', 'no']+temp_coeff
+       raf_m_r_new <- raf_m * raf_f *
+                                fitness[insecticide, 'RR', 'no'] + temp_coeff
        # male SS
-       F_male_s_intervention <- (1-RAF[insecticide, 'm', 'intervention',gen-1])*
-                                (1-RAF[insecticide, 'f', 'intervention',gen-1])*
-                                fitness[insecticide, 'SS', 'no']+temp_coeff
+       raf_m_s_new <- (1-raf_m) * (1-raf_f) *
+                                fitness[insecticide, 'SS', 'no'] + temp_coeff
        # normalise
-       norm_coeff <- F_male_r_intervention + F_male_s_intervention
-       RAF[insecticide, 'm', 'intervention', gen] <- F_male_r_intervention/norm_coeff
+       norm_coeff <- raf_m_r_new + raf_m_s_new
+       RAF[insecticide, 'm', 'intervention', gen] <- raf_m_r_new / norm_coeff
       
        # no insecticides in use so same frequencies for both sexes
-       # todo andy check on this
        RAF[insecticide, 'f', 'intervention', gen] <- RAF[insecticide, 'm', 'intervention', gen]
        
        if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in intervention site\n", gen, insecticide))   
@@ -228,11 +210,12 @@ run_rot <- function(max_gen = 200,
        } #end of code for insecticides that are not being deployed in the intervention site
       
       ######  
-      # refugia
+      # refugia, only needed if coverage < 1
       
-      # andy adding a condition, refugia not needed if coverage=1
       if ( coverage < 1 )
       {
+        
+        
         # RS coefficient common to equations 2 and 3
         temp_coeff <- (RAF[insecticide, 'm', 'refugia',gen-1]*(1-RAF[insecticide, 'f', 'refugia',gen-1])+
                          RAF[insecticide, 'f', 'refugia',gen-1]*(1-RAF[insecticide, 'm', 'refugia',gen-1]))*
