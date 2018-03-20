@@ -27,7 +27,7 @@ insecticide_switch <- function( RAF,
                                 df_results,
                                 diagnostics)
 {
-  next_insecticide_found <- 0
+  next_insecticide_found <- FALSE
   candidate <- current_insecticide 
   
   #TODO use df_results to stop switching to an insecticide that has been used recently
@@ -44,17 +44,17 @@ insecticide_switch <- function( RAF,
                       gen, current_insecticide, candidate,
                       RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
       
-      next_insecticide_found <- 1 
+      next_insecticide_found <- TRUE 
       current_insecticide <- candidate 
       #change_insecticide <- 0 
     }
     
-    if (next_insecticide_found==1) break   
+    if (next_insecticide_found) break   
     
   } # end of loop checking each insecticide
  
 # return 0 if no insecticide to use next found  
-if (next_insecticide_found==0) current_insecticide <- 0 
+if (!next_insecticide_found) current_insecticide <- 0 
    
 return(current_insecticide)  
 }

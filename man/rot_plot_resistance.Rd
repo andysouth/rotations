@@ -4,19 +4,26 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, logy = TRUE,
-  add_gens_under50 = TRUE, df_resanother = NULL)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, rot_criterion = 0.5,
+  logy = TRUE, add_gens_under50 = TRUE, df_resanother = NULL, lwd = 1.5,
+  plot = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 
 \item{plot_refuge}{whether to plot refuge as well as intervention}
 
+\item{rot_criterion}{resistant allele frequency threshold to add to plots, set to NULL to not add}
+
 \item{logy}{whether to use log scale for y axis}
 
 \item{add_gens_under50}{whether to add a label of num generations under 50percent resistance}
 
 \item{df_resanother}{exploratory option to plot results of another scenario on the same graph}
+
+\item{lwd}{line thickness for resistance curves}
+
+\item{plot}{whether to plot results}
 }
 \value{
 ggplot object

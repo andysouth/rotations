@@ -62,7 +62,7 @@ run_rot <- function(max_gen = 200,
                     rr = 0.5, #c(0.5, 0.5, 0.5),
                     cost = 0.1, #c(0,0,0),
                     fitSS = 1,
-                    min_rwr_interval = 5,
+                    min_rwr_interval = 1,
                     no_r_below_start = TRUE,
                     exit_rot = TRUE,
                     
@@ -86,7 +86,7 @@ run_rot <- function(max_gen = 200,
   names(l_gene_plus_activity) <- c( paste0('insecticide', 1:n_insecticides, "_active"),
                                     paste0('insecticide', 1:n_insecticides, "_refuge") )
   
-  df_results <- do.call(data.frame, list(generation = 1:max_gen,
+  df_results <- do.call(data.frame, list(generation = 1:max_gen,                                         
                                          insecticide = NA,
                                          stringsAsFactors = FALSE,
                                          l_gene_plus_activity))  
@@ -132,11 +132,17 @@ run_rot <- function(max_gen = 200,
   
   # usually start the rotation sequence at #1 but can specify any one start
   current_insecticide <- start_insecticide 
+  # store the insecticide for generation1 although its effects will only be seen in following gen
+  # this is consistent with later generations.
+  df_results$insecticide[1] <- current_insecticide
+  
   gens_this_insecticide <- 1
   
-  #start at generation 2 because generation 1 holds the user-defined initial allele frequencies
+  ## start at generation 2 because generation 1 holds the user-defined initial allele frequencies
+  ## The conditions within a generation influence resistance which is stored in the following generation.
+  ## in the plots there is gap between rotation that stops e.g. at gen 10 and next starts at gen 11
   for(gen in 2:max_gen)
-  { 
+    { 
     for(insecticide in 1:n_insecticides)
     {
       # extract resistance allele freqs (raf) for previous timestep
@@ -311,6 +317,9 @@ run_rot <- function(max_gen = 200,
                                                 diagnostics=diagnostics)
     } 
   
+    #message("gen", gen, " curr_ins=", current_insecticide, " change=", change_insecticide)
+    
+    
     # if no suitable insecticide left, break out of generations loop
     if (current_insecticide == 0) #(next_insecticide_found==0)
     {
@@ -323,11 +332,12 @@ run_rot <- function(max_gen = 200,
     }    
  
     # recording the insecticide that's going to be used in next timestep
-    # TODO check that this isn't out by 1 generation
     df_results$insecticide[gen] <- current_insecticide    
   
    } #### end of max_gen loop
 
+  # warning
+  if ( gen == max_gen ) warning("thresholds not reached before max generations, consider rerunning whith higher max_gen")
       
   #####################################  
   # recording results of resistance frequency
@@ -371,7 +381,7 @@ run_rot <- function(max_gen = 200,
     # for all insecticides in all generations  
     # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
     # just for deployed insecticides 
-    summarise(gens_dep_under50 = sum(resistance < 0.5 &
+    summarise(gens_dep_under50 = sum(resistance < rot_criterion &
                                        #finds insecticide in use = this one
                                        #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots  
                                        resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
@@ -384,10 +394,9 @@ run_rot <- function(max_gen = 200,
   
   # do the plots
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
-                                 logy=logy, add_gens_under50=add_gens_under50)
-  #removed add_gens_under50 because of problems above
-  # if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
-  #                               logy=logy, add_gens_under50=FALSE)
+                                logy=logy, add_gens_under50=add_gens_under50,
+                                rot_criterion=rot_criterion)
+
   
   invisible(df_res2)
   

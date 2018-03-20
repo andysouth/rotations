@@ -1,0 +1,51 @@
+---
+title: "perhaps rotations are better than sequences ?"
+output: pdf_document
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+  
+  
+  ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(rotations)
+library(ggplot2)
+
+outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+```
+
+resistance frequencies seem to take longer to rise for rotations than sequences once cost (or rufugia) are included. 
+particularly when the rotation interval is short
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=9}
+
+#for above
+#\pagebreak
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.1 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.6
+linputs$eff <-      0.6
+linputs$dom_sel <-  1
+linputs$dom_cos <-  1
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+```

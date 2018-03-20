@@ -103,6 +103,7 @@ for(i in 1:n_scenarios)
         " expo_hi",signif(linputs$expo_hi,2),
         " eff",signif(linputs$eff,2),
         " rot_interval",linputs$rot_interval,
+        " cost", linputs$cost,
         "\n")
     
     #print results in doc for diagnostics

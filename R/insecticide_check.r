@@ -34,10 +34,13 @@ insecticide_check <- function( RAF1gen,
     
     #TODO later alternative stop switching back to insecticide that has been used within 5 generations
     
-    #if ( RAF1gen[current_insecticide, 'f','intervention'] > rot_criterion &
-    # 12/1/18 because have drop=false to preserve site dimension the gen dimension is preserved too
+    # because have drop=false to preserve site dimension the gen dimension is preserved too
+    # so just has a single item in the final dimension : RAF1gen[,,,1]
+    
     if ( RAF1gen[current_insecticide, 'f','intervention',1] > rot_criterion &
          #to add a min interval to stop lots short switches
+         #BEWARE this min_rwr_interval can cause unexpected behaviour, 
+         #e.g. can stop simulation ending when resistance threshold has been reached
          gens_this_insecticide > min_rwr_interval )
     {
       change_insecticide <- TRUE        

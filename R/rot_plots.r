@@ -2,10 +2,12 @@
 #'
 #' @param df_res2 dataframe of resistance results from run_rot()
 #' @param plot_refuge whether to plot refuge as well as intervention
+#' @param rot_criterion resistant allele frequency threshold to add to plots, set to NULL to not add
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
 #' @param lwd line thickness for resistance curves
+#' @param plot whether to plot results
 #'
 # check said that namespace dependencies not required
 # @import ggplot2
@@ -21,10 +23,12 @@
 #' 
 rot_plot_resistance <- function(df_res2,
                                 plot_refuge = TRUE,
+                                rot_criterion = 0.5,
                                 logy = TRUE,
                                 add_gens_under50 = TRUE,
                                 df_resanother = NULL,
-                                lwd = 1.5) {
+                                lwd = 1.5,
+                                plot = TRUE) {
   
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
@@ -90,9 +94,10 @@ rot_plot_resistance <- function(df_res2,
     #   #trying to set labls in override.aes didn't work                    
     #   guide=guide_legend(keywidth = 5, label=FALSE, override.aes = list(colour=c("green2")))) +
     
+    theme_minimal() +
     
-    
-    theme_minimal()
+    # add line at resistance threshold
+    if (! is.null(rot_criterion)) geom_hline(yintercept=rot_criterion, linetype=3) 
   
   # experimenting with plotting a 2nd scenario on the same graph
   if (!is.null(df_resanother))
@@ -139,7 +144,7 @@ rot_plot_resistance <- function(df_res2,
     
   }
     
-  plot(gg)
+  if (plot) plot(gg)
   
   invisible(gg)
 } 

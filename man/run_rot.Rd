@@ -8,7 +8,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
   rot_interval = 10, rot_criterion = 0.5, migration = 0.01,
   coverage = 0.8, start_insecticide = 1, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
-  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 5,
+  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 1,
   no_r_below_start = TRUE, exit_rot = TRUE, plot = TRUE,
   diagnostics = FALSE, logy = TRUE, add_gens_under50 = FALSE)
 }

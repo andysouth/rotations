@@ -861,14 +861,237 @@ Aha! It could be a problem with min_rwr_interval, which is 5 by default and so m
 
 But i thought that only gens under thresh are counted ???
 
+*19/3/2018* on train to liverpool
+
+trying to understand overshooting issue
+
+dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
+but doesen't look like much time over the 0.5 thresh for the rotations can explain why they take longer. The short rotations only get to 0.5 towards the end.
+
+Can I refine this example to understand what may be happening ?
+
+turn off log ?
+
+dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE, logy=FALSE)
+
+2 insecticides
+dfseq <- run_rot(rot_interval=0, max_gen = 70, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, n_insecticides=2)
+dfrot <- run_rot(rot_interval=6, max_gen = 70, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, n_insecticides=2)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE, logy=FALSE)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+This does go over the 0.5 threshold ? can I count this example in sensi_an_rotations ?
+
+gens_under_thresh(dfrot) : 49
+gens_under_thresh(dfseq) : 46
+
+When there is no cost they are identical (39) :
+dfseq <- run_rot(rot_interval=0, max_gen = 70, migration=0.01, expo_hi=0.8, eff=0.8, cost=0, coverage=1, n_insecticides=2)
+dfrot <- run_rot(rot_interval=6, max_gen = 70, migration=0.01, expo_hi=0.8, eff=0.8, cost=0, coverage=1, n_insecticides=2)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE, logy=FALSE)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+but they still look diff in plots, i think because stoppping criteria are different in plots for seq & rot.
+
+# weirdly when I went to 3 insecticides, & cost 0.1
+# gen calc gives same result for each at 69 and plots finish at same point ?
+# aha! that was because max_gen=70 so max result could be 69 i.e. no insectidides in either scenario reached threshold
+
+dfseq <- run_rot(rot_interval=0, max_gen = 100, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, n_insecticides=3)
+dfrot <- run_rot(rot_interval=6, max_gen = 100, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, n_insecticides=3)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE, logy=FALSE)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+1 20-20 = 0
+2 insecticides 46 - 49 = 6
+3 insecticides difference is 83-79 = 4
+4 : 147 - 124 = 23
+5 : 218 - 200 = 18
+6 : 437 - 391 = 46
+
+? no obvious pattern
+
+done ~ write function to count gens under thresh
+done ~ add thresh line to plot
+done ~ add warning to run_rot() for if threshold not reached in time
+
+exit_rot seems not quite to be doing what I expect. e.g. if I set to just 1 insecticide sequence keeps going longer than rot (although this is a somewhat weird example)
+
+Aha! it is min_rwr_interval that did this. It stops a change early in a rotation but this can stop the simulation from ending.
+
+(however it shouldn't effect the gens_under_threshold)
+
+Try seeing if the gens_under_thresh are the same when min_rwr_interval is disabled.
+
+(also note that min_rwr_interval isn't really sposed to apply to rotations, partly a result of the structure )
+
+setting min_rwr_interval to 1 now results if diff of 86-77 = 9 for the 3 insecticides ??
+
+*20/3/18*
+Go back to the scenarios that was very different in sensi_an_rotations_test num79
+
+dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE, logy=FALSE)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+To enable side by side comparison
+
+library(gridExtra)
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE)
+grid.arrange(ggrot, ggseq, ncol = 1)
+
+I think maybe need to go back to two insecticides to try to find small difference :
+
+ni <- 2
+cost <- 0.1
+gens <- 70 
+dfseq <- run_rot(rot_interval=0, max_gen=gens, migration=0.01, expo_hi=0.8, eff=0.8, cost=cost, coverage=1, n_insecticides=ni)
+dfrot <- run_rot(rot_interval=6, max_gen=gens, migration=0.01, expo_hi=0.8, eff=0.8, cost=cost, coverage=1, n_insecticides=ni)
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE)
+grid.arrange(ggrot, ggseq, ncol = 1)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+rot:48, seq:46
+
+Note that in the above plot other strange issues, which may be plotting probs.
+~ insecticide use boxes don't join up, seem to be gaps
+~ resistance keeps increasing after insecticide box has finished
+~ first rotation seems shorter than later, because insecticide is classed as NA in firs tstep, is that right ?
+
+Difference is for i2 which has 4 rots of 6, 24, only reaches threshold at end of final rot
+In seq, 12 last for 2 generations less.
+
+Trying too look at plot in more detail
+dfrot2 <- run_rot(rot_interval=6, max_gen=20, migration=0.01, expo_hi=0.8, eff=0.8, cost=cost, coverage=1, n_insecticides=ni)
+
+Not sure if I'm going to be able to fix the ribbons joining ? can I +1 to the x upper limit ?
+
+  to_plot_in_use <- 1
+  
+  dfrot2 <- dfrot2 %>%
+    mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA)) 
+    
+  gg <- ggplot( dfrot2, aes_string(x='generation',y='resistance')) +
+    geom_line( alpha=0.5, lwd=1, colour='red3' ) +
+    facet_wrap('resist_gene', ncol=1) +
+    geom_ribbon( aes_string(x='generation', ymin=0, ymax='i_in_use'))
+    
+  plot(gg)
+
+I think ribbons not meeting and curve increasing after are just plotting issues that I don't know how to fix.
+
+If a rotation is 10 generations, the first finishes at 10 and the next is shown as starting at 11. The effect of the first continues until 11. Setting i_in_use to 1 for the following generation would fix the plotting issue.
+
+Do I need to try to add a generation 0 to store starting conditions ? NO
+
+Generations
+The conditions within a generation influence resistance which is stored in the following generation.
+Therefore it's good to set insecticide for time 1, and this is consistent with later generations.
+
+So I've fixed saving of insecticide for t1
+
+ni <- 2
+cost <- 0.1
+gens <- 70 
+dfseq <- run_rot(rot_interval=0, max_gen=gens, migration=0.01, expo_hi=0.8, eff=0.8, cost=cost, coverage=1, n_insecticides=ni)
+dfrot <- run_rot(rot_interval=6, max_gen=gens, migration=0.01, expo_hi=0.8, eff=0.8, cost=cost, coverage=1, n_insecticides=ni)
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE)
+grid.arrange(ggrot, ggseq, ncol = 1)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+Still have difference between 24 & 22 for i2 in above example
 
 
+# add in_use columns  
+  dfrot <- dfrot %>%
+    mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), 1, NA)) 
+  dfseq <- dfseq %>%
+    mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), 1, NA)) 
+#remove NA refuge rows    
+dfrot <- dfrot[dfrot$active_or_refuge=='active',]
+dfseq <- dfseq[dfseq$active_or_refuge=='active',] 
+    
+write_csv(dfrot,'rot.csv')
+write_csv(dfseq,'seq.csv')    
+
+see : rot_seq_compare_march2018.xlsx
+
+With cost it seems that rotation may be able to last longer than a sequence.
+
+Could this be because decline in resistance freq is more rapid at higher frequencies.  
+
+Both increases and decreases in resistance frequency are higher at higher resistance frequencies.
+
+But does this explain ?
+
+Is it something to do with more frequent changes ?
+
+Could it be because :
+~ frequency changes are bigger as frequencies get higher, 
+~ allowing in a sequence to reach high frequencies straight away makes it slightly quicker than see-sawing at lower frequencies
+~ is their some maths to prove this ?
+~ ask Ian
+~ can I print an example ?
+
+Ian said that at higher dominance the difference in change between low & high frequencies will be greater, so might expect the difference between rot and seq to be greater. Try it and see.
 
 
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.1 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.6
+linputs$eff <-      0.6
+linputs$dom_sel <-  1
+linputs$dom_cos <-  1
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+gens_under_thresh(dfrot)
+gens_under_thresh(dfseq)
+
+with higher dominance there is only 1 generation difference (31:30) may be partly because it is faster
+
+when I reduced exposure and effectiveness then a largish difference between rot & seq did return.
 
 
 
 # TODO
+
+~ compare dfrot & dfseq for above example
+
+~ seems that min_rwr_interval explains the plots looking different but not the measured gens_under_thresh
+
+~ maybe come back to i_in_use ribbons not meeting issue
+
+~ rename rot_criterion to rot_threshold
+
+~ add in some unit-tests ?
 
 ~ check how gens_under_thresh are counted in sensi_an_rotations1
     summarise(gens_dep_under50 = sum(resistance < 0.5 &
@@ -878,8 +1101,10 @@ But i thought that only gens under thresh are counted ???
                                  unlist()
 
 ~ how to deal with 'overshooting' leading to more generations under 50 when rotation intervals are shorter ? 
-run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
-run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1, add_gens_under50=TRUE)
+dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
+rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
+
 
 ~ move github repo back to mine
 ~~ From Github I merged changes from Ians with a pull request after comparing across the forks.
@@ -923,8 +1148,6 @@ vectorlearningxchange.com
 
 ~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? 
 
-~ something not right, when run with coverage=0 still get increase in resistance in treated areas, even though technically there is no treated area, maybe I just need to force coverage to be > 0 :
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 0 , eff = 0.8 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0 , migration = 0.01 , cost = 0.01 , logy = TRUE no_r_below_start = TRUE min_rwr_interval = 5 )
 
 ~ add error-check to run_rot if n.insecticides=1 & migration > 0 
 
