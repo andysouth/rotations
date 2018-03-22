@@ -751,6 +751,8 @@ It seems, then, that rotation strategies might prolong dieldrin efficacy indefin
 
 [because the combination of selection coefficient, cost and dominance means that resistance doesn't rise too fast when used and declines when not in use].
 
+What value of cost did Rowland1991 use ? Seems that he used high costs of 0.46 and 0.35, see table 8.
+
 Rowland2013 data on hut trials of actellic - pirimphos-methyl - an OP. Includes monthly change and at diff concentrations so could be useful for WoS, but doesn't have resistant & susceptible (does have resistance frequencies).
 
 Matowo2015 selection of insecticide resistance, seems to show changing insecticide resistance in response to interventions. but only shows mortality change not resistance frequency change.
@@ -1080,10 +1082,19 @@ with higher dominance there is only 1 generation difference (31:30) may be partl
 when I reduced exposure and effectiveness then a largish difference between rot & seq did return.
 
 
+eek
+      0 [main] us 0 init_cheap: VirtualAlloc pointer is null, Win32 error 487
+AllocationBase 0x0, BaseAddress 0x68570000, RegionSize 0xE0000, State 0x10000
+C:\Program Files (x86)\Git\bin\ssh.exe: *** Couldn't reserve space for cygwin's heap, Win32 error 0
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
 
 # TODO
 
-~ compare dfrot & dfseq for above example
+~ look more at phaps-rotations-better.Rmd
 
 ~ seems that min_rwr_interval explains the plots looking different but not the measured gens_under_thresh
 

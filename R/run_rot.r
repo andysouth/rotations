@@ -46,7 +46,7 @@
 
 run_rot <- function(max_gen = 200, 
                     n_insecticides = 4, 
-                    start_freqs = 0.001,
+                    start_freqs = 0.01,
                     rot_interval = 10, 
                     rot_criterion = 0.5, 
                     migration = 0.01, 

@@ -6,19 +6,32 @@ author: "Andy South and Ian Hastings"
 date: "`r Sys.Date()`"
 ---
   
+```{r, eval=TRUE, include=FALSE}
+
+library(knitr)
+#https://stackoverflow.com/a/36234023/1718356 for fig.pos = 'h'
+
+opts_chunk$set(fig.height=7, fig.width=9, fig.pos = 'h', echo=FALSE, warning=FALSE, message=FALSE)  
+
+```
   
-  ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+  
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 library(rotations)
 library(ggplot2)
 
 outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```
 
-resistance frequencies seem to take longer to rise for rotations than sequences once cost (or rufugia) are included. 
-particularly when the rotation interval is short
+Resistance frequencies can take longer to rise for rotations than sequences once cost (or refugia) are included. 
+Particularly noticeable when the rotation interval is short, costs (0.1) and dominance (1) high.    
 
+Can this be a simple mathematical result of:
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=9}
+1. slower rate of resistance frequency change at lower resistance frequencies. 
+2. rotation initially keeps frequencies lower where this rate of change is less.
+
+```{r, eval=TRUE}
 
 #for above
 #\pagebreak
@@ -45,7 +58,164 @@ ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
 ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
 library(gridExtra)
 grid.arrange(ggrot, ggseq, ncol=1)
-gens_under_thresh(dfrot)
-gens_under_thresh(dfseq)
+grot <- as.numeric(gens_under_thresh(dfrot))
+gseq <- as.numeric(gens_under_thresh(dfseq))
+cat('sum generations deployed insecticide under threshold rotation:', grot,' sequence:',gseq)
+
+print(unlist(linputs))
+
+```
+
+\pagebreak
+
+Cost reduced from 0.1 to 0.02. Radically cuts difference between rotation and sequence.
+
+```{r, eval=TRUE}
+
+#for above
+#\pagebreak
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.02 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.6
+linputs$eff <-      0.6
+linputs$dom_sel <-  1
+linputs$dom_cos <-  1
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+grot <- as.numeric(gens_under_thresh(dfrot))
+gseq <- as.numeric(gens_under_thresh(dfseq))
+cat('sum generations deployed insecticide under threshold rotation:', grot,' sequence:',gseq)
+
+print(unlist(linputs))
+
+```
+
+\pagebreak
+
+Decreasing dominance of resistance and cost from 1 to 0 (had to increase exposure, effectiveness and rr to get similar times-to-resistance). Then the difference between rotation and sequence is less.   
+
+
+```{r, eval=TRUE}
+
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.02 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.8
+linputs$eff <-      0.8
+linputs$rr  <-      0.8
+linputs$dom_sel <-  0
+linputs$dom_cos <-  0
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+grot <- as.numeric(gens_under_thresh(dfrot))
+gseq <- as.numeric(gens_under_thresh(dfseq))
+cat('sum generations deployed insecticide under threshold rotation:', grot,' sequence:',gseq)
+
+print(unlist(linputs))
+
+```
+
+
+\pagebreak
+
+Dominance of cost 0 and dom_sel 1. 
+
+Benefit of rotation is lost, sequence lasts a tiny bit longer. Suggests it is a high dominance of cost that favours sequence over rotation.
+
+```{r, eval=TRUE}
+
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.1 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.6
+linputs$eff <-      0.6
+linputs$dom_sel <-  1
+linputs$dom_cos <-  0
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+grot <- as.numeric(gens_under_thresh(dfrot))
+gseq <- as.numeric(gens_under_thresh(dfseq))
+cat('sum generations deployed insecticide under threshold rotation:', grot,' sequence:',gseq)
+
+print(unlist(linputs))
+
+```
+
+\pagebreak
+dom_sel and dom_cost 0.1, small favour of rotation
+
+```{r, eval=TRUE}
+
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0.1 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.8
+linputs$eff <-      0.8
+linputs$dom_sel <-  0.1
+linputs$dom_cos <-  0.1
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=6
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+grot <- as.numeric(gens_under_thresh(dfrot))
+gseq <- as.numeric(gens_under_thresh(dfseq))
+cat('sum generations deployed insecticide under threshold rotation:', grot,' sequence:',gseq)
+
+print(unlist(linputs))
 
 ```

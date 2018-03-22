@@ -4,7 +4,7 @@
 \alias{run_rot}
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
-run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.001,
+run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
   rot_interval = 10, rot_criterion = 0.5, migration = 0.01,
   coverage = 0.8, start_insecticide = 1, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 1, eff = 0.8, dom_sel = 0.5, dom_cos = 0.5,
