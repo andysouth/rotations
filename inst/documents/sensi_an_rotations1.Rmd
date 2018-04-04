@@ -10,6 +10,7 @@ date: "`r Sys.Date()`"
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
   library(rotations)
   library(ggplot2)
+  library(gridExtra)
 
   outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```
@@ -26,8 +27,9 @@ Testing sensitvity analysis to answer question 1. Are sequences and rotations eq
 
 \pagebreak
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=4}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
 #results='hide',
+#comment=NA removes ## before text output
 
 #start small & build it up
 #maybe create an equiv. of resistance::sensiAnPaperPart.r later
@@ -42,7 +44,7 @@ Testing sensitvity analysis to answer question 1. Are sequences and rotations eq
 # in contrast resistance::runModel2() accepted an input matrix & would run for multiple scenarios
 # not sure which is better
 
-n_scenarios <- 100
+n_scenarios <- 200
 
 df_res_all <- data.frame()
 
@@ -50,24 +52,42 @@ for(i in 1:n_scenarios)
 {
   # inputs (could also be saved to a dataframe first & extracted one row at a time)
   linputs <- list()
-  # constant inputs
-  # for Ians Q1 set coverage to 1 & cost to 0 
-  linputs$coverage <- 1
-  #linputs$migration <- 0.1
-  linputs$cost <- 0.1 #0
-  linputs$max_gen <- 400
-  # variable inputs
-  linputs$expo_hi <-  runif(1, min=0.1, max=0.9)
-  linputs$eff <-      runif(1, min=0.3, max=1)
   
-  # because I want to compare sequence rot_when_r to rotation
-  # I could run all the scenarios above for both seq & rot
-  # (and filter out later)
+  # for Ians Q1 set coverage to 1 & cost to 0 
+  # April 2018, having go at including variable cost, may want to do some cost=0 runs later
+  
+  ## constant inputs ##
+  linputs$coverage <- 1
+  linputs$migration <- 0
+  #linputs$cost <- 0 #variable cost below
+  linputs$max_gen <- 500
+  
+  #beware min_rwr_interval, it's to stop repeated small rotations
+  linputs$min_rwr_interval = 5
+  #set plot to F if using grid.arrange as in phaps-rotations-better.Rmd
+  linputs$plot <-     FALSE
 
+  ## variable inputs ##
+  linputs$cost <-           runif(1, min=0,   max=0.1) 
+  linputs$expo_hi <-        runif(1, min=0.4, max=0.9)  #min=0.1, max=0.9
+  linputs$male_expo_prop <- runif(1, min=0,   max=1)
+  linputs$eff <-            runif(1, min=0.5, max=1) # min=0.3, max=1
+  linputs$rr  <-            runif(1, min=0.1, max=0.9)
+  linputs$dom_sel <-        runif(1, min=0,   max=1)
+  linputs$dom_cos <-        runif(1, min=0,   max=1) 
+  linputs$start_freqs <-    runif(1, min=0.005,   max=0.1) #note not log yet   
+  linputs$n_insecticides <- sample( 2:5, 1 )  #beware set replace=T if more than 1
+
+   
   #random rot interval integer
-  linputs$rot_interval <- sample( 5:50, 1 )  #beware set replace=T if more than 1
-    
-  for(rot_or_not in 0:1)
+  linputs$rot_interval <-   sample( 5:50, 1 )  #beware set replace=T if more than 1
+
+  # create null objects used plater for plotting
+  ggrot <- ggseq <- NULL
+  
+  # to compare sequence to rotation run all the scenarios above for both seq & rot 
+  # beware has to be 1:0 because interval is overwritten for seq
+  for(rot_or_not in 1:0)
   {  
     #to get rot_int of 0 every other run
     if (rot_or_not == 0) linputs$rot_interval <- 0
@@ -78,36 +98,22 @@ for(i in 1:n_scenarios)
     dfres <- do.call(run_rot, linputs)
     
     # summarise results per scenario
-    # NOTE this is also currently calc at end of run_rot() prob better to calc there
-    # and put in the output dfres, but its then repeated per 
-    # TODO first AG fix this maybe go for non dplyr solution
-    # if I do calc in run_rot then just find value at first row for each gene
-    # Error in dplyr::filter(active_or_refuge == "active") : 
-    # object 'active_or_refuge' not found
+    # NOTE this is also currently calc at end of run_rot() here or other post-process is probably better
+    # and put in the output dfres, but the value has to be rpeated for every generation 
     res <- dfres %>%
-    # only assess in control areas not in refugia  
-    dplyr::filter(active_or_refuge=='active') %>%
-    group_by(resist_gene) %>%
-    # for all insecticides in all generations  
-    # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
-    # summarise(mean_gens_under50 = mean(gens_under50)) %>%
-    # just for deployed insecticides 
-    summarise(gens_dep_under50 = sum(resistance < 0.5 &
-                                     #finds insecticide in use = this one
-                                     resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
-                                 summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
-                                 unlist()
-    
-    #print scenario num and inputs to doc for exploration
-    cat("scenario",i,
-        " expo_hi",signif(linputs$expo_hi,2),
-        " eff",signif(linputs$eff,2),
-        " rot_interval",linputs$rot_interval,
-        " cost", linputs$cost,
-        "\n")
-    
-    #print results in doc for diagnostics
-    cat("tot gens deployed under freq 0.5 =", res,"\n\n")
+      # only assess in control areas not in refugia  
+      dplyr::filter(active_or_refuge=='active') %>%
+      group_by(resist_gene) %>%
+      # for all insecticides in all generations  
+      # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
+      # summarise(mean_gens_under50 = mean(gens_under50)) %>%
+      # just for deployed insecticides 
+      summarise(gens_dep_under50 = sum(resistance < 0.5 &
+                                       #finds insecticide in use = this one
+                                       resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+      summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
+      unlist()
+
     
     # create dataframe from inputs and outputs
     # first add scenario column onto results
@@ -118,7 +124,62 @@ for(i in 1:n_scenarios)
     # not a good speed or memory way of doing ... but a start
     df_res_all <- rbind(df_res_all, df_in_out)
     
-  } #end rot_or_not loop
+    ggres <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+    gens_res <- as.numeric(gens_under_thresh(dfres))
+    
+    # to plot results for checking
+    if ( linputs$rot_interval == 0 )
+    {
+      ggseq <- ggres
+      gens_seq <- gens_res
+    } else
+    {
+      ggrot <- ggres
+      gens_rot <- gens_res
+    }
+
+  } #end rot_or_not loop    
+    
+  #printing input values
+  #print(unlist(linputs))
+  
+  # try to plot input vals instead
+  # extract out those between 0 & 1
+  dfi <- data.frame(t(as.data.frame(linputs)))
+  names(dfi) <- 'value'
+  dfi$inputs <- rownames(dfi)
+
+  #take out columns not between 0 & 1
+  dfi <- filter(dfi, !inputs %in% c('max_gen','rot_interval','n_insecticides','plot','min_rwr_interval'))
+  #also remove coverage & migration both set to 0 for now
+  dfi <- filter(dfi, !inputs %in% c('coverage','migration'))
+    
+  ggins <- ggplot(dfi, aes(x=inputs,y=value)) + 
+            geom_point() +
+            theme_minimal() +
+            ylim(0,1) +
+            theme(axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1))  
+  
+  grid.arrange(ggrot, ggseq, ggins, ncol=1)
+  
+  cat('scenario',i,'sum generations deployed insecticide under thresh rotation:', gens_rot,' sequence:',gens_seq,"\n\n")
+
+  #can I give the code to rerun this scenario
+  cat(paste0("run_rot(n_insecticides=",linputs$n_insecticides,", ",
+              "cost=",signif(linputs$cost,2),", ",
+              "start_freqs=",signif(linputs$start_freqs,2),", ", 
+              "rot_interval=",linputs$rot_interval,", ",
+              "eff=",signif(linputs$eff,2),",\n",
+              "dom_sel=",signif(linputs$dom_sel,2),", ",
+              "dom_cos=",signif(linputs$dom_cos,2),", ",
+              "rr=",signif(linputs$rr,2),", ",
+              "expo_hi=",signif(linputs$expo_hi,2),", ",
+              "coverage=",signif(linputs$coverage,2),",\n",
+              "migration=",signif(linputs$migration,2),", ",
+              "max_gen=",linputs$max_gen,", ", 
+              "min_rwr_interval=",linputs$min_rwr_interval,            
+              ")\n") )
+    
 } #end scenario loop
 
 # save object containing inputs and results as rda for analysis
@@ -146,5 +207,33 @@ save(df_res_all, file='df_res_all_rot.rda') #paste0(outFolder,'*.rda'))
           geom_line( alpha=0.5, lwd=1 )
 
     plot(gg)
+    
+# check proportion of scenarios not reaching thresholds by max_runs
+    
+    nruns_fail <- df_res_all %>% 
+                  filter(tot_gens_dep_under50 == linputs$max_gen) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs not reaching thresholds : ', nruns_fail/(2*n_scenarios) ) #2* beacuse eeach scenario run for seq & rot
+             
+# plot gens againts exposure and effectiveness
+# as a quick test to see if I can set the starting values of these higher
+    
+    gg <- ggplot( df_res_all, aes_string(x='eff',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+       
+    gg <- ggplot( df_res_all, aes_string(x='expo_hi',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+    
+    gg <- ggplot( df_res_all, aes_string(x='expo_hi*eff*male_expo_prop',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+    
 
 ```  
