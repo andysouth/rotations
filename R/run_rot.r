@@ -372,8 +372,8 @@ run_rot <- function(max_gen = 200,
   
   # calculate number generations under 50% resistance to be used in plotting 
   # probably should be somewhere else ! ? just for active area
+  # also calculated in sensi_an_rotations1.Rmd
   # this does give the answer, but only 1 per insecticide
-  # so all the results per generation are lost
   # NSE problem fixed by dplyr::filter 
   df_res2 <- df_res2 %>%
     dplyr::filter(active_or_refuge=='active') %>%
@@ -383,7 +383,6 @@ run_rot <- function(max_gen = 200,
     # just for deployed insecticides 
     summarise(gens_dep_under50 = sum(resistance < rot_criterion &
                                        #finds insecticide in use = this one
-                                       #TODO in_use is also calculated in rot_plots, but set to 1.05 for the plots  
                                        resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
     #summarise(tot_dep_gens_under50 = sum(gens_dep_under50)) %>%    
     ungroup() %>%
