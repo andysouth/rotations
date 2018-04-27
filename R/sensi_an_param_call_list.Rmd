@@ -1,0 +1,19 @@
+---
+  title: "sensi_an_param_call_list"
+output: pdf_document
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+  
+To create a list of function calls one for each scenario in the sensitivity analysis.
+
+To allow any run from the sensitivity analysis to be rerun and checked.
+
+Relies on the seed being the same as in sensi_an_rotations.
+
+A better option might be to read a line from df_res_all to extract the input params to rerun the model.
+
+df_res_all[624,1:15]
+
+

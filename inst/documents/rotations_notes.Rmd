@@ -1081,22 +1081,157 @@ with higher dominance there is only 1 generation difference (31:30) may be partl
 
 when I reduced exposure and effectiveness then a largish difference between rot & seq did return.
 
-
+stackoverflow says this is a cygwin memory error and rebooting should fix it.
 eek
-      0 [main] us 0 init_cheap: VirtualAlloc pointer is null, Win32 error 487
+0 [main] us 0 init_cheap: VirtualAlloc pointer is null, Win32 error 487
 AllocationBase 0x0, BaseAddress 0x68570000, RegionSize 0xE0000, State 0x10000
 C:\Program Files (x86)\Git\bin\ssh.exe: *** Couldn't reserve space for cygwin's heap, Win32 error 0
 fatal: Could not read from remote repository.
 
-Please make sure you have the correct access rights
-and the repository exists.
+Just rebooted and that fixed it.
+
+*Seems that rotations favoured by higher costs, higher dominance of cost, lower start freq (longer to act), shorter rot interval (more changes)*
+
+*3/4/18*
+
+~ set up initial sensi analysis of 1000 runs
+~ 200 runs take < 30 mins
+
+~ seems that a lot of runs don't reach resistance thresholds by 400 generations, and this is with start-freqs set to 0.01, if I set lower start freqs then even more runs will be excluded.
+
+done ~ add ranges for variable params
+done ~ copy across grid.arrange from phaps-rotations-better
+
+around 79% of runs failing to make thresholds
+
+upped max gens to 500 and the lower exposure val to try to improve number making thresholds
+
+*4/4/2018*
+
+ooo with new ranges getting a few runs where there is a big advantage to rotation. Seems to be assoc with high dom_cos > 0.8
+Only c 1% of scenarios, 2 out of 200
+
+# scenario 137 sum generations deployed insecticide under thresh rotation: 500 sequence: 258
+run_rot(n_insecticides=3, cost=0.026, start_freqs=0.032, rot_interval=10, eff=0.5,
+dom_sel=0.36, dom_cos=0.82, rr=0.32, expo_hi=0.73, coverage=1,
+migration=0, max_gen=500, min_rwr_interval=5)
+
+# scenario 143 sum generations deployed insecticide under thresh rotation: 500 sequence: 126
+run_rot(n_insecticides=2, cost=0.049, start_freqs=0.064, rot_interval=0, eff=0.71,
+dom_sel=0.089, dom_cos=0.87, rr=0.9, expo_hi=0.65, coverage=1,
+migration=0, max_gen=500, min_rwr_interval=5)
+
+In 137 even the rounding makes the rotation last slightly less long (e.g. c400 rather than 500)
+
+start writing code to calc difference between sequence and rotation ready to put that into PRCC. 
+
+currently i have repeated following rows for sequence and rotation with identical input params
+
+i probably want to replace this with one row and columns for gens_rot and gens_seq
+
+new version one row per scenario :
+
+#advantage to rotation despite dom_cos=0.23, cost=0.02
+#scenario 153 sum generations deployed insecticide under thresh rotation: 406 sequence: 289
+run_rot(n_insecticides=4, cost=0.023, start_freqs=0.019, rot_interval=28, eff=0.92,
+dom_sel=0.019, dom_cos=0.23, rr=0.63, expo_hi=0.75, coverage=1,
+migration=0, max_gen=500, min_rwr_interval=5)
+
+Looking at some more of literature :
+
+From Mallet 1989 :
+Since a naive strategy - of using insecticides in turn until resistance evolves to each - gives almost the same total control period as a planned rotation23, rotations can hardly even be defined as management. However, in some cases rotations may be the only practical way of limiting resistance to a single favoured compound 23 27.
+
+23 is curtis 1987 a book chapter I couldn't find.
+
+Curtis 1993 has some good quotes and references about rotations.
+It covers the oncheriasis control program which is taken by some to be evidence in favour of rotations
+Fig 3 & 4 is lab data comparing sequence & rotation, very similar to our plots, I should definitely cite it.
+
+"A programme such as the OCP differs from these simple models in that more than two insecticides are available for use and a given compound can therefore be out of use for more generations than it is in use."
+
+I hadn't thought of that. Having more than 2 insecticides allows each to be out of use for more time than it is in use. 
+So if the increase in resistance while in use was the same as the decrease when not in use then a rotation could be sustainable in the long term. However it is likely that resistance will increase faster in presence than it will decrease in absence (I think Curtis says that too).
+
+Curtis cites how his 1987 work has already included effect of modifier genes, and shows it here in Fig 6.
+"Supporters of prearranged rotations usually tacitly or explicitly assume that the general fitness due to resistance genes will improve if they are exposed to selection for many generations. Curtis (1987) simulated the behaviour of a modifer gene which could have this effect and found that it would only have an appreciable influence if one allowed resistance gene frequencies to become very high before switching insecticides.""
+
+"One possible objection to the reactive system is that it requires an efficient and
+comprehensive system for testing for resistance to avoid ‘overshooting’ and
+getting stuck as in the dotted line in Fig. 6. However, running a prearranged
+rotation without a monitoring system would mean that one would have no way
+of knowing if the system was still working."
+
+on p16 there is also interesting consideration of what expected in a mixture if one insecticide decays before another. 
+
+It's negative about rotations :
+'Except where there are seasonal/environmental reasons for a pre-arranged rotation (as in the OCP), we do not find that such rotations are likely to have any advantage over well-managed reactive rotation, and we do not consider that the latter can validly be called a 'strategy' for resistance management. The use of a suitable insecticide mixture seems more promising in the light of the limited data so far available on resistance in relation to insecticide impregnated bednets.'
+
+I would like to get the Curtis 1987 paper
+Curtis CF. 1987. Genetic aspects of selection for resistance. In Ford MG, Holloman DW, Khambay BPS,
+Sawicki RM, eds. Combating resistance to xenobiotics. Chichester, U.K.: Ellis Horwood, 15e161.
+
+but couldn't find and probably adds little
+
+*5/4/2018*
+added progress counter to sensi_an_rotations after 2000 runs failed to finish overnight
+also now save the output every 200 runs
+
+100 scenarios take < 10 mins
+2000 scenarios should take 20*10 mins, 200 mins < 2 hours
+but seems that RAM fills up that may slow it down
+
+got 1400 runs, PC ground to a halt.
+
+No very clear pattern for high difference runs.
+Small positice effect with cost & dom_cos, small -ve effect of dom_sel
+
+*9/4/2018*
+turned off plotting in sensi_an_rotations
+10,000 runs took c 100 minutes (1hr20)
+
+*27/4/2018*
+
+First draft of paper3
+
+trying to get references to work without having to copy the .bib file from resistance
+
+C:/rsprojects/resistance/inst/documents/paper2/
+
+Getting filter pandoc-citeproc' had status 83 Execution halted
+https://stackoverflow.com/questions/36826916/pandoc-citeproc-error-83-with-rmarkdown-file
+
+removed all '-' from citation keys in mendeley, didn't fix
+
+Temporary solution of cutting out all refs except 2 from the .bib file fixed it.
+Need to go throught the bib file and look for error.
+Can I reduce size of the bib file to just the IR papers ? What did I do for ecocrop ?
+
+
 
 
 # TODO
 
-~ look more at phaps-rotations-better.Rmd
+~ can I add figures from specific sensi_an runs ? or safer to run the model for set runs from the paper rmd.
 
-~ seems that min_rwr_interval explains the plots looking different but not the measured gens_under_thresh
+~ how to sort library.bib ? Have a much reduced copy in rotations folder now.
+
+~ change random seed and run another 1400 runs
+~ start PRCC. 
+~ can I try a predictive model to predict rot_minus_seq from inputs ?
+
+think about killer plot to display difference between rot & seq generations
+
+be careful that min_rwr_interval doesn't come back to bite me. Ian wanted it different, i.e. not going back to an insecticide that has been used recently ...
+
+~ sensi_an_rotations1.Rmd
+
+~ *decide on min_rwr_interval for sensi analysis
+~ decide on max_gen, what was it for paper1 ?
+~ one generation per month, 12 generations per year, 500 gens is ~40 years
+
+
+
 
 ~ maybe come back to i_in_use ribbons not meeting issue
 
@@ -1122,7 +1257,7 @@ rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 ~~ Now I can possibly change RStudio to point to the repo on my Github (do when I have a bit more time)
 ~~ update R
 
-~ sensi_an_rotations1.Rmd
+
 
 
 
@@ -1232,17 +1367,27 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
     a_fitloc[ paste0('RS',locusNum), 'no'] <- 1 - (a_dom[locusNum, 'no'] * a_cost[locusNum])
     a_fitloc[ paste0('RR',locusNum), 'no'] <- 1 - a_cost[locusNum]
 
+# good refs for paper
+resistance : malERA2017_updated-research-agenda-resistance-in-malaria.pdf
+
+"What are the benefits of insecticide rotations, mixtures, or spatial mosaics of different compounds?
+What is the impact of adding nonpyrethroid IRS where LLINs are already deployed at high coverage and quality? When should new insecticides be adopted? What is the ideal rotation period or mosaic configuration? How many insecticide classes are needed for effective rotation or mosaic strategies? Despite the absence of data to answer these questions, some countries have already developed operational frameworks for resistance management that could be adopted by other programmes.""
+
+The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
+
 
 # state of play
 ~ sensi_an_rotations1.Rmd : starting on sensitivity analysis
 ~~  produces an output dataframe containing both inputs and outputs
+~~ saves outputs to df_res_all_rot.rda
 
 ~ rotations1.Rmd : example plots
 ~ UI : rotations/shiny/rotresist1/server.r
       https://andysouth.shinyapps.io/rotresist1/
 ~ RAF[,,,2] to get allele frequencies for generation 2 (by insecticide,sex and active|refuge)
 
-
+# useful
+~ one generation per month, 12 generations per year, 500 gens is ~40 years
 
 
 

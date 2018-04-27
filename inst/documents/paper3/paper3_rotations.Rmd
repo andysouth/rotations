@@ -1,0 +1,169 @@
+---
+title: "Insecticide rotations delay evolution of resistance in a minority of model runs when compared to sequential use."
+# output: 
+#   pdf_document:
+#     keep_tex: true
+#     fig_caption: true
+#     latex_engine: pdflatex
+
+output: word_document
+#author: "Andy South and Ian Hastings"
+#date: "`r Sys.Date()`"
+bibliography: library.bib
+csl: biomed-central.csl
+fontsize: 11pt
+spacing: double
+# below worked in test_linenumbers.Rmd
+header-includes:
+   - \usepackage{setspace}
+   - \doublespacing
+   - \usepackage{lineno}
+   - \linenumbers
+---
+
+Andy South * and Ian M. Hastings
+
+Department of Parasitology, Liverpool School of Tropical Medicine, Liverpool L3 5QA, UK.
+
+southandy@gmail.com, andy.south@lstmed.ac.uk   
+
+ian.hastings@lstmed.ac.uk
+
+\* Corresponding author
+
+
+
+```{r, eval=TRUE, include=FALSE}
+#!!!! PAPER PROTOCOL
+#!!!! submission MS, knit to word_document 
+#!!!!  in WORD: delete figs, set double space, add line numbers 
+#!!!!  (spacing & line numbers work for pdf output but not for word)
+library(knitr)
+opts_chunk$set(dev="tiff",
+               dev.args=list(compression="lzw"),
+               dpi=300,
+               cache=FALSE,
+               fig.path='pap2figs/')
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+  library(rotations)
+  library(ggplot2)
+  library(gridExtra)
+
+  outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+```
+
+## Abstract
+
+Insecticide resistance threatens the control of the vectors of dangerous diseases including malaria, dengue and zika. Recent increases in insecticide resistance in public health are an evolutionary process caused by sustained exposure of insect populations to a small number of available insecticides. Resistance is a particular problem in public health as compared to agriculture because insecticides need to be longer lasting to provide affordable protection and there are fewer available active ingredients. Efforts to limit the development of insecticide resistance are grouped under the term Insecticide Resistance Management (IRM). The main strategies advocated to reduce the development of resistance are 1) rotations, 2) sequences, 3) mixtures  and 4) mosaics. Rotations regularly switch between the use of different insecticides with a short time step (one or a few years) irrespective of resistance levels. Sequences, in contrast, switch from one insecticide to another only when resistance levels have reached a critical, defined threshold usually over a longer timescale.  
+    
+Rotations are often advocated as one of the best options for limiting the development of resistance.
+    
+Testing different IRM strategies in the field is difficult and there has been little recent modelling work on insecticide rotations.
+    
+In this paper a model is described allowing rotations and sequences to be compared in terms of their effect on the evolution of insecticide resistance. The model is used to develop a mechanistic understanding of when and why insecticide resistance is likely to evolve faster with rotations or sequences.  
+    
+The results suggest that under more likely circumstances than not the evolution of insecticide resistance will reach resistance thresholds at very similar times for rotations and sequences.
+    
+However under a less common, but still plausible, set of circumstances there are predicted to be large adavnatages to using a rotations as compared to a sequence.
+
+    
+The advantages to a rotation only occur when there are costs of resistance or dispersal from untreated areas, and there is high dominance of cost and low dominance of selection.
+    
+    
+The mechanisms for these results are explained. 
+    
+Other operational factors will favour rotations or sequences aside from the implications for the evolution of resistance. Developing an understanding of the evolutionary implications allows a more explicit consideration of these other factors on their own merits. 
+
+
+\pagebreak
+
+## Introduction
+Despite much field and modelling work on the evolution of resistance under different insecticide or drug strategies [@Consortium2013] there is a small evidence base to support decisions about the use of insecticides in public health [@Sternberg2017].   
+
+Rotations are advocated as one of the most favoured approaches for Insecticide Resistance Management (IRM)[@WHO2012].
+
+Here a modern modelling approach is described to allow an assessment of the potential benefits, in terms of the evolution of resistance, of rotations over sequences. 
+
+
+## Methods
+
+A population genetic model was developed simulating changes over time in the frequencies of resistant and susceptible alleles in response to fitness differences. The model uses a similar approach to that described in [@Levick2017,@South2018] to compare insecticide mixtures and sequences. The implementation is simpler here because for rotations and sequences there is only a need to follow one insecticide at a time. The simpler implementation allows the model to be run for an unlimited number of insecticides. 
+    
+Sequences : one insecticide is used until resistance threshold frequency (0.5 in this case) is reached, then switch to new insecticide. 
+Rotations : use insecticide for set time, switch to other. 
+
+In both cases continue until no more insecticides below the resistance threshold remain.    
+    
+Model inputs effect fitness as shown in Figure 1.
+
+The model was run under four main scenarios :
+1. no resistance fitness costs or dispersal link to untreated areas
+2. fitness costs of resistance added
+3. dispersal link to untreated areas (no costs)
+4. costs and dispersal
+
+To generate a decline in resistance over time either fitness costs or a dispersal link to an untreated area are required. 
+
+*talk about model outputs, i.e. generations deployed below threshold*
+*try to come up with brief name to make it easier to refer to it later*
+
+## Results
+
+### no resistance fitness costs or dispersal link to untreated refugia
+
+When there are no resistance fitness costs or dispersal links to untreated refugia resistance frequencies do not decline when an insecticide is not in use. Thus for sequences once resistance thresholds are reached the resistance frequencies remain at that level and the insecticide cannot be re-used. For rotations resistance frequencies step upwards when insecticides are in use and remain at a plateau when they are not. This results in 
+
+
+### fitness costs of resistance added
+
+
+
+## Discussion
+
+
+\pagebreak
+
+## Figures
+
+```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1. [todo need to modify caption from MJ paper, start by saying that only in left panel during application of the insecticide] The effect of model inputs on the fitness of genotypes for a single insecticide. Fitness is shown on the y-axis and the different genotypes (SS, SR, RR) on the x axis. Firstly the exposure input determines the proportion of the population in the left and right panels (exposed and not exposed). For those that are exposed (left panel) insecticide effectiveness sets the fitness for SS, resistance restoration 'restores' a portion of the fitness for RR and dominance of resistance determines how the fitness for SR lies between that of SS and RR. For those that are not exposed, fitness of SS is set to 1 by definition, resistance cost determines the fitness of RR and again dominance of cost determines how the fitness for SR sits between that of SS and RR. In this example effectiveness=0.8, resistance restoration=0.5 which 'restores' half of the fitness lost due to the insecticide, dominance of resistance=0.7 which sets the fitness of the SR closer to RR than SS. Resistance cost=0.3 which reduces fitness in the absence of the insecticide from 1 to 0.7, and dominance of cost=0.8 which sets fitness of SR close to RR."}
+ 
+library(resistance) 
+plot_fit_calc( effectiveness=0.8, resistance_restoration=0.5, dominance_restoration=0.7, dominance_cost=0.7, cost=0.3 )
+
+```
+
+```{r Fig2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 2. Example of rotation and sequence when no resistance fitness costs or dispersal link to untreated refugia."}
+
+# revisit how best to do model runs from within the paper 
+
+linputs <- list()
+
+linputs$n_insecticides <- 2
+linputs$coverage <- 1
+#linputs$migration <- 0.1
+linputs$cost <-     0 
+linputs$max_gen <-  200
+linputs$expo_hi <-  0.6
+linputs$eff <-      0.6
+linputs$dom_sel <-  1
+linputs$dom_cos <-  1
+linputs$plot <-     FALSE
+
+linputs$rot_interval=0
+dfseq <- do.call(run_rot, linputs)
+linputs$rot_interval=10
+dfrot <- do.call(run_rot, linputs)
+
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=FALSE, plot=FALSE)
+library(gridExtra)
+grid.arrange(ggrot, ggseq, ncol=1)
+
+```  
+
+
+  
+## References
+<!-- now auto created here-->
