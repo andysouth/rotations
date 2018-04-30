@@ -57,7 +57,8 @@ date: "`r Sys.Date()`"
 set.seed(2)
 max_gen         <- 500
 plot_scenarios  <- FALSE
-n_scenarios     <- 10000
+n_scenarios     <- 1000 # try 1000 runs with no cost
+#already_ran     <- FALSE
 already_ran     <- TRUE
 
 # if already done runs, just load data for plots
@@ -65,7 +66,8 @@ if (already_ran)
 {
   #C:/rsprojects/rotations/inst/documents/
   
-  load("df_res_all_rot10000.rda")
+  #load("df_res_all_rot10000.rda")
+  load("df_res_all_rot_mig1000.rda")
   
 }else
 {
@@ -74,7 +76,7 @@ if (already_ran)
   for(i in 1:n_scenarios)
   {
     #message should output to the R markdown console
-    if (i%%500 == 1) message("scenario ",i," of ",n_scenarios," ",Sys.time())
+    if (i%%200 == 1) message("scenario ",i," of ",n_scenarios," ",Sys.time())
     
     # inputs (could also be saved to a dataframe first & extracted one row at a time)
     linputs <- list()
@@ -83,8 +85,8 @@ if (already_ran)
     # April 2018, having go at including variable cost, may want to do some cost=0 runs later
     
     ## constant inputs ##
-    linputs$coverage <- 1
-    linputs$migration <- 0
+    #linputs$coverage <- 1
+    #linputs$migration <- 0
     #linputs$cost <- 0 #variable cost below
     linputs$max_gen <- max_gen
     
@@ -94,7 +96,9 @@ if (already_ran)
     linputs$plot <-     FALSE
   
     ## variable inputs ##
-    linputs$cost <-           runif(1, min=0,   max=0.1) 
+    #linputs$cost <-           runif(1, min=0,   max=0.1) 
+    # try 1000 runs with no cost
+    linputs$cost <-           0 
     linputs$expo_hi <-        runif(1, min=0.4, max=0.9)  #min=0.1, max=0.9
     linputs$male_expo_prop <- runif(1, min=0,   max=1)
     linputs$eff <-            runif(1, min=0.5, max=1) # min=0.3, max=1
@@ -103,8 +107,11 @@ if (already_ran)
     linputs$dom_cos <-        runif(1, min=0,   max=1) 
     linputs$start_freqs <-    runif(1, min=0.005,   max=0.1) #note not log yet   
     linputs$n_insecticides <- sample( 2:5, 1 )  #beware set replace=T if more than 1
+    # dispersal (initially with cost set to 0)
+    linputs$coverage <-       runif(1, min=0.1, max=0.9)
+    linputs$migration <-      runif(1, min=0.1, max=0.9)
   
-    # create null objects used plater for plotting
+    # create null objects used later for plotting
     ggrot <- ggseq <- NULL
     
     # to compare sequence to rotation run all the scenarios above for both seq & rot 
@@ -283,8 +290,8 @@ if (already_ran)
 
 # Examples of runs where rotations > 20% better than sequences
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=3.5}
-
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=3.5}
+#eval false because smaller runs don't have these
 
 scenarios_to_plot <- c(624,2167,602,4028,5771)
 

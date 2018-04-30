@@ -1207,18 +1207,35 @@ Temporary solution of cutting out all refs except 2 from the .bib file fixed it.
 Need to go throught the bib file and look for error.
 Can I reduce size of the bib file to just the IR papers ? What did I do for ecocrop ?
 
+# 30/4/18
 
+100 runs with no cost all had identical times for rotations and sequences
+
+from Rmd got error when tried 1000
+worked from console
+
+With no cost and no migration, majority of runs the same. Just 3/1000 seq better than rot by < 3 generations.
+tst <- filter(df_res_all, rot_minus_seq!=0)
+
+Now trying 1000 runs with coverage and dispersal set between 0.1 and 0.9
+
+Seems that less benefit to rotations with dispersal rather than costs.
 
 
 # TODO
+
+~ run 10k runs of dispersal overnight
+~ try histograms on log scale ?
+~ try decision tree to predict rot_minus_seq from inputs
+
+~ send MS to Ian before 11
+
+~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
 
 ~ can I add figures from specific sensi_an runs ? or safer to run the model for set runs from the paper rmd.
 
 ~ how to sort library.bib ? Have a much reduced copy in rotations folder now.
 
-~ change random seed and run another 1400 runs
-~ start PRCC. 
-~ can I try a predictive model to predict rot_minus_seq from inputs ?
 
 think about killer plot to display difference between rot & seq generations
 
