@@ -57,9 +57,9 @@ date: "`r Sys.Date()`"
 set.seed(2)
 max_gen         <- 500
 plot_scenarios  <- FALSE
-n_scenarios     <- 1000 # try 1000 runs with no cost
-#already_ran     <- FALSE
-already_ran     <- TRUE
+n_scenarios     <- 10000 # try 1000 runs with no cost
+already_ran     <- FALSE
+#already_ran     <- TRUE
 
 # if already done runs, just load data for plots
 if (already_ran)
@@ -96,9 +96,8 @@ if (already_ran)
     linputs$plot <-     FALSE
   
     ## variable inputs ##
-    #linputs$cost <-           runif(1, min=0,   max=0.1) 
-    # try 1000 runs with no cost
-    linputs$cost <-           0 
+    linputs$cost <-           runif(1, min=0,   max=0.1) 
+    #linputs$cost <-           0 
     linputs$expo_hi <-        runif(1, min=0.4, max=0.9)  #min=0.1, max=0.9
     linputs$male_expo_prop <- runif(1, min=0,   max=1)
     linputs$eff <-            runif(1, min=0.5, max=1) # min=0.3, max=1
