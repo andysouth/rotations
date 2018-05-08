@@ -1,0 +1,198 @@
+---
+title: "pap3_rot_analyses : trial analyses for paper3"
+output: pdf_document
+#output: word_document
+author: "Andy South"
+date: "`r Sys.Date()`"
+---
+  
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(rotations)
+library(ggplot2)
+library(gridExtra)
+
+outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+
+  # load simulation outputs for some plots
+  # beware that each object is called df_res_all
+  # some plots are created by directly running the model
+  load("df_res_all_rot_nocost_nomig1000.rda") #nocost nomig  
+  df_nocost_nomig <- df_res_all
+  load("df_res_all_rot10000.rda") #cost
+  df_cost <- df_res_all
+  load("df_res_all_rot_mig10000.rda") #mig 10k
+  df_mig <- df_res_all
+  load("df_res_all_rot_cost_mig10000.rda") #costmig 10k
+  df_cost_mig <- df_res_all
+
+```
+
+```{r success, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+#looking at classifying runs as to whether succeed_both (2), succeed_rot (1), fail_both (0). Then see what are the best predictors of these ?
+
+
+# add a column for percent difference between rot & seq
+df_cost <- mutate(df_cost, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
+
+df_cost <- mutate(df_cost, success_rot_seq = ifelse(gens_seq==max_gen & gens_rot==max_gen,'rot_seq',
+                                               ifelse(gens_rot==max_gen,'rot',
+                                               ifelse(gens_seq==max_gen,'seq', 'neither'        
+                                                      ))))
+# count(df_cost, success_rot_seq)
+# 1         neither  5948
+# 2             rot   209
+# 3         rot_seq  3841
+# 4             seq     2
+  
+# not very informative
+# 2D plot dom_sel, dom_cos, facetted by whether neither succeed, rot only or both
+# does show that rot_only and rot_seq more abundant at low dom_sel and high dom_cos  
+gg <- ggplot(df_cost, aes(x=dom_sel, y=dom_cos, col=success_rot_seq)) + 
+  geom_point(shape=1, size=1, alpha=0.5) +
+  #geom_bin2d(bins=5) + #didn't look great
+  facet_grid(~success_rot_seq) +
+  viridis::scale_color_viridis(discrete = TRUE) #direction=-1)  
+
+plot(gg)
+
+#effectiveness & exposure
+gg <- ggplot(df_cost, aes(x=eff, y=expo_hi, col=success_rot_seq)) + 
+  geom_point(shape=1, size=1, alpha=0.5) +
+  #geom_bin2d(bins=5) + #didn't look great
+  facet_grid(~success_rot_seq) +
+  viridis::scale_color_viridis(discrete = TRUE) #direction=-1)  
+
+plot(gg)
+
+
+```  
+
+```{r tree, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+# have a quick go at a decision tree for chhosing between neither, rot or rot_seq
+
+library(rpart)
+library(rpart.plot)
+
+#tree <- rpart::rpart(as.formula(paste(treeResponse,"~",treePredictorString)), data = treeInput, method = 'class')
+
+tree <- rpart::rpart("success_rot_seq ~ cost + expo_hi + male_expo_prop + eff + rr + dom_sel + dom_cos + start_freqs + n_insecticides + rot_interval", data = df_cost, method = 'class')
+
+prp(tree, extra=1, varlen = 0, under=TRUE, 
+    cex=0.6, round=0, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " )
+
+#initial tree results kind of make sense, but not very informative
+#doesn't give rot_only as an output ? 
+#cost is first branch
+#odd that higher rr and expo_hi favour both working
+#odd that dom_sel >0.15 favours both working ?    
+
+#try it with the 'successes' removed
+df_cost2 <- filter(df_cost, success_rot_seq != 'rot_seq') #'neither'
+
+tree <- rpart::rpart("success_rot_seq ~ cost + expo_hi + male_expo_prop + eff + rr + dom_sel + dom_cos + start_freqs + n_insecticides + rot_interval", data = df_cost2, method = 'class')
+
+prp(tree, extra=1, varlen = 0, under=TRUE, 
+    cex=0.6, round=0, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ) 
+
+#dom_sel & dom_cos first branches but tree not very helpful
+
+#with 'neither' removed lower cost & lower rr favour rot_only
+  
+```
+
+```{r gen_trendlines, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+# trying simple dot & trend plots for gens_rot & seq versus inputs
+# work as expected when 'successes' not removed
+# n_insecticides doesn't work because not enough points
+
+inputs <- c('cost', 'expo_hi', 'male_expo_prop', 'eff', 'rr', 'dom_sel', 'dom_cos', 'start_freqs', 'n_insecticides', 'rot_interval')
+
+for(input in inputs)
+{
+    y <- 'gens_rot'    
+    
+    gg <- ggplot(df_cost, aes_string(x=input, y=y)) + 
+             
+             geom_point(shape='.', size=1, alpha=0.2, show.legend=FALSE) + 
+             geom_smooth(linetype='dashed',size=0.5)
+    plot(gg)
+}
+
+# try it with the 'successes' removed
+# doesn't look as good for cost
+df_cost2 <- filter(df_cost, success_rot_seq != 'rot_seq')
+
+for(input in inputs)
+{
+    y <- 'gens_rot'    
+    
+    gg <- ggplot(df_cost2, aes_string(x=input, y=y)) + 
+             
+             geom_point(shape='.', size=1, alpha=0.2, show.legend=FALSE) + 
+             geom_smooth(linetype='dashed',size=0.5)
+    plot(gg)
+}
+
+```
+
+```{r threshold_violins, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+# this could do it to show how the different results (neither, rot, or rot_seq)
+# have different distributions of input values
+
+inputs <- c('cost', 'expo_hi', 'male_expo_prop', 'eff', 'rr', 'dom_sel', 'dom_cos', 'start_freqs', 'n_insecticides', 'rot_interval')
+
+for(input in inputs)
+{
+
+  print(ggplot(df_cost, aes_string(x='success_rot_seq',y=input, color='success_rot_seq')) + 
+        #ylim(0,450) +
+        #coord_cartesian( ylim=c(0, 350)) +
+        geom_violin(draw_quantiles = c(0.25, 0.75), show.legend=FALSE, adjust = 1 ) +
+        theme_minimal() +
+        #this is an example of how you might facet
+        #facet_grid(n_insecticides ~.) +  
+        theme(panel.grid.minor.y=element_blank())) #,
+        #           axis.text.x=element_blank())
+        #geom_jitter(shape='.',height=0,width=0.2) )
+}
+ 
+```
+
+```{r threshold_violins_facetted, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+# I could maybe make the data longer and then facet by input
+# think I would filter out, n_insecticides, start_freqs, male_expo_prop & rot_interval that don't show much rship
+#TODO improve labels for these
+inputs <- c('cost', 'expo_hi', 'eff', 'rr', 'dom_sel', 'dom_cos')
+# something like this example from SO https://stackoverflow.com/a/48940750/1718356
+#data_long <- tidyr::gather(data, key = type_col, value = categories, -col4)
+#ggplot(data_long, aes(x = categories, fill = col4)) +
+#  geom_bar() + 
+#  facet_wrap(~ type_col, scales = "free_x")
+
+#data_long <- tidyr::gather(data, key = type_col, value = categories, -col4)
+#first just select the columns I want
+df_cost_long <- select(df_cost,c(inputs,'success_rot_seq'))
+#gather data to be longer
+df_cost_long <- tidyr::gather(df_cost_long, key=input_name, value=input_value, -success_rot_seq)
+
+#there were just an odd couple of results where seq better, remove them here or earlier
+df_cost_long <- filter(df_cost_long, success_rot_seq != 'seq')
+
+ggplot(df_cost_long, aes_string(x='success_rot_seq',y='input_value', color='success_rot_seq')) + 
+        #ylim(0,450) +
+        #coord_cartesian( ylim=c(0, 350)) +
+        geom_violin(draw_quantiles = c(0.25, 0.75), show.legend=FALSE, adjust = 1 ) +
+        theme_minimal() +
+        #this is an example of how you might facet
+        facet_wrap(~input_name, scales = "free_y") +  
+        theme(panel.grid.minor.y=element_blank()) #,
+        #           axis.text.x=element_blank())
+        #geom_jitter(shape='.',height=0,width=0.2) )
+
+```

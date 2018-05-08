@@ -1221,14 +1221,173 @@ Now trying 1000 runs with coverage and dispersal set between 0.1 and 0.9
 
 Seems that less benefit to rotations with dispersal rather than costs.
 
+*2/5/18*
+
+exchanging emails with Ian
+
+Thanks Ian, I'm getting closer to understanding. I'm just trying to understand why the lines cross, which suggests to me that resistance wouldn't be selected for at low frequencies ?
+
+
+This is a simple text description of how I'm starting to understand. Is it true ? (we can work on improving the wording later).
+
+
+
+Resistance increases when an insecticide is in use and, if there are resistance costs, decreases when it is not.
+
+
+If the difference between this increase and decrease over periods of use and non-use is positive then resistance will keep increasing.
+
+
+If the positive difference between the increase and decrease is lower at lower frequencies then there is an advantage to short rotation intervals that keep frequencies low. 
+
+
+In this latter scenario sequential use leads to higher frequencies where increases during periods of use are more likely to outweigh decreases during periods of non-use. 
+
+
+done ~ Can I change histograms of count of rot advantage to have different bins, we're only interested in whether difference is 0, moderate or substantial.
+
+Trying to recreate scenario 2167
+after removal of non threshold runs :
+
+  scenario <- 2167
+  linputs <- as.list( df_cost[scenario, 1:15] )
+  dfres <- do.call(run_rot, linputs)
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  grid.arrange(ggrot, ggseq, ncol=1)
+
+linputs$dom_cos <- 0.8
+x11()
+
+  linputs$rot_interval <- 10
+  dfres <- do.call(run_rot, linputs)
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  grid.arrange(ggrot, ggseq, ncol=1)
+
+# setting params for 2167
+linputs <- list()
+linputs$n_insecticides <- 3
+linputs$coverage <- 1
+linputs$migration <- 0
+linputs$cost <-     0.0582 
+linputs$max_gen <-  500
+linputs$expo_hi <-  0.64
+linputs$eff <-      0.96
+linputs$rr <-      0.78
+linputs$dom_sel <-  0.06
+linputs$dom_cos <-  0.7
+linputs$start_freqs <- 0.0731
+linputs$male_expo_prop <- 0.167
+linputs$plot <- FALSE
+
+  linputs$rot_interval <- 10
+  dfres <- do.call(run_rot, linputs)
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  grid.arrange(ggrot, ggseq, ncol=1)
+
+# this shows a small tweek of the params leads to the sequence lasting forever too
+# and I don't know which input change causes the seq to last forever ?
+# Aha seems that I hadn't included rr=0.78, rr default is 0.5, 
+# with lower rr less selection for r and sequence does better 
+linputs <- list()
+linputs$n_insecticides <- 3
+linputs$coverage <- 1
+linputs$migration <- 0
+linputs$cost <-     0.058 
+linputs$max_gen <-  500
+linputs$expo_hi <-  0.64
+linputs$eff <-      0.96
+linputs$rr <-      0.5 #0.78
+linputs$dom_sel <-  0.06
+linputs$dom_cos <-  0.7
+linputs$male_expo_prop <- 0.167
+linputs$start_freqs <- 0.0731
+linputs$plot <- FALSE
+
+  linputs$rot_interval <- 10
+  dfres <- do.call(run_rot, linputs)
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  grid.arrange(ggrot, ggseq, ncol=1)
+
+
+*3/5/18*
+Targets for today
+a) check how stable the rotations advantage is
+b) understand and display the mechanism
+
+But I went off that track because I got more to thinking we should be trying to identify circumstances where both strategies 'succeed'. However I suspect that 'success' here is due to low effectiveness and exposure which lead to slow evolution but possible cause low control too.
+
+Looking at trees to differentiate between success, failure and rot_only.
+Not very helpful.
+
+Looking at input effects on n generations, they go the way I would expect, but may have to be part of the story.
+
+The violin plots for each input var for rot_seq, rot, neither look pretty good.
+
+e.g. for cost they show that successful runs tend to have higher costs, those failing for both have lower costs. Those that work just for rotations tend to have lower costs.
+
+*8/5/18*
+
+
+
 
 # TODO
 
-~ run 10k runs of dispersal overnight
-~ try histograms on log scale ?
+Write out some text explaining the story & maybe the order of the plots. (keep num plots manageable).
+
+order could be
+1. example plots
+2. histograms 
+3. violin plots
+4. 
+
+Not sure how best to look at effect of inputs on rot_seq, rot, neither. I could bin input ranges and then look at proportions of the 3 within them ?
+
+This would tell me how changing an input value changes the proportion of successes, failures and rot_only. Might be OK to display. Tricky to calculate, but again gets mired in the multivariate nature of the data & potential interactions. 
+
+If I go back to using a continuous variable of generations until thresholds I lose out on the successful results.
+
+
+Maybe a more useful question, rather than when are rotations or sequence better is when are both rotations and sequences sustainable. i.e. under which combination of conditions do both strategies last 'forever' ?
+
+In that case the runs that I have been excluding become the useful ones.
+
+Because actually, finding the runs that are different for rotations and sequences after excluding those that 'succeed' for both is actually trying to find those that 'fail' for sequences.
+
+I think there could be a boundary area in between those that 'succeed' for both and those that 'fail' for both, where some 'succeed' only for rotations.
+
+I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
+
+May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
+
+Maybe reclass all 10k runs to succeed_both (2), succeed_rot (1), fail_both (0). Then see what are the best predictors of these ? Or do series of xy plots with points coloured, coloured points with all data will probably be a mess ...
+
+
+
+
+~ try changing scenario 2167 from df_cost
+~~ initial attempts in UI not working
+~~ could it be that it requires just right combination of params and that modifying them just slightly removes the advantage for rotations ?
+
+~ can I create some simple figs to illustrate how an increasing rate of resistance evolution with frequency can lead to rotations being favoured   
+~~ maybe just see how dom_cos changes shape of frequency plot
+~~ can I look at through UI ?
+
+~ save Ians comments on figY of
+
 ~ try decision tree to predict rot_minus_seq from inputs
 
-~ send MS to Ian before 11
 
 ~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
 

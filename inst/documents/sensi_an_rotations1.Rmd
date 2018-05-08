@@ -29,8 +29,6 @@ date: "`r Sys.Date()`"
 # Test 2. Dominance of resistance and fitness costs both set to 0.5.
 # I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
 # 
-# 
-# Testing sensitvity analysis to answer question 1. Are sequences and rotations equivalent when coverage 100% and no fitness costs. On each page should see a run with 1 set of inputs first for sequence then for rotation.
 
 #\pagebreak
 ```
