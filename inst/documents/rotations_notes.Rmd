@@ -1338,6 +1338,17 @@ The violin plots for each input var for rot_seq, rot, neither look pretty good.
 e.g. for cost they show that successful runs tend to have higher costs, those failing for both have lower costs. Those that work just for rotations tend to have lower costs.
 
 *8/5/18*
+Getting violin plots working.
+
+*9/5/18*
+Leaving in all runs now
+
+Something weird has happened to fig1 in the paper3 ?? because of a > in fig legend
+
+Also because we are leaving all runs in, the indices of the runs with large rot advantage are now wrong ! I should have recoded a unique id for runs. 
+
+ARg, now all plots have stopped appearing in doc and I don't know why ?????
+It was a < symbol in the MS text, could tell because the text stopped at that point.
 
 
 
