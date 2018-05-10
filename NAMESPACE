@@ -3,6 +3,7 @@
 export(array_named)
 export(fitness_single_locus)
 export(fitness_single_locus_test)
+export(freq_fitness_simple)
 export(gens_under_thresh)
 export(insecticide_check)
 export(insecticide_switch)

@@ -1,0 +1,43 @@
+---
+title: "test plot resize"
+# output:
+#   pdf_document:
+#   keep_tex: true
+# fig_caption: true
+# latex_engine: pdflatex
+
+output: word_document
+---
+  
+Testing setting width of plots for publication at 300 dpi into word doc.
+
+Solution : just use fig.height & width (out.height etc not supported for word)
+This makes the tiffs correct. Word foten resizes them. To get right in word, right click set size & position, just click reset to go back to 100%.
+
+
+Was finding that plots ignore my size settings both in the tiff files and in the word doc.
+
+
+```{r, eval=TRUE, include=FALSE}
+#!!!! PAPER PROTOCOL
+#!!!! submission MS, knit to word_document 
+#!!!!  in WORD: delete figs, set double space, add line numbers 
+library(knitr)
+opts_chunk$set(dev="tiff",
+               dev.args=list(compression="lzw"),
+               dpi=300,
+               cache=FALSE,
+               fig.path='')
+```
+
+
+```{r test-resize1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=4, fig.width=2, fig.show='hold', fig.align='center', fig.cap="test"}
+
+plot(1:10)
+```
+
+```{r test-resize2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=2, fig.show='hold', fig.align='center', fig.cap="test"}
+
+plot(1:10)
+```
+

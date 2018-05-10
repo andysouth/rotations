@@ -1340,6 +1340,14 @@ e.g. for cost they show that successful runs tend to have higher costs, those fa
 *8/5/18*
 Getting violin plots working.
 
+Maybe a more useful question, rather than when are rotations or sequence better is when are both rotations and sequences sustainable. i.e. under which combination of conditions do both strategies last 'forever' ?
+
+In that case the runs that I have been excluding become the useful ones.
+
+Because actually, finding the runs that are different for rotations and sequences after excluding those that 'succeed' for both is actually trying to find those that 'fail' for sequences.
+
+I think there could be a boundary area in between those that 'succeed' for both and those that 'fail' for both, where some 'succeed' only for rotations.
+
 *9/5/18*
 Leaving in all runs now
 
@@ -1350,39 +1358,26 @@ Also because we are leaving all runs in, the indices of the runs with large rot 
 ARg, now all plots have stopped appearing in doc and I don't know why ?????
 It was a < symbol in the MS text, could tell because the text stopped at that point.
 
+*10/5/18*
 
+Testing setting width of plots for publication at 300 dpi into word doc.
 
+Solution : just use fig.height & width (out.height etc not supported for word)
+This makes the tiffs correct. Word foten resizes them. To get right in word, right click set size & position, just click reset to go back to 100%.
+
+improved histogram figures
 
 # TODO
 
-Write out some text explaining the story & maybe the order of the plots. (keep num plots manageable).
-
-order could be
-1. example plots
-2. histograms 
-3. violin plots
-4. 
-
-Not sure how best to look at effect of inputs on rot_seq, rot, neither. I could bin input ranges and then look at proportions of the 3 within them ?
-
-This would tell me how changing an input value changes the proportion of successes, failures and rot_only. Might be OK to display. Tricky to calculate, but again gets mired in the multivariate nature of the data & potential interactions. 
-
-If I go back to using a continuous variable of generations until thresholds I lose out on the successful results.
 
 
-Maybe a more useful question, rather than when are rotations or sequence better is when are both rotations and sequences sustainable. i.e. under which combination of conditions do both strategies last 'forever' ?
 
-In that case the runs that I have been excluding become the useful ones.
 
-Because actually, finding the runs that are different for rotations and sequences after excluding those that 'succeed' for both is actually trying to find those that 'fail' for sequences.
 
-I think there could be a boundary area in between those that 'succeed' for both and those that 'fail' for both, where some 'succeed' only for rotations.
 
 I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
 
 May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
-
-Maybe reclass all 10k runs to succeed_both (2), succeed_rot (1), fail_both (0). Then see what are the best predictors of these ? Or do series of xy plots with points coloured, coloured points with all data will probably be a mess ...
 
 
 

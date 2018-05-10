@@ -1,6 +1,6 @@
 ---
 title: "Insecticide rotations delay evolution of resistance in a minority of model runs when compared to sequential use."
-# output: 
+# output:
 #   pdf_document:
 #     keep_tex: true
 #     fig_caption: true
@@ -43,7 +43,11 @@ opts_chunk$set(dev="tiff",
                dev.args=list(compression="lzw"),
                dpi=300,
                cache=FALSE,
-               fig.path='pap3figs/')
+               fig.path='pap3figs/',
+               echo=FALSE, warning=FALSE, message=FALSE)
+
+#don't work for word
+#fig.show='hold', fig.align='center'
 ```
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
@@ -110,7 +114,7 @@ A population genetic model was developed tracking the change in resistance allel
 
 2. Rotations : use insecticide for set time (i.e. number of insect generations), switch to another. 
 
-In both cases the choice of the new insecticide to use was made by going through the list of available insecticides and choosing the next one for which resistance was below the threshold. Thus there is the potential to switch back to insecticides that had been used earlier in a model run if resistance had not reached the threshold or if resistance had declined below the threshold during a period when not in use. This means that the “sequential” policy is effectively a “rotate when resistant” policy but we use the former term for consistency with previous work. *todo cite different trems from Rex consortium review* For both rotations and sequences the simulation continues until no more insecticides remain below their resistance thresholds.    
+In both cases the choice of the new insecticide to use was made by going through the list of available insecticides and choosing the next one for which resistance was below the threshold. Thus there is the potential to switch back to insecticides that had been used earlier in a model run if resistance had not reached the threshold or if resistance had declined below the threshold during a period when not in use. This means that the “sequential” policy is effectively a “rotate when resistant” policy but we use the former term for consistency with previous work. *todo cite different terms from Rex consortium review* For both rotations and sequences the simulation continues until no more insecticides remain below their resistance thresholds.    
     
 Within the model inputs effect fitness as shown in Figure 1, differences in fitness lead to the changes in allele frequencies over time.
 
@@ -146,52 +150,43 @@ For each scenario 10,000 runs were performed randomly selecting inputs according
 
 #### Assessing relative performance of insecticide use strategies
 
-*todo change this bit*
+*todo change this bit, we could actually use time-to-resistance for all strategies ?*
+*make it clearer exactly what we do*
 It is necessary to choose a measure to quantify the performance of an insecticide-use strategy and enable comparison with an alternative. For this we summed the number of generations when an insecticide was deployed and the resistance allele frequency for that insecticide was below 0.5. This allowed comparison between strategies using a variable number of insecticides. Previously time-to-resistance, namely the number of generations it takes to reach a defined resistance threshold (usually a resistance allele frequency of 0.5), was used. Using time-to-resistance worked when considering just two insecticides, but when the number of insecticides is a variable it is not sufficient.
 
 
 ## Results
 
-Example model runs are shown with no costs or dispersal (Fig 1), with just resistance costs (Fig 2) and with just dispersal from untreated refugia (Fig 3).
-
-
 #### Results1. form of resistance evolution with and without costs and dispersal.
 
-When there are no resistance fitness costs or dispersal links to untreated refugia resistance frequencies do not decline when an insecticide is not in use (Fig 1). Thus for sequences once resistance thresholds are reached the resistance frequencies remain at that level and the insecticide cannot be re-used. For rotations resistance frequencies step upwards when insecticides are in use and remain at a plateau when they are not. If the rotation interval is short enough then the insecticide can be used a few times before the resistance thresholds are reached.
+Example model runs are shown with no costs or dispersal (Fig 2), with just resistance costs (Fig 3) and with just dispersal from untreated refugia (Fig 4).
+
+When there are no resistance fitness costs or dispersal links to untreated refugia resistance frequencies do not decline when an insecticide is not in use (Fig 2). Thus for sequences once resistance thresholds are reached the resistance frequencies remain at that level and the insecticide cannot be re-used. For rotations resistance frequencies step upwards when insecticides are in use and remain at a plateau when they are not. If the rotation interval is short enough then the insecticide can be used a few times before the resistance thresholds are reached.
 
 *todo continue describing the example runs first, before talking about overall results*
 
-
 ### Results2 : comparing rotations and sequences across model runs.
 
-*todo : change the %s because 'succeeded' runs now left in*
-When there were no costs or dispersal there was no difference between rotations and sequences in the number of generations below the resistance threshold (Fig 4.1). With fitness costs included 67% of model runs, similar to those in the previous section, gave no difference between rotations and sequences in the number of generations below the resistance threshold. In contrast, 7% of model runs generated an advantage of greater than 20% for rotations over sequences (Fig 4.2). Dispersal from untreated refugia gives smaller benefits of rotations over sequences and in fewer runs (Fig 4.3). With both costs and dispersal the benefits of rotations are similar to when runs have costs alone (Fig 4.4).
+In all the example runs shown the resistance threshold (allele frequency of 0.5) was reached for all insecticides within the course 500 generations which was the maximum limit imposed in the model. There were many model runs [*quantify later when run finalised*] in which resistance frequencies for at least some insecticides were below thresholds at the end of 500 generations. Such a run could be considered a successful strategy given the conditions of the scenario because insecticides below the resistance threshold are still available to be used.  
+
+Thus to aid the comparison of rotations and sequences model runs can be broadly classified into four groups :
+1. both strategies succeeded : for both rotations and sequences resistance thresholds for all insecticides not reached within 500 generations.
+2. neither strategy succeeded
+3. rotation only succeeded
+4. sequence only succeeded
+
+The number of model runs in each of these groups for the different scenarios are shown in Fig 5. In the base scenario with no costs or dispersal (Fig 5A) the majority of runs do not succeed, a small proportion succeed for both strategies and none succeed for either strategy alone. When costs of reistance are added (Fig 5B) more runs succeed for both strategies, up to about half of those that succeed for neither, and a small proportion (< 4%) succeed for rotations alone. Adding both costs and dispersal results in more runs succeeding for both than neither (Fig 5C). 
 
 
+To look at the potential benefit of rotations the number of generations below resistance thresholds was compared across strategies. This will be influenced by the previous analysis because only those runs that do not succeed for both strategies can generate a difference between them.
 
-
-In all the example runs shown the resistance threshold (allele frequency of 0.5) was reached within the course 500 generations which was the maximum limit imposed in the model. Across all model runs there were many in which the thresholds were not reached in this time period.   
-
-*but first need to explain that sequences pretty much never better*
-*so show the modified histograms first, i.e. don't filter out the threshold not reached runs*
-
-Thus to aid the comparison of rotations and sequences model runs can be broadly classified into three groups :
-1. both strategies succeeded : resistance thresholds for all insecticides not reached within 500 generations
-2. rotations only succeeded
-3. neither strategies succeeded
-
-*todo show a histogram plot of the counts of model runs in each category, across all startegies and scenarios*
-*decide whether to put before or after fig4*
-
-
-
+When there were no costs or dispersal there was no difference between rotations and sequences in the number of generations below the resistance threshold (Fig 6A) (for comparison with other strategies the results are grouped into those between plus and minus 1%). With fitness costs included 80% of model runs, similar to those in the previous section, gave no difference between rotations and sequences in the number of generations below the resistance threshold. In contrast, 7% of model runs generated an advantage of greater than 20% for rotations over sequences (Fig 6B). Dispersal from untreated refugia gives smaller benefits of rotations over sequences and in fewer runs (Fig 6C). With both costs and dispersal the benefits of rotations are similar to when runs have costs alone (Fig 6D).
 
 
 
 
 #### Runs where rotations have substantial advantage over sequences
 
-*Talk about classing runs into both 'succeeded', both 'failed' or just rotation succeeded.
 *show violin plots here ?*
 
 As shown in Fig 4.2 some runs with costs of resistance can show substantial advantages for rotations over sequences. Examples of one such run is shown in Fig 5.
@@ -201,13 +196,17 @@ A Partial Rank Correlation analysis identified that of the inputs, dominance of 
 
 ## Discussion
 
-Comparing time below resistance thresholds for rotations and sequences, the model shows :
+The model shows that rotations and sequences most often have very similar performance (within 1 %) in terms of time to reach resistance thresholds (Fig 6). 
 
-1. rotations and sequences the same when no costs or dispersal
-2. with resistance costs, 67% of runs the same for rotations and sequences, but 6-7% of runs have > 20% advantage for rotations
+*todo add something about how costs and dispersal generally improve the performance of both strategies*
+*todo add about how rotations generally perform better relative to sequences under 'intermediate' scenarios. In 'better' scenarios both strategies do equally well and in 'poorer' scenarios they do equally badly.*  
+
+
+1. rotations and sequences give the same results when there are no costs or dispersal.
+2. with resistance costs, 80% of runs are the same for rotations and sequences, but 6-7% of runs have > 20% advantage for rotations
 3. with dispersal from untreated refugia but no costs, small advantage of rotations but very few runs < 0.1% have >20% advantage.
 
-This can be understood intuitively. When there are no costs, the dynamics are the same, it is simply that sequential deployment proceeds in a few, larger steps while rotations proceeds in more numerous smaller steps; both reach the same point in around the same time (e.g. figs 1 and 3). However dominance effects on cost and resistance can act to keep frequencies low in a rotations policy. Recall that at low frequencies of resistance most resistance alleles are present as heterozygotes RS and only a vey small proportions heterozygotes. However costs are dominant and still act at low frequencies. This is illustrated on Figure Y. Relatively rapid rotations keep the allele frequencies at the LH side of Figure Y where costs during the periods when the insecticide is not deployed greatly outweigh the selection for IR during the periods when the insecticide is deployed. We believe the explanation is therefore that rotations keep allele frequencies in the parameter space to the left of Figure Y and hence acts to slow the evolution of IR compared to sequences which allow frequencies to rise to relatively high levels before the insecticide is replaced.  (does this sound reasonable??). Note also that starting frequency, as expected, had an impact (Figure 7), lower starting frequencies slightly favouring rotations by allowing more time in the “low frequency” parameter space.
+This can be understood intuitively. When there are no costs, the dynamics are the same, it is simply that sequential deployment proceeds in a few, larger steps while rotations proceeds in more numerous smaller steps; both reach the same point in around the same time. However dominance effects on cost and resistance can act to keep frequencies low in a rotations policy. Recall that at low frequencies of resistance most resistance alleles are present as heterozygotes RS and only a vey small proportions heterozygotes. However costs are dominant and still act at low frequencies. This is illustrated on Figure Y. Relatively rapid rotations keep the allele frequencies at the LH side of Figure Y where costs during the periods when the insecticide is not deployed greatly outweigh the selection for IR during the periods when the insecticide is deployed. We believe the explanation is therefore that rotations keep allele frequencies in the parameter space to the left of Figure Y and hence acts to slow the evolution of IR compared to sequences which allow frequencies to rise to relatively high levels before the insecticide is replaced.  (does this sound reasonable??). Note also that starting frequency, as expected, had an impact (Figure 7), lower starting frequencies slightly favouring rotations by allowing more time in the “low frequency” parameter space.
 
 In rare circumstances, when there are costs of resistance, rotations can lead to the resistance frequencies for a group of insecticides being kept below resistance thresholds for the length of the simulations where sequences run out of insecticides within around 100 generations. Is it possible that these rare circumstances where parameter values are 'just-right' could be implemented operationally ? The problem is that these rare circumstances rely on high costs of resistance, high dominance of these costs and low dominance of the selection for the resistance itself. These parameters are all not easy to measure and there isn't agreement on their likely values [@Kliot2012, @Bourguet2000]. 
 
@@ -243,10 +242,17 @@ In summary, we show that rotations are invariably better than sequential use, al
 
 ## Figures
 
-```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 1. "}
+```{r Fig1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure 1. [todo need to modify caption from MJ paper, start by saying that only in left panel during application of the insecticide] The effect of model inputs on the fitness of genotypes for a single insecticide. Fitness is shown on the y-axis and the different genotypes (SS, SR, RR) on the x axis. Firstly the exposure input determines the proportion of the population in the left and right panels (exposed and not exposed). For those that are exposed (left panel) insecticide effectiveness sets the fitness for SS, resistance restoration 'restores' a portion of the fitness for RR and dominance of resistance determines how the fitness for SR lies between that of SS and RR. For those that are not exposed, fitness of SS is set to 1 by definition, resistance cost determines the fitness of RR and again dominance of cost determines how the fitness for SR sits between that of SS and RR. In this example effectiveness=0.8, resistance restoration=0.5 which 'restores' half of the fitness lost due to the insecticide, dominance of resistance=0.7 which sets the fitness of the SR closer to RR than SS. Resistance cost=0.3 which reduces fitness in the absence of the insecticide from 1 to 0.7, and dominance of cost=0.8 which sets fitness of SR close to RR."}
+ 
+library(resistance) 
+plot_fit_calc( effectiveness=0.8, resistance_restoration=0.5, dominance_restoration=0.7, dominance_cost=0.7, cost=0.3 )
 
-#temp moved 
-#Comparing the increase in resistance frequencies over time for a rotation and a sequence when there no resistance fitness costs or dispersal from untreated refugia. The upper plot shows a rotation with a regular interval of 10 generations and the lower plot a sequence in which the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation and the sequence reach the endpoint, with all insecticides having a resistance frequency above 0.5, at the same time. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and that insecticide cannot be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and remains at the constant level while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1.
+```
+
+\pagebreak
+
+```{r Fig2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 2. Comparing the increase in resistance frequencies over time for a rotation and a sequence when there no resistance fitness costs or dispersal from untreated refugia. The upper plot shows a rotation with a regular interval of 10 generations and the lower plot a sequence in which the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation and the sequence reach the endpoint, with all insecticides having a resistance frequency above 0.5, at the same time. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and that insecticide cannot be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and remains at the constant level while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1."}
+
 
 # revisit how best to do model runs from within the paper 
 
@@ -279,7 +285,7 @@ grid.arrange(ggrot, ggseq, ncol=1)
 
 \pagebreak
 
-```{r Fig2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 2. Comparing the increase in resistance frequencies over time for a rotation and a sequence when there are resistance fitness costs. The upper plot shows a rotation with a regular interval and the lower plot a sequence when the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation lasts longer than the sequence. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step but in contrast to the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines  while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. The simulation is stopped when there are no remaining insecticides for which the resistance frequency is below the threshold. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1, cost=0.05, dominance of cost=1."}
+```{r Fig3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 3. Comparing the increase in resistance frequencies over time for a rotation and a sequence when there are resistance fitness costs. The upper plot shows a rotation with a regular interval and the lower plot a sequence when the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation lasts longer than the sequence. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step but in contrast to the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines  while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. The simulation is stopped when there are no remaining insecticides for which the resistance frequency is below the threshold. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1, cost=0.05, dominance of cost=1."}
 
 # revisit how best to do model runs from within the paper 
 
@@ -312,7 +318,7 @@ grid.arrange(ggrot, ggseq, ncol=1)
 
 \pagebreak
 
-```{r Fig3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 3. Comparing the increase in resistance frequencies over time for a rotation and a sequence with dispersal from untreated refugia. The upper plot shows a rotation with a regular interval and the lower plot a sequence when the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation and the sequence last the same time. In both cases the resistance frequencies in the treated areas (red lines) increase when an insecticide is in use. Resistance frequencies in the untreated areas (blue lines) increase after those in the treated areas as a result of dispersal from the treated areas. When an insecticide stops being used the resistance frequency in the treated area declines due to dispersal from the untreated area. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and consistent with the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. The simulation is stopped when there are no remaining insecticides for which the resistance frequency is below the threshold. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1, cost=0, coverage=0.5, dispersal=0.1."}
+```{r Fig4, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 4. Comparing the increase in resistance frequencies over time for a rotation and a sequence with dispersal from untreated refugia. The upper plot shows a rotation with a regular interval and the lower plot a sequence when the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation and the sequence last the same time. In both cases the resistance frequencies in the treated areas (red lines) increase when an insecticide is in use. Resistance frequencies in the untreated areas (blue lines) increase after those in the treated areas as a result of dispersal from the treated areas. When an insecticide stops being used the resistance frequency in the treated area declines due to dispersal from the untreated area. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and consistent with the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. The simulation is stopped when there are no remaining insecticides for which the resistance frequency is below the threshold. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.6, exposure=0.6, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1, cost=0, coverage=0.5, dispersal=0.1."}
 
 # revisit how best to do model runs from within the paper 
 
@@ -345,7 +351,65 @@ grid.arrange(ggrot, ggseq, ncol=1)
 
 \pagebreak
 
-```{r Fig4, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=7, fig.show='hold', fig.align='center', fig.cap="Figure 4. Effect of cost and dispersal on the difference between rotations and sequences from model runs. The y axis shows the number of model runs for the different caegories of difference between rotations and sequences. 4.1 when there are no resistance costs or dispersal from untreated refugia, rotations and sequences produce the same results. 4.2, 4.4 when costs are added there are infrequent model runs where rotations last longer below resistance thresholds than sequences. For between 6 and 7% of runs including costs, rotations last more than 20% longer than sequences. 4.3 when dispersal from untreated refugia is included without costs there are even less frequent runs where rotations last longer than sequences (in just 4 out of 10000 runs rotations lasted greater than 20% longer than sequences)."}
+```{r Fig5, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=4, fig.show='hold', fig.align='center', fig.cap="Figure 5. Success of model runs under different scenarios and strategies. Model runs classed as a success if there are still insecticides for which resistance is below the threshold of 0.5 after 500 generations (circa 50 years for Anopheles)."}
+
+
+#remove seq maybe have a check that are very few
+# count(df_cost, success)
+# 1         neither  5948
+# 2             rot   209
+# 3         rot_seq  3841
+# 4             seq     2
+
+# if I put all scenarios in one df with a column for scenario I can do one ggplot and facet 
+# would work for the previous plot too and would simplify adding the new columns
+# first add the scenario column
+df_nocost_nomig$scenario <- 'no cost or dispersal'
+df_cost$scenario <- 'costs'
+df_mig$scenario <- 'dispersal'
+df_cost_mig$scenario <- 'costs and dispersal'
+
+df_all <- dplyr::bind_rows(df_nocost_nomig,
+                           df_cost,
+                           df_mig,
+                           df_cost_mig)
+#order for ggplot
+df_all$scenario <- factor(df_all$scenario, levels=c('no cost or dispersal','costs','dispersal','costs and dispersal'))
+
+
+# add a column for classification of whether, both, rotation, or neither succeeded
+df_all <- mutate(df_all, success = ifelse(gens_seq==max_gen & gens_rot==max_gen,'both',
+                                               ifelse(gens_rot==max_gen,'rotation only',
+                                               ifelse(gens_seq==max_gen,'sequence only', 'neither'  
+                                                      ))))
+#count(df_all, success)
+# 1          both 12413
+# 2       neither 18196
+# 3 rotation only   382
+# 4 sequence only     9
+
+#hack to add subplot labels to facets
+abcd <- data.frame(label = c("A","B","C","D"),
+                   scenario = levels(df_all$scenario))
+
+ggplot( df_all, aes(x=success)) + 
+        #geom_bar() +
+        stat_count(mapping = aes(y=..prop.., group=1)) + #puts proprtions in axes
+        scale_y_continuous(breaks=seq(0.2,0.8,0.2)) +
+        theme_minimal() +
+        ylab('proportion of model runs') +
+        facet_wrap(~scenario, ncol=1) + #, scales='free_y') + #can remove free_y later if I do 10k nocost runs    
+        geom_text(data=abcd,
+                  aes(x = -Inf, y = +Inf, label=label),
+                  hjust = 0,
+                  vjust = 0.9 )
+
+```
+
+\pagebreak
+
+
+```{r Fig6, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=4, fig.show='hold', fig.align='center', fig.cap="Figure 6. Effect of cost and dispersal on the difference between rotations and sequences from model runs. The y axis shows the number of model runs for the different caegories of difference between rotations and sequences. A) when there are no resistance costs or dispersal from untreated refugia, rotations and sequences produce the same results. B),D) when costs are added there are infrequent model runs where rotations last longer below resistance thresholds than sequences. For between 6 and 7% of runs including costs, rotations last more than 20% longer than sequences. C) when dispersal from untreated refugia is included without costs there are even less frequent runs where rotations last longer than sequences (in just 4 out of 10000 runs rotations lasted greater than 20% longer than sequences)."}
 
   # remove runs where thresholds not reached for seq & rot
   # with cost_mig ~ 65% of runs don't reach thresholds
@@ -359,6 +423,7 @@ grid.arrange(ggrot, ggseq, ncol=1)
   # df_cost_mig <- rem_thresh_not_reached(df_cost_mig) #6.9
   
   # add a column for percent difference between rot & seq
+  # LEFT IN FOR NOW BECAUSE used in later chunks
   df_nocost_nomig <- mutate(df_nocost_nomig, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
   df_cost <- mutate(df_cost, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
   df_mig <- mutate(df_mig, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
@@ -376,82 +441,97 @@ grid.arrange(ggrot, ggseq, ncol=1)
   # pcent_runs_rot_20pc_better(df_mig)
   # pcent_runs_rot_20pc_better(df_cost_mig)
   
-  # log scale overemphasised low values
-  # sqrt scale looked good but Ian didn't like
-
-  #custom_bins <- c(-20,-1,1,20,100,450)
+  
+  #try quicker way with df_all and facet
+  df_all <- mutate(df_all, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
   custom_bins <- c(-20,-10,-1,1,10,20,100,450)
-  df_nocost_nomig$rot_adv_bins <- cut(df_nocost_nomig$pcent_rot_adv, custom_bins)
-  df_cost$rot_adv_bins <- cut(df_cost$pcent_rot_adv, custom_bins)
-  df_mig$rot_adv_bins <- cut(df_mig$pcent_rot_adv, custom_bins)
-  df_cost_mig$rot_adv_bins <- cut(df_cost_mig$pcent_rot_adv, custom_bins)  
-
-  bin_labs <- levels(df_cost$rot_adv_bins)
-        
-  #gg_nocost_nomig <- ggplot( df_nocost_nomig, aes(x=pcent_rot_adv)) + 
-  gg_nocost_nomig <- ggplot( df_nocost_nomig, aes(x=rot_adv_bins)) + 
-                 
-             geom_bar() +
-             #xlim(-20,400) +
-             xlim(bin_labs) +
-             xlab('') +
-             ylab('count') +
-             ggtitle('1. no resistance costs or dispersal') +
-             #scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + 
-             theme_minimal() +
-             theme(panel.grid.minor.y=element_blank(),
-                   axis.text.x=element_blank())
-
+  df_all$rot_adv_bins <- cut(df_all$pcent_rot_adv, custom_bins)  
+  bin_labs <- levels(df_all$rot_adv_bins)
   
-  gg_cost <- ggplot( df_cost, aes(x=rot_adv_bins)) + 
-             
-             geom_bar() +
-             #geom_histogram(binwidth=10) +
-             #xlim(-20,400) +
-             xlab('') +
-             ylab('count') +
-             ggtitle('2. with costs') +
-             #scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + 
-             #scale_x_continuous(breaks=c(-10,-1,0,1,20,100,400)) +
-             scale_x_discrete( limits=bin_labs,
-                               #labels=c("-20 to -1", "-1 to 1", "1 to 20", "20 to 100", "100 to 500"))+
-                               labels=c("-20 to -10", "-10 to -1", "-1 to 1", "1 to 10", "10 to 20", "20 to 100", "100 to 500"))+    
-             theme_minimal() +
-             theme(panel.grid.minor.y=element_blank(),
-                   axis.text.x=element_blank())
+  #hack to add subplot labels to facets
+  abcd <- data.frame(label = c("A","B","C","D"),
+                   scenario = levels(df_all$scenario))
   
-  gg_mig <- ggplot( df_mig, aes(x=rot_adv_bins)) + 
-             
-             geom_bar() +
-             xlim(bin_labs) +
-             xlab('') +
-             ylab('count') +
-             ggtitle('3. with dispersal refugia') +
-             theme_minimal() + 
-             theme(panel.grid.minor.y=element_blank(),
-                   axis.text.x=element_blank())
-
-  #gg_cost_mig <- ggplot( df_cost_mig, aes(x=rot_minus_seq)) + 
-  gg_cost_mig <- ggplot( df_cost_mig, aes(x=rot_adv_bins)) +  
+  ggplot( df_all, aes(x=rot_adv_bins)) +  
     
-             geom_bar() +
+             #geom_bar() +
+             stat_count(mapping = aes(y=..prop.., group=1)) + #puts proprtions in axes
+             scale_y_continuous(breaks=seq(0,0.8,0.2)) +
              xlab('Percent benefit of rotation over sequence') +
-             ylab('count') +
-             ggtitle('4. with costs and dispersal') +
-             #scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + 
+             ylab('proportion of model runs') +
+             #ggtitle('') +
              theme_minimal() +
+             facet_wrap(~scenario, ncol=1) +
              scale_x_discrete( limits=bin_labs,
-                               #labels=c("-20 to -1", "-1 to 1", "1 to 20", "20 to 100", "100 to 500"))+
                                labels=c("-20 to -10", "-10 to -1", "-1 to 1", "1 to 10", "10 to 20", "20 to 100", "100 to 500"))+     
-             theme(panel.grid.minor.y=element_blank())  
+             theme(panel.grid.minor.y=element_blank(),
+                   axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1)) +
+             geom_text(data=abcd,
+                  aes(x = -Inf, y = +Inf, label=label),
+                  hjust = 0,
+                  vjust = 0.9 )
   
-  grid.arrange(gg_nocost_nomig, gg_cost, gg_mig, gg_cost_mig, ncol=1)
+        
+  # gg_nocost_nomig <- ggplot( df_nocost_nomig, aes(x=rot_adv_bins)) + 
+  #                
+  #            geom_bar() +
+  #            #xlim(-20,400) +
+  #            xlim(bin_labs) +
+  #            xlab('') +
+  #            ylab('count') +
+  #            ggtitle('1. no resistance costs or dispersal') +
+  #            #scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + 
+  #            theme_minimal() +
+  #            theme(panel.grid.minor.y=element_blank(),
+  #                  axis.text.x=element_blank())
+  # 
+  # 
+  # gg_cost <- ggplot( df_cost, aes(x=rot_adv_bins)) + 
+  #            
+  #            geom_bar() +
+  #            #geom_histogram(binwidth=10) +
+  #            #xlim(-20,400) +
+  #            xlab('') +
+  #            ylab('count') +
+  #            ggtitle('2. with costs') +
+  #            scale_x_discrete( limits=bin_labs))+    
+  #            theme_minimal() +
+  #            theme(panel.grid.minor.y=element_blank(),
+  #                  axis.text.x=element_blank())
+  # 
+  # gg_mig <- ggplot( df_mig, aes(x=rot_adv_bins)) + 
+  #            
+  #            geom_bar() +
+  #            xlim(bin_labs) +
+  #            xlab('') +
+  #            ylab('count') +
+  #            ggtitle('3. with dispersal refugia') +
+  #            theme_minimal() + 
+  #            theme(panel.grid.minor.y=element_blank(),
+  #                  axis.text.x=element_blank())
+  # 
+  # #gg_cost_mig <- ggplot( df_cost_mig, aes(x=rot_minus_seq)) + 
+  # gg_cost_mig <- ggplot( df_cost_mig, aes(x=rot_adv_bins)) +  
+  #   
+  #            geom_bar() +
+  #            xlab('Percent benefit of rotation over sequence') +
+  #            ylab('count') +
+  #            ggtitle('4. with costs and dispersal') +
+  #            #scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + 
+  #            theme_minimal() +
+  #            scale_x_discrete( limits=bin_labs,
+  #                              labels=c("-20 to -10", "-10 to -1", "-1 to 1", "1 to 10", "10 to 20", "20 to 100", "100 to 500"))+     
+  #            theme(panel.grid.minor.y=element_blank(),
+  #                  axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1))  
+  # 
+  # grid.arrange(gg_nocost_nomig, gg_cost, gg_mig, gg_cost_mig, ncol=1)
 
 ```
 
 \pagebreak
 
-```{r Fig5, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 5. Example of a model run where there is a substantial benefit of rotations over a sequence. For the sequence resistance thresholds are reached for all insecticides in a little over 100 generations or 10 years. For the rotation resistance levels for all insecticides are maintained well below resistance thresholds for the length of the simulation (500 generations or 50 years). Effectiveness=0.57, exposure=0.88, male exposure proportion=0.72, resistance restoration=0.68, dominance of resistance=0.04, cost=0.07, dominance of cost=0.59."}
+
+```{r Fig7, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 7. Example of a model run where there is a substantial benefit of rotations over a sequence. For the sequence resistance thresholds are reached for all insecticides in a little over 100 generations or 10 years. For the rotation resistance levels for all insecticides are maintained well below resistance thresholds for the length of the simulation (500 generations or 50 years). Effectiveness=0.57, exposure=0.88, male exposure proportion=0.72, resistance restoration=0.68, dominance of resistance=0.04, cost=0.07, dominance of cost=0.59."}
 # ? are these run ids before or after the runs that don't reach thresholds have been removed ?
 # seems OK that they are after other runs removed
 #scenarios_to_plot <- c(624,2167,602,4028,5771)
@@ -486,7 +566,7 @@ for(scenario in scenarios_to_plot)
 
 \pagebreak
 
-```{r Fig6, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 6. Which model inputs have the greatest influence on the difference between rotations and sequences ? In this case for scenario 2 where resistance costs are included but dispersal is not. Measured using Partial Rank Correlation Coefficients (PRCC). Positive values indicate a positive influence on the benefit of rotations, only cost and dominance of cost in this case. Dominance of cost and dominance of selection have the greatest magnitude of influence."}
+```{r Fig8, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 8. Which model inputs have the greatest influence on the difference between rotations and sequences ? In this case for scenario 2 where resistance costs are included but dispersal is not. Measured using Partial Rank Correlation Coefficients (PRCC). Positive values indicate a positive influence on the benefit of rotations, only cost and dominance of cost in this case. Dominance of cost and dominance of selection have the greatest magnitude of influence."}
   
 library(sensitivity)
   
@@ -546,7 +626,7 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
 
 \pagebreak
 
-```{r Fig7, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 7. Model runs in which rotations perform more than 20% better than sequences are associated with high dominance of cost and low dominance of selection. Dominance inputs are shown on the x and y axes. Small grey points indicate all model runs. Model runs in which rotations last greater than 20% longer than sequences are shown in colour with darker blue indicating those that have the greatest difference."}
+```{r Fig9, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 9. Model runs in which rotations perform more than 20% better than sequences are associated with high dominance of cost and low dominance of selection. Dominance inputs are shown on the x and y axes. Small grey points indicate all model runs. Model runs in which rotations last greater than 20% longer than sequences are shown in colour with darker blue indicating those that have the greatest difference."}
 
 #'cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs'
 #'cost','dom_cos','dom_sel'
@@ -567,14 +647,61 @@ plot(gg)
 
 \pagebreak
 
-```{r FigX, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=5, fig.width=7.5, fig.show='hold', fig.align='left', fig.cap="Figure X. [todo need to modify caption from MJ paper, start by saying that only in left panel during application of the insecticide] The effect of model inputs on the fitness of genotypes for a single insecticide. Fitness is shown on the y-axis and the different genotypes (SS, SR, RR) on the x axis. Firstly the exposure input determines the proportion of the population in the left and right panels (exposed and not exposed). For those that are exposed (left panel) insecticide effectiveness sets the fitness for SS, resistance restoration 'restores' a portion of the fitness for RR and dominance of resistance determines how the fitness for SR lies between that of SS and RR. For those that are not exposed, fitness of SS is set to 1 by definition, resistance cost determines the fitness of RR and again dominance of cost determines how the fitness for SR sits between that of SS and RR. In this example effectiveness=0.8, resistance restoration=0.5 which 'restores' half of the fitness lost due to the insecticide, dominance of resistance=0.7 which sets the fitness of the SR closer to RR than SS. Resistance cost=0.3 which reduces fitness in the absence of the insecticide from 1 to 0.7, and dominance of cost=0.8 which sets fitness of SR close to RR."}
- 
-library(resistance) 
-plot_fit_calc( effectiveness=0.8, resistance_restoration=0.5, dominance_restoration=0.7, dominance_cost=0.7, cost=0.3 )
+
+```{r Fig10, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 10. Simplified indication of how fitness differences between selective advantages and costs are expected to change according to dominance and resistance allele frequencies. Top left : high dominance of cost, low dominance of selection, difference between cost and selection fitness components can be very low at low allele frequencies, difference increases as allele frequencies increase. Lower left: low dominance of cost, low dominance of selection : increased difference at the lowest frequencies. Top right: increased dominance of selection markedly increases benefits of resistance at low frequencies and thus the difference between costs and benefits even when dominance of cost is high. This shows why dominance of selection needs to be low and dominance of cost needs to be high, when dominance of selection is high the difference between costs and benefits is high even at low frequencies irrespective of the value of dominance of cost. When dominance of selection is low a high dominance of cost can lead to very small differences between costs and benefits at low frequencies. In these latter circumstances if rotations can keep frequencies low they can reduce the long term development of resistance. Plot calculation assumes Hardy-Weinberg equilibrium which will not be the case under selection but the general pattern will be similar. Fitness cost set to 0.05 and selective advantage of resistance to 0.4."}
+
+# high dominance of cost, low dominance of selection
+# difference between cost and selection fitness components can be very low at low allele frequencies
+# difference increases as allele frequencies increase
+df1 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.9, sel_rr = 0.4, dom_sel = 0.1, plot=FALSE)
+# low dominance of cost, low dominance of selection
+# reduced difference at the lowest frequencies
+df2 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.1, sel_rr = 0.4, dom_sel = 0.1, plot=FALSE)
+# low dominance of cost, low dominance of selection
+# hmmm similar to previous - underwhelming may not want to include
+df3 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.1, sel_rr = 0.4, dom_sel = 0.9, plot=FALSE)
+# high, high
+# difference between the fitness components
+df4 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.9, sel_rr = 0.4, dom_sel = 0.9, plot=FALSE)
+
+#this shows why dominance of selection needs to be low and dominance of cost needs to be high
+#when dominance of selection is high the difference between costs and benefits is high even at low frequencies irrespective
+#of the value of dominance of cost
+#when dominance of selection is low a high dominance of cost can lead to very small differences between costs and benefits at low frequencies
+#thus if rotations can keep frequencies low they can reduce the long term development of resistance
+
+# bind the rows together
+dfgrid <- dplyr::bind_rows(df1,df2,df3,df4)
+
+#change levels of dom_cos to get higher value upper (facet_grid(as.table=FALSE) would do same)
+dfgrid$dom_cos <- factor(dfgrid$dom_cos)#, levels=c(0.9,0.1)) 
+dfgrid$dom_sel <- factor(dfgrid$dom_sel)#, levels=c(0.9,0.1)) 
+
+#hack to add subplot labels to facets
+abcd <- data.frame(label = c("A","B","C","D"),
+                   dom_cos = levels(factor(dfgrid$dom_cos)),
+                   dom_sel = levels(factor(dfgrid$dom_sel)))
+                   #fitness_component = NA)
+
+# plot with facets for dom_sel & dom_cos
+ggplot(dfgrid, aes(x=freq, y=fitness_value, col=fitness_component)) +
+  geom_line() +
+  theme_minimal() +
+  xlab('allele frequency') +
+  facet_grid(dom_cos~dom_sel, labeller = "label_both", as.table = FALSE) #+
+  # geom_text(data=abcd,
+  #   aes(x = -Inf, y = +Inf, label=label),
+  #   #inherit.aes=FALSE,
+  #   colour='black',
+  #   hjust = 0,
+  #   vjust = 0.9 ) 
+
+
+#my subplot labelling hack fails and I'm not sure why?
+#initially extra facets were added for dom_sel values of 1 & 2 that aren't in the data
+#now labels AC & BD appear on same plots
 
 ```
-
-\pagebreak
   
 ## References
 <!-- now auto created here-->
