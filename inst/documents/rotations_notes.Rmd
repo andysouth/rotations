@@ -1379,13 +1379,27 @@ I want to stop switching to an insecticide that was used < X generations ago.
 To do that store an array which has a counter for each insecticide which records how long since it was last used. Then just add to that counter in each generation for each insecticide not in use.
 Don't allow an insecticide to be used that is below a user-defined level.
 
-in insecticide_check()
+in insecticide_switch()
 BE CAREFUL!
 
-df_ins <- data.frame(last_used=rep(NA, n_insecticides))
+min_gens_switch_back minimum num gens before can switch back to an insecticide
+
+I set the default in run_rot to 10 generations.
+(I can leave min_rwr_interval in for now, when it is set to 1 it has no effect).
+
+Note that min_rwr_interval was assessed in insecticide_check() i.e. it stopped an insecticide from being stopped within a certain interval
+
+Which actually maybe wasn't so bad ?? Maybe I could stick with it ??
+i.e. that simulated not being able to withdraw an insecticide which has already been applied (which sounds pretty good now I think about it ...)
+
+Either of these could be OK. I had it set to 5 generations before which was half a year.
+
 
 
 # TODO
+
+Decide whether to use min_rwr_interval OR min_gens_switch_back 
+
 
 Before sending to Ian.
 
