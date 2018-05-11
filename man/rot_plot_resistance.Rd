@@ -6,7 +6,7 @@
 \usage{
 rot_plot_resistance(df_res2, plot_refuge = TRUE, rot_criterion = 0.5,
   logy = TRUE, add_gens_under50 = TRUE, df_resanother = NULL, lwd = 1.5,
-  plot = TRUE)
+  title = NULL, plot = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
@@ -22,6 +22,8 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, rot_criterion = 0.5,
 \item{df_resanother}{exploratory option to plot results of another scenario on the same graph}
 
 \item{lwd}{line thickness for resistance curves}
+
+\item{title}{optional title for plot, NULL for no title}
 
 \item{plot}{whether to plot results}
 }

@@ -7,6 +7,7 @@
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
 #' @param lwd line thickness for resistance curves
+#' @param title optional title for plot, NULL for no title
 #' @param plot whether to plot results
 #'
 # check said that namespace dependencies not required
@@ -28,6 +29,7 @@ rot_plot_resistance <- function(df_res2,
                                 add_gens_under50 = TRUE,
                                 df_resanother = NULL,
                                 lwd = 1.5,
+                                title = NULL,
                                 plot = TRUE) {
   
   # column names of input dataframe
@@ -143,6 +145,8 @@ rot_plot_resistance <- function(df_res2,
     gg <- gg + geom_text(aes(x=Inf, y=y, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
     
   }
+  
+  if (!is.null(title)) gg <- gg + ggtitle(title)
     
   if (plot) plot(gg)
   

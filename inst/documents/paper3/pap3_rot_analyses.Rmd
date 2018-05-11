@@ -168,7 +168,7 @@ for(input in inputs)
 # I could maybe make the data longer and then facet by input
 # think I would filter out, n_insecticides, start_freqs, male_expo_prop & rot_interval that don't show much rship
 #TODO improve labels for these
-inputs <- c('cost', 'expo_hi', 'eff', 'rr', 'dom_sel', 'dom_cos')
+inputs <- c('cost', 'expo_hi', 'eff', 'rr', 'dom_sel', 'dom_cos','start_freqs','rot_interval')
 # something like this example from SO https://stackoverflow.com/a/48940750/1718356
 #data_long <- tidyr::gather(data, key = type_col, value = categories, -col4)
 #ggplot(data_long, aes(x = categories, fill = col4)) +

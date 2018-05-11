@@ -1359,7 +1359,6 @@ ARg, now all plots have stopped appearing in doc and I don't know why ?????
 It was a < symbol in the MS text, could tell because the text stopped at that point.
 
 *10/5/18*
-
 Testing setting width of plots for publication at 300 dpi into word doc.
 
 Solution : just use fig.height & width (out.height etc not supported for word)
@@ -1367,19 +1366,38 @@ This makes the tiffs correct. Word foten resizes them. To get right in word, rig
 
 improved histogram figures
 
+got Ians fig Y working in freq_fitness_simple() & added facetted grid plot to the paper.
+
+*11/5/18*
+- improved violin plots added to pap3
+- improving legends
+
+Finally grasping the nettle of insecticide switching.
+
+I want to stop switching to an insecticide that was used < X generations ago.
+
+To do that store an array which has a counter for each insecticide which records how long since it was last used. Then just add to that counter in each generation for each insecticide not in use.
+Don't allow an insecticide to be used that is below a user-defined level.
+
+in insecticide_check()
+BE CAREFUL!
+
+df_ins <- data.frame(last_used=rep(NA, n_insecticides))
+
+
 # TODO
 
+Before sending to Ian.
 
-
-
+~ add to methods about min rwr interval
+~ add about keeping resistance allele freq at starting level
+~ add to fig Y legend Ians caveats
 
 
 
 I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
 
 May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
-
-
 
 
 ~ try changing scenario 2167 from df_cost
