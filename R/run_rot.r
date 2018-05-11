@@ -22,6 +22,8 @@
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
 #' @param exit_rot whether to exit rotation interval if rot_criterion is reached
+#' @param min_gens_switch_back minimum num gens before can switch back to an insecticide
+# @param df_ins number of generations since each insecticide used
 #' 
 #' @param plot whether to plot results
 #' @param diagnostics whether to output running info
@@ -65,6 +67,7 @@ run_rot <- function(max_gen = 200,
                     min_rwr_interval = 1,
                     no_r_below_start = TRUE,
                     exit_rot = TRUE,
+                    min_gens_switch_back = 10,
                     
                     #inputs below not needed to run model itself
                     plot = TRUE,
@@ -91,6 +94,11 @@ run_rot <- function(max_gen = 200,
                                          stringsAsFactors = FALSE,
                                          l_gene_plus_activity))  
   
+  # 11/5/18 adding an df to store for each insecticide the last time it was used
+  df_ins <- data.frame(last_used=rep(Inf, n_insecticides))
+  # set value for this to 0 each time an insecticide is in use
+  # each generation if the value is not Inf add 1 to it for all insecticides not in use
+  # use this to assess whether can go back to an insecticide
   
   ### set starting allele frequencies 
   #todo add checks thats start_freqs is either length 1 or n_insecticides
@@ -289,8 +297,6 @@ run_rot <- function(max_gen = 200,
     ######
     # check if insecticide switch is needed
     # drop=FALSE imp to preserve site dimension when coverage=1
-    # ARRRG but then it doesn't drop the gen dimension either
-    # so may need to modify insecticide_check() 
     change_insecticide <- insecticide_check( RAF1gen = RAF[,,,gen, drop=FALSE],
                                              current_insecticide, 
                                              rot_interval=rot_interval, 
@@ -313,12 +319,29 @@ run_rot <- function(max_gen = 200,
                                                 n_insecticides=n_insecticides, 
                                                 rot_criterion=rot_criterion,
                                                 gen=gen,
+                                                min_gens_switch_back=min_gens_switch_back,
+                                                df_ins=df_ins,
                                                 df_results=df_results,
                                                 diagnostics=diagnostics)
     } 
   
     #message("gen", gen, " curr_ins=", current_insecticide, " change=", change_insecticide)
     
+    #11/5/18 record how many generations since each insecticide has been used
+    for (temp_int in 1:n_insecticides)
+    {
+      if ( temp_int == current_insecticide )
+      {
+        df_ins$last_used[temp_int] <- 0        
+      }
+      else #if ( !is.na(df_ins$last_used[temp_int]))
+      {
+        df_ins$last_used[temp_int] <- 1 + df_ins$last_used[temp_int]
+      }
+    }
+    
+    #temp testing
+    #print(df_ins)
     
     # if no suitable insecticide left, break out of generations loop
     if (current_insecticide == 0) #(next_insecticide_found==0)

@@ -7,6 +7,8 @@
 #' @param n_insecticides number of insecticides (and hence loci)
 #' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
 #' @param gen generation number
+#' @param min_gens_switch_back minimum num gens before can switch back to an insecticide
+#' @param df_ins number of generations since each insecticide used
 #' @param df_results results of sim so far
 #' @param diagnostics whether to output running info
 # @param rot_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
@@ -24,6 +26,8 @@ insecticide_switch <- function( RAF,
                                 n_insecticides,
                                 rot_criterion,
                                 gen,
+                                min_gens_switch_back,
+                                df_ins,
                                 df_results,
                                 diagnostics)
 {
@@ -37,7 +41,9 @@ insecticide_switch <- function( RAF,
     #search through insecticides and go back to start if reach end
     candidate <- ifelse(candidate==n_insecticides, yes=1, no=candidate+1)
     
-    if (RAF[candidate, 'f','intervention', gen] < rot_criterion)
+    #11/5/18 adding condition of not going back to recently used insecticide
+    if (RAF[candidate, 'f','intervention', gen] < rot_criterion & 
+        df_ins$last_used[candidate] > min_gens_switch_back )
     {
       
       if (diagnostics) message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f",

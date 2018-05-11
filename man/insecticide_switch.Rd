@@ -5,7 +5,7 @@
 \title{insecticide_switch choose a new insecticide to switch to}
 \usage{
 insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion, gen,
-  df_results, diagnostics)
+  min_gens_switch_back, df_ins, df_results, diagnostics)
 }
 \arguments{
 \item{RAF}{array of resistance allele frequencies}
@@ -17,6 +17,10 @@ insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion, gen,
 \item{rot_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
 
 \item{gen}{generation number}
+
+\item{min_gens_switch_back}{minimum num gens before can switch back to an insecticide}
+
+\item{df_ins}{number of generations since each insecticide used}
 
 \item{df_results}{results of sim so far}
 
