@@ -24,6 +24,10 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
   df_mig <- df_res_all
   load("df_res_all_rot_cost_mig10000.rda") #costmig 10k
   df_cost_mig <- df_res_all
+  load("df_res_all_rot_nocost_nomig10000_mgs5.rda")
+  df_nocost_nomig_mgs5 <- df_res_all 
+  load("df_res_all_rot_cost10000_mgs5.rda")
+  df_cost_mgs5 <- df_res_all  
 
 ```
 
@@ -194,5 +198,132 @@ ggplot(df_cost_long, aes_string(x='success_rot_seq',y='input_value', color='succ
         theme(panel.grid.minor.y=element_blank()) #,
         #           axis.text.x=element_blank())
         #geom_jitter(shape='.',height=0,width=0.2) )
+
+```
+
+\pagebreak
+Showing that using min_gens_switch_back=5 instead of min_rwr_interval=5 seems to make no difference in main results.
+
+```{r min_gens_switch_back on success, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+# if I put all scenarios in one df with a column for scenario I can do one ggplot and facet 
+# would work for the previous plot too and would simplify adding the new columns
+# first add the scenario column
+df_nocost_nomig$scenario <- 'no cost or dispersal'
+df_cost$scenario <- 'costs'
+df_mig$scenario <- 'dispersal'
+df_cost_mig$scenario <- 'costs and dispersal'
+
+df_nocost_nomig_mgs5$scenario <- 'no cost or dispersal mgs5'
+df_cost_mgs5$scenario <- 'costs mgs5'
+
+df_all <- dplyr::bind_rows(df_nocost_nomig,
+                           df_nocost_nomig_mgs5,
+                           df_cost,
+                           df_mig,
+                           df_cost_mig,
+                           df_cost_mgs5)
+#order for ggplot
+df_all$scenario <- factor(df_all$scenario, levels=c('no cost or dispersal','no cost or dispersal mgs5','costs','costs mgs5','dispersal','costs and dispersal'))
+
+# add a column for classification of whether, both, rotation, or neither succeeded
+df_all <- mutate(df_all, success = ifelse(gens_seq==max_gen & gens_rot==max_gen,'both',
+                                               ifelse(gens_rot==max_gen,'rotation only',
+                                               ifelse(gens_seq==max_gen,'sequence only', 'neither'  
+                                                      ))))
+#count(df_all, scenario, success)
+
+#hack to add subplot labels to facets
+abcd <- data.frame(label = c("A","B","C","D","E","F"),
+                   scenario = levels(df_all$scenario))
+
+ggplot( df_all, aes(x=success)) + 
+        #geom_bar() +
+        stat_count(mapping = aes(y=..prop.., group=1)) + #puts proprtions in axes
+        scale_y_continuous(breaks=seq(0.2,0.8,0.2)) +
+        theme_minimal() +
+        ylab('proportion of model runs') +
+        facet_wrap(~scenario, ncol=1) + #, scales='free_y') + #can remove free_y later if I do 10k nocost runs    
+        geom_text(data=abcd,
+                  aes(x = -Inf, y = +Inf, label=label),
+                  hjust = 0,
+                  vjust = 0.9 )
+
+```
+
+\pagebreak
+Using min_gens_switch_back=5 gives greater benefits to sequences when there are no costs or dispersal. I suspect this is an artefact. Try looking at some of the runs.
+```{r min_gens_switch_back on rotation benefit, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+  #try quicker way with df_all and facet
+  df_all <- mutate(df_all, pcent_rot_adv = rot_minus_seq * 100/gens_seq)
+  custom_bins <- c(-20,-10,-1,1,10,20,100,450)
+  df_all$rot_adv_bins <- cut(df_all$pcent_rot_adv, custom_bins)  
+  bin_labs <- levels(df_all$rot_adv_bins)
+  
+  #hack to add subplot labels to facets
+  abcd <- data.frame(label = c("A","B","C","D","E","F"),
+                   scenario = levels(df_all$scenario))
+  
+  ggplot( df_all, aes(x=rot_adv_bins)) +  
+    
+             #geom_bar() +
+             stat_count(mapping = aes(y=..prop.., group=1)) + #puts proprtions in axes
+             scale_y_continuous(breaks=seq(0,0.8,0.2)) +
+             xlab('Percent benefit of rotation over sequence') +
+             ylab('proportion of model runs') +
+             #ggtitle('') +
+             theme_minimal() +
+             facet_wrap(~scenario, ncol=1) +
+             scale_x_discrete( limits=bin_labs,
+                               labels=c("-20 to -10", "-10 to -1", "-1 to 1", "1 to 10", "10 to 20", "20 to 100", "100 to 500"))+     
+             theme(panel.grid.minor.y=element_blank(),
+                   axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1)) +
+             geom_text(data=abcd,
+                  aes(x = -Inf, y = +Inf, label=label),
+                  hjust = 0,
+                  vjust = 0.9 )
+  
+```
+\pagebreak
+Using min_gens_switch_back=5 example of when sequence does better.
+```{r min_gens_switch_back sequence better example, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9}
+
+df_seqbetter <- filter( df_all, pcent_rot_adv < -5 &
+                                scenario == 'no cost or dispersal mgs5' )
+
+#ooo scenario 5 has rot_adv of -97%
+#but remember it is not scenario5 in the original dataset !
+#Aha! all these big sequence advantages (well those >50%) 
+#were due to artfefact when rotation interval=5 and num insecticides=2 rotation couldn't return to first insecticide because it was only 5 generations ago !!
+
+df_nocost_nomig_mgs5 <- filter( df_all, scenario == 'no cost or dispersal mgs5' ) 
+
+#which(df_nocost_nomig_mgs5$pcent_rot_adv < -90)
+#217 1933 3435 4289 5649 7100 7925 7990
+
+scenarios_to_plot <- c(217)
+
+for(scenario in scenarios_to_plot)
+{
+  #cat(scenario,"\n")
+  
+  linputs <- as.list( df_nocost_nomig_mgs5[scenario, 1:15] )
+  
+  # run one scenario
+  dfres <- do.call(run_rot, linputs)
+  
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+   
+  #now run as sequence
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  
+  grid.arrange(ggrot, ggseq, ncol=1)
+  
+}
+
 
 ```

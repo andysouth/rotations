@@ -55,7 +55,7 @@ date: "`r Sys.Date()`"
 set.seed(2)
 max_gen         <- 500
 plot_scenarios  <- FALSE
-n_scenarios     <- 10000 # try 1000 runs with no cost
+n_scenarios     <- 10000 
 already_ran     <- FALSE
 #already_ran     <- TRUE
 
@@ -83,18 +83,19 @@ if (already_ran)
     # April 2018, having go at including variable cost, may want to do some cost=0 runs later
     
     ## constant inputs ##
-    #linputs$coverage <- 1
-    #linputs$migration <- 0
-    #linputs$cost <- 0 #variable cost below
+    linputs$coverage <- 1
+    linputs$migration <- 0
+    linputs$cost <- 0 #variable cost below
     linputs$max_gen <- max_gen
     
     #beware min_rwr_interval, it's to stop repeated small rotations
-    linputs$min_rwr_interval = 5
+    linputs$min_rwr_interval = 1
+    linputs$min_gens_switch_back <- 5
     #set plot to F if using grid.arrange as in phaps-rotations-better.Rmd
     linputs$plot <-     FALSE
   
     ## variable inputs ##
-    linputs$cost <-           runif(1, min=0,   max=0.1) 
+    #linputs$cost <-           runif(1, min=0,   max=0.1) 
     #linputs$cost <-           0 
     linputs$expo_hi <-        runif(1, min=0.4, max=0.9)  #min=0.1, max=0.9
     linputs$male_expo_prop <- runif(1, min=0,   max=1)
@@ -105,8 +106,9 @@ if (already_ran)
     linputs$start_freqs <-    runif(1, min=0.005,   max=0.1) #note not log yet   
     linputs$n_insecticides <- sample( 2:5, 1 )  #beware set replace=T if more than 1
     # dispersal (initially with cost set to 0)
-    linputs$coverage <-       runif(1, min=0.1, max=0.9)
-    linputs$migration <-      runif(1, min=0.1, max=0.9)
+    #linputs$coverage <-       runif(1, min=0.1, max=0.9)
+    #linputs$migration <-      runif(1, min=0.1, max=0.9)
+     
   
     # create null objects used later for plotting
     ggrot <- ggseq <- NULL

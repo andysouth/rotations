@@ -1394,25 +1394,123 @@ i.e. that simulated not being able to withdraw an insecticide which has already 
 
 Either of these could be OK. I had it set to 5 generations before which was half a year.
 
+done ~ add to methods about min rwr interval
+done ~ add about keeping resistance allele freq at starting level
+done ~ add to fig Y legend Ians caveats
+
+*14/5/2018*
+~ Paper3, decsribing results and adding to methods clarifiying model constraints.
+
+Before sending to Ian.
+~ resize no square figs, make sure one per page
+
+looking at how I made smaller reference bib file for uea work.
+
+Seems I can export a single non-synced bibtex file
+
+https://www.imperial.ac.uk/media/imperial-college/administration-and-support-services/library/public/LaTeX-and-Mendeley-sep-2017.pdf
+1. Exporting a BibTeX (.bib) file from your Mendeley library
+• Select the records for export
+• From top menus, go to File>Export…
+• In Popup box, choose a file name (no spaces); ensure file type is set as BibTeX
+• Save the .bib file in the same folder as the LaTeX document
+
+df_res_all_rot_nocost_nomig_10000_mgs5.rda
+
+mgs5 to indicate min_gens_switch_back=5
+
+Aha! all these big sequence advantages (well those >50%) 
+were due to artfefact when rotation interval=5 and num insecticides=2 rotation couldn't return to first insecticide because it was only 5 generations ago !!
+
+*17/5/2018*
+
+New papers to cite in rotations paper :
+
+Hackett (2016) 
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5026168/
+interesting model of resistance to transgenic crops with similar results on the importance of dominance of resistance and cost :
+"the most significant constraint upon model behaviour is the dominance of the resistant phenotype, with greater dominance decreasing Bt usage. For a given level of dominance of resistance, the type and dominance of any fitness costs may relax these constraints, allowing for larger areas of Bt crop [smaller refuges to control resistance evolution]"
+
+The R code is here and looks quite accessible :
+https://datadryad.org//resource/doi:10.5061/dryad.4s405
+
+
+Allen(2017) Reversing resistance: different routes and common themes across pathogens
+http://rspb.royalsocietypublishing.org/content/284/1863/20171619
+
+Mostly applied to microbes & fungi, some good general points, probably not useful to us.
+Does talk about different types of reversion and the importance of cost.
+
+My sentence from an example about negative cross resistance :
+Negative cross resistance meant that two fungicides were used successfully on Botrytis cinerea in European vineyards for 7 years ending in 1994 when a new mutation appeared that gave resistance to both. [87]
+
+Russell PE. 1995 Fungicide resistance—occurrence and management. J. Agric. Sci. 124, 317–323. (doi:10.1017/S0021859600073275)
+
+So negative cross resistance can work for a while but is susceptible to new mutations giving resistance to both ingredients.
+
+Alphey & Bonsal 2017 good accessible description of high dose-refuge strategy :
+Genetics‐based methods for agricultural insect pest management
+(but the paper itself is about sterile insect technique)
+
+For example, modelling the effects of larval competition and exploring late‐acting lethal phenotypes in mosquitoes predicted that this could be substantially more effective at population control than an early‐acting (e.g. embryonic) lethality or radiation‐induced sterility (Atkinson et al., 2007; Phuc et al., 2007; Alphey & Bonsall, 2014a). Indeed, if density‐dependent juvenile competition were over‐compensatory, genetic lethality that occurred at an earlier stage, thereby freeing survivors from regulation by intense competition, could push adult insect numbers higher than in the natural uncontrolled population.
+
+In terms of the genetics, consider a resistant allele r, which is initially rare. The dominant allele S is susceptible to Bt. If the high dose assumption is achieved, only some rr individuals can survive a full life cycle on transgenic plants and emerge as adults to mate. In the refuge, most emerging adults will be susceptible SS, especially if the r allele has fitness costs in the absence of the Bt toxin. If the refuge is located so that the two subpopulations are well‐mixed, most resistant rr survivors will mate with susceptible SS insects from the refuge. Their resulting Sr progeny cannot survive on the Bt crops and so will not pass on the resistant allele to future generations. Unfortunately, a few insect species, such as the economically important pests Helicoverpa zea (Boddie) and Helicoverpa armigera (Hübner) (both species, confusingly, known as both bollworm and corn earworm), have been identified in the past as ‘moderate dose pests’, where the toxins were unable to kill all heterozygotes (EPA, 1998; Tabashnik et al., 2008). Even where its main assumptions appear to hold, the high‐dose/refuge strategy is predicted only to delay resistance and, after two decades of commercially grown Bt cotton and Bt corn (maize), some field‐evolved resistance has now been observed and reported in a variety of insect species. In some cases, this has already led to reduced efficacy of crops, or even crop failures. A comprehensive review is provided by Tabashnik et al. (2013).
+
+In economic terms, the high‐dose/refuge strategy is an inter‐temporal trade‐off, sacrificing current value to retain value generated in future (Frisvold & Reeves, 2008). Refuge plants will be damaged, which reduces their yield if they are crops, or reduces the area allotted to crop production if alternative host plants are used. This damage or lost production is tolerated, in return for prolonging the efficacy of the protection afforded by the Bt crops. In principle, a conventional crop refuge could be sprayed with another pesticide (one with no cross‐resistance between its active ingredient and Bt), although doing so reduces its effectiveness as a refuge.
+
+Aha and a justification for using resistance threshold of 0.5 !
+Generally, a frequency of 0.5 is an indicator of a serious problem because resistance frequency increases rapidly once r becomes the more common allele (Carrière & Tabashnik, 2001).
+
+Carrière & Tabashnik, 2001. Modelling refuges in Bt corn
+Good paper to cite in rotations paper.
+They found some similar things to us, e.g. resistance not increasing when dominance of resistance low and dominance of cost high.
+
+*Carriere 2018* good one to include, recent data on fitness costs showing that there are highish fitness costs but that they are almost completely recessive.
+Genotype-specific fitness cost of resistance to Bt
+
+*18/5/2018*
+
+*Glunt 2018* Impact of temperature on insecticide toxicity.
+Relevant to window of selection. 
+In arabiensis & funestus with deltamethrin, generally mortalities higher when temperatures either higher or lower than standard. The difference between resistant and susceptible mortality is generally less, suggesting that the window of selction may be lower outside of standard lab conditions. Bendiocarb mortality increased with temperature and unsurprisingly was similar between strains susceptible and resistant to pyrethroids.
+
+
 
 
 # TODO
 
-Decide whether to use min_rwr_interval OR min_gens_switch_back 
+*today*
+done ~ reread Ians text about dominance
+~ move rotations repo back to my github
+~ update R
+done ~ tweet to malaria journal
+~ think more about rotations datavis
+done ~ read the alphey oxitech modelling papers
 
+To talk with Ian about next week :
+~ min_rwr_interval vs min_gens_switch_back
 
-Before sending to Ian.
+Look at Hackett R code. Could it be an even simpler model that we could use ?
+The R code is here and looks quite accessible :
+https://datadryad.org//resource/doi:10.5061/dryad.4s405
 
-~ add to methods about min rwr interval
-~ add about keeping resistance allele freq at starting level
-~ add to fig Y legend Ians caveats
+Looking at moving rotations repo back to me. Seems transfer may be best way :
+https://help.github.com/articles/about-repository-transfers/
+Transfer is at the bottom of settings, options : from Ians account
 
+Look into whether to use min_rwr_interval OR min_gens_switch_back 
+I'm thinking that I'll stick with min_rwr_interval
 
+Revisit Ians paragraph about the rare conditions that give large benefit to rotations.
+
+"Note however that this combination of recessive resistance and high dominance costs are exactly the features most desirable in any insecticide irrespective of how it is deployed. ... it is very difficult to maintain insecticide concentration at the level required to make resistance recessive. Concentrations decay post-application in most deployment strategies and this cause resistance to gradually change from being recessive to being dominant.""
+me is there anything similar on the dominance of costs ?
 
 I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
 
 May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
 
+In rotations and WoS MS we should talk about high dose/refuge strategy for transgenic crops (specifically Bt corn). The high dose part is that the dose is sufficiently high to kill all heterozygotes i.e. making resistance recessive. But if this was used across a large area the evolution of resistance would be very rapid - because only homozygous resistant individuals would be left. The refuge part is to provide a source of susceptible immigrants which can generate heterozygous offspring that are vulnerable to the dose. 
 
 ~ try changing scenario 2167 from df_cost
 ~~ initial attempts in UI not working
@@ -1429,30 +1527,20 @@ May also be something useful I can say about the number of insecticides too ? (W
 
 ~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
 
-~ can I add figures from specific sensi_an runs ? or safer to run the model for set runs from the paper rmd.
-
-~ how to sort library.bib ? Have a much reduced copy in rotations folder now.
-
 
 think about killer plot to display difference between rot & seq generations
 
-be careful that min_rwr_interval doesn't come back to bite me. Ian wanted it different, i.e. not going back to an insecticide that has been used recently ...
 
-~ sensi_an_rotations1.Rmd
 
 ~ *decide on min_rwr_interval for sensi analysis
-~ decide on max_gen, what was it for paper1 ?
 ~ one generation per month, 12 generations per year, 500 gens is ~40 years
 
 
 
 
 ~ maybe come back to i_in_use ribbons not meeting issue
-
 ~ rename rot_criterion to rot_threshold
-
 ~ add in some unit-tests ?
-
 ~ check how gens_under_thresh are counted in sensi_an_rotations1
     summarise(gens_dep_under50 = sum(resistance < 0.5 &
                                      #finds insecticide in use = this one
@@ -1474,19 +1562,6 @@ rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 
 
 
-
-
-
-
-
-
-
-
-Download papers on modelling oxitech
-Insecticide resistance
-https://doi.org/10.1093/jee/100.5.1642
-https://doi.org/10.1603/029.102.0233
-
 These are not about insecticide resistance (they are about resistance to the gene itself but may have useful pointers)
 Alphey2011. Modeling resistance to genetic control of insects
 https://doi.org/10.1016/j.jtbi.2010.11.016
@@ -1494,9 +1569,6 @@ https://doi.org/10.1016/j.jtbi.2010.11.016
 Watkinson-Powell2017 Resistance to genetic insect control: Modelling the effects of space
 https://doi.org/10.1016/j.jtbi.2016.10.014
 
-Type of fitness cost influences the rate of evolution of resistance to transgenic Bt crops
-Looks like could be very interesting :
-DOI: 10.1111/1365-2664.12680
 
 Combining the high-dose/refuge strategy and self-limiting transgenic
 insects in resistance management- a test in experimental mesocosms 
@@ -1518,14 +1590,6 @@ Look into data on changing allele frequencies over time (e.g. for Kdr)...
 It occurred to me that maybe a benefit of rotations is that if it is difficult to measure resistance allele frequencies they provide a lower risk of reaching resistance thresholds for any insecticide. i.e. are they a better strategy in light of uncertainty in resistance allele frequencies ?
 
 
-~ check again on current small differences between rotations & sequences
-
-
-~ maybe I can write a function to plot 2 scenarios on the same graph (in the same way that curtis fig2 plots mix & seq on same graph) ?
-~ I could have the insecticide use still along the top but with diff colours showing the two alternatives
-
-
-~ get sensi_an_rotations1.Rmd working for Ians Q1
 
 ~ can we get cost to decrease over time at high frequency as suggested in GPIRM ?
 
@@ -1533,8 +1597,6 @@ gens_dep_under50 is ugly and I need to rewrite in sensi_an_rotations !
 
 BEWARE active in active_or_refuge is potentially confusing, does not mean that insecticide is active/deployed, just means its is the active area (a different insecticide may be deployed)
 
-
-*Ian said first question is to assess whether there is any benefit to rotations when there are no costs and no emigration*
 
 *protocol for sensitivity analysis*
 ~ store input ranges
@@ -1545,8 +1607,6 @@ BEWARE active in active_or_refuge is potentially confusing, does not mean that i
 ~ concatenate inputs & outputs
 ~ relate outputs to inputs
 
-
-~ create a new version of run_rot2() allowing me to refactor the code and check that it still generates same results as run_rot() 
 
 ~ maybe have a set_raf() function too
 
@@ -1601,8 +1661,7 @@ The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) 
 ~ RAF[,,,2] to get allele frequencies for generation 2 (by insecticide,sex and active|refuge)
 
 # useful
-~ one generation per month, 12 generations per year, 500 gens is ~40 years
-
+~ one generation per month, 12 (or 10) generations per year, 500 gens is ~40-50 years
 
 
 # funding opportunities

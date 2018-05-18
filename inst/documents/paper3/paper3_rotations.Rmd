@@ -106,9 +106,11 @@ In a rotation the insecticide used is changed on a set time interval irrespectiv
 Here a modern modelling approach is described to allow an assessment of the potential benefits, in terms of the evolution of resistance, of rotations over sequences. 
 
 
+
 ## Methods
 
 A population genetic model was developed tracking the change in resistance allele frequency as consequence of the genetic determination of the resistance phenotype, and the deployment policy for the insecticides. The model uses a similar approach to that previously used to compare insecticide mixtures and sequences [@Levick2017,@South2018]. The implementation is simpler here because for rotations and sequences there is only a need to follow one insecticide at a time and linkage disequilibrium can be ignored. The simpler implementation allows the model to be run for an unlimited number of insecticides. The algebra behind the model is described in the supplementary information.
+
     
 1. Sequences : one insecticide is used until resistance threshold frequency (0.5 in this case) is reached, then switch to a new insecticide. 
 
@@ -116,8 +118,12 @@ A population genetic model was developed tracking the change in resistance allel
 
 In both cases the choice of the new insecticide to use was made by going through the list of available insecticides and choosing the next one for which resistance was below the threshold. Thus there is the potential to switch back to insecticides that had been used earlier in a model run if resistance had not reached the threshold or if resistance had declined below the threshold during a period when not in use. This means that the “sequential” policy is effectively a “rotate when resistant” policy but we use the former term for consistency with previous work. *todo cite different terms from Rex consortium review* For both rotations and sequences the simulation continues until no more insecticides remain below their resistance thresholds.    
     
-*todo add to this description of how the model works and refer to SI where we can show the algebra*    
+    
+*todo add to this description of how the model works and refer to SI where we can show the algebra* 
+
 Within the model, the inputs described in Table 1 determine the fitness in each generation as shown in Figure 1, differences in fitness lead to the changes in allele frequencies in the following generation.
+    
+    
 
 **Table 1. Model inputs and the ranges used in simulations**
 
@@ -135,16 +141,17 @@ Insecticide number | number of independent insecticides available | 2 | 5
 Rotation interval | number of generations to use insecticide before switching | 5 | 50
 Coverage | for scenarios with dispersal, the proportion of insects in the treated area rather than untreated refugia |  0.1 | 0.9
 Dispersal | proportion of population exchanged between treated and untreated areas per generation, 0=none, 1=random mixing |  0.1 | 0.9
-
-
-*Ian : at this stage it would be good to revisit these model details before we continue further.*    
+    
+    
+*Ian : at this stage it would be good to revisit the following model details.*    
 *It is fairly easy for me to rerun all the analyses if we change our mind on these.*    
 
+    
 #### Optional model details    
-Two optional model details were included to aid giving a more meaningful comparison of strategies. Firstly allele frequencies in a run were not allowed to go below the starting frequencies randomly chosen for that run. This aims to represent a situation where in the absence of insecticide use allele frequencies are maintained in balance between mutation and selection. Without this option enabled it was found that 
-
-Secoundly a constraint was added to stop rapid switching between insecticides every few generations which would be impractical in the field. Certain input combinations create this behaviour in the absence of a constraint. For example when two insecticides are close to the resistance frequency threshold of 0.5 it is possible for them to switch between each other every few generations as frequencies go above the threshold when in use and decline below it when not in use.  
-*todo finish this part*
+Two optional model details were included to aid giving a more meaningful comparison of strategies. Firstly allele frequencies in a run were not allowed to go below the starting frequencies randomly chosen for that run. This aims to represent a situation where in the absence of insecticide use allele frequencies are maintained in balance between mutation and selection. Without this option enabled, in runs including costs of resistance, resistance allele frequencies can decline below starting levels when an insecticide is not in use and this makes it more difficult to compare alternate strategies. *Ian, can you help out with a few sentences here ?*
+    
+Secoundly a constraint was added to stop rapid switching between insecticides every few generations which would be impractical in the field. Certain input combinations create this behaviour in the absence of a constraint. For example when two insecticides are close to the resistance frequency threshold of 0.5 it is possible for them to switch between each other every few generations as frequencies go above the threshold when in use and decline below it when not in use. Two different ways of stopping this rapid switching behaviour were trialled. In one, a minimum-insecticide-use constraint stopped switching to another insecticide within a set number of generations (5 in this case) of starting using another. This could represent a field situation where once walls have been sprayed or nets distributed they cannot be unsprayed or recalled. In a second, a minimum-repeat-interval constraint stopped returning to the use of an insecticide within set number of generations (again we used 5 generations) since it was last used.     
+*I'm looking into the implications of these different constraints now.*
 
 The model was run under four main scenarios :
 
@@ -161,91 +168,112 @@ For each scenario 10,000 runs were performed randomly selecting inputs according
 
 #### Assessing relative performance of insecticide use strategies
 
-*todo change this bit, think more about which outputs to use*
-It is necessary to choose a measure to quantify the performance of an insecticide-use strategy and enable comparison with an alternative. For this we summed the number of generations when an insecticide was deployed and the resistance allele frequency for that insecticide was below 0.5. This allowed comparison between strategies using a variable number of insecticides. Previously time-to-resistance, namely the number of generations it takes to reach a defined resistance threshold (usually a resistance allele frequency of 0.5), was used. Using time-to-resistance worked when considering just two insecticides, but when the number of insecticides is a variable it is not sufficient.
+It is necessary to choose a measure to quantify the performance of an insecticide-use strategy and enable comparison with an alternative. For this we summed the number of generations when an insecticide was deployed and the resistance allele frequency for that insecticide was below 0.5. This allowed comparison between strategies using a variable number of insecticides.
 
+\pagebreak
 
 ## Results
-
+    
 #### Results1. form of resistance evolution with and without costs and dispersal.
-
+    
 Example model runs are shown with no costs or dispersal (Fig 2), with just resistance costs (Fig 3) and with just dispersal from untreated refugia (Fig 4).
-
+    
+    
 When there are no resistance fitness costs or dispersal links to untreated refugia resistance frequencies do not decline when an insecticide is not in use (Fig 2). Thus for sequences once resistance thresholds are reached the resistance frequencies remain at that level and the insecticide cannot be re-used. For rotations resistance frequencies step upwards when insecticides are in use and remain at a plateau when they are not. If the rotation interval is short enough then the insecticide can be used a few times before the resistance thresholds are reached.
-
-*todo continue describing the example runs first, before talking about overall results*
-
-### Results2 : comparing rotations and sequences across model runs.
+    
+    
+When resistance costs are included (Fig 3), resistance allele frequencies decline in periods when the corresponding insecticide is not in use. Thus for sequences the decline can allow insectides to be returned to use later on because resistance has declined below threshold levels in contrast with the situation in Figure 2.
+    
+    
+Adding representation of an untreated refugia and dispersal between it and the treated area also allows resistance allele frequencies to decline when an insecticide is not in use (Fig 4). Resistance frequencies in the treated areas (red lines) increase when an insecticide is in use. Resistance frequencies in the untreated areas (blue lines) increase after those in the treated areas as a result of dispersal from the treated areas. When an insecticide stops being used the resistance frequency in the treated area declines due to dispersal from the untreated area. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and consistent with the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines while not. 
+    
+    
+#### Results2 : comparing rotations and sequences across model runs.
 
 In all the example runs shown the resistance threshold (allele frequency of 0.5) was reached for all insecticides within the course 500 generations which was the maximum limit imposed in the model. There were many model runs [*quantify later when run finalised*] in which resistance frequencies for at least some insecticides were below thresholds at the end of 500 generations. Such a run could be considered a successful strategy given the conditions of the scenario because insecticides below the resistance threshold are still available to be used.  
-
+    
+    
 Thus to aid the comparison of rotations and sequences model runs can be broadly classified into four groups :
+
 1. both strategies succeeded : for both rotations and sequences resistance thresholds for all insecticides not reached within 500 generations.
 2. neither strategy succeeded
 3. rotation only succeeded
 4. sequence only succeeded
-
-The number of model runs in each of these groups for the different scenarios are shown in Fig 5. In the base scenario with no costs or dispersal (Fig 5A) the majority of runs do not succeed, a small proportion succeed for both strategies and none succeed for either strategy alone. When costs of reistance are added (Fig 5B) more runs succeed for both strategies, up to about half of those that succeed for neither, and a small proportion (< 4%) succeed for rotations alone. Adding both costs and dispersal results in more runs succeeding for both than neither (Fig 5C). 
-
-
+    
+    
+The number of model runs in each of these groups for the different scenarios are shown in Fig 5. In the base scenario with no costs or dispersal (Fig 5A) the majority of runs do not succeed, a small proportion succeed for both strategies and none succeed for either strategy alone. When costs of reistance are added (Fig 5B) more runs succeed for both strategies, up to about half of those that succeed for neither, and a small proportion (< 4%) succeed for rotations alone. Adding both costs and dispersal results in more runs succeeding for both than neither (Fig 5C) and the proportion of runs where rotations only succeed is similar to the scenario with costs alone. 
+    
+    
+The runs in each of these three main classes (success in both, neither or rotations only) differ in their distribution of input values (Fig 5xtra). Runs in which both strategies were successful were more likely to have higher costs and lower effectiveness, exposure and resistance restoration. Runs in which neither strategy was successful were the reverse. Runs for which rotations only were successful tended to have higher dominance of cost, lower dominance of resistance and lower rotation intervals.
+    
+    
 To look at the potential benefit of rotations the number of generations below resistance thresholds was compared across strategies. This will be influenced by the previous analysis because only those runs that do not succeed for both strategies can generate a difference between them.
-
+    
+    
 When there were no costs or dispersal there was no difference between rotations and sequences in the number of generations below the resistance threshold (Fig 6A) (for comparison with other strategies the results are grouped into those between plus and minus 1%). With fitness costs included 80% of model runs, similar to those in the previous section, gave no difference between rotations and sequences in the number of generations below the resistance threshold. In contrast, 7% of model runs generated an advantage of greater than 20% for rotations over sequences (Fig 6B). Dispersal from untreated refugia gives smaller benefits of rotations over sequences and in fewer runs (Fig 6C). With both costs and dispersal the benefits of rotations are similar to when runs have costs alone (Fig 6D).
-
-
-
-
+    
+    
+    
 #### Runs where rotations have substantial advantage over sequences
 
-*refer to violin plots here ?*
-
-As shown in Fig 4.2 some runs with costs of resistance can show substantial advantages for rotations over sequences. Examples of one such run is shown in Fig 5.
-
-A Partial Rank Correlation analysis identified that of the inputs, dominance of cost and dominance of selection had the greatest influence on the difference between rotations and sequences when resistance costs were included (Fig 6). A combination of high values of dominance of cost and low values for dominance of selection are required to give the greatest advantages to rotations, but do not guarantee this advantage (Fig 7). 
-
-
+As shown in Fig 6B some runs with costs of resistance can show substantial advantages for rotations over sequences. Examples of one such run is shown in Fig 7.
+    
+    
+A Partial Rank Correlation analysis identified that of the inputs, dominance of cost and dominance of selection had the greatest influence on the difference between rotations and sequences when resistance costs were included (Fig 8). A combination of high values of dominance of cost and low values for dominance of selection are required to give the greatest advantages to rotations, but do not guarantee this advantage (Fig 9). 
+    
+\pagebreak
+    
 ## Discussion
 
 The model shows that rotations and sequences most often have very similar performance (within 1 %) in terms of time to reach resistance thresholds (Fig 6). 
-
-
+    
+    
 *todo add something about how costs and dispersal generally improve the performance of both strategies*    
 *todo add about how rotations generally perform better relative to sequences under 'intermediate' scenarios. In 'better' scenarios both strategies do equally well and in 'poorer' scenarios they do equally badly.*      
-
-
+    
+    
 1. rotations and sequences give the same results when there are no costs or dispersal.
 2. with resistance costs, 80% of runs are the same for rotations and sequences, but 6-7% of runs have > 20% advantage for rotations
 3. with dispersal from untreated refugia but no costs, small advantage of rotations but very few runs < 0.1% have >20% advantage.
-
-This can be understood intuitively. When there are no costs, the dynamics are the same, it is simply that sequential deployment proceeds in a few, larger steps while rotations proceeds in more numerous smaller steps; both reach the same point in around the same time. However dominance effects on cost and resistance can act to keep frequencies low in a rotations policy. Recall that at low frequencies of resistance most resistance alleles are present as heterozygotes RS and only a vey small proportions heterozygotes. However costs are dominant and still act at low frequencies. This is illustrated on Figure Y. Relatively rapid rotations keep the allele frequencies at the LH side of Figure Y where costs during the periods when the insecticide is not deployed greatly outweigh the selection for IR during the periods when the insecticide is deployed. We believe the explanation is therefore that rotations keep allele frequencies in the parameter space to the left of Figure Y and hence acts to slow the evolution of IR compared to sequences which allow frequencies to rise to relatively high levels before the insecticide is replaced.  (does this sound reasonable??). Note also that starting frequency, as expected, had an impact (Figure 7), lower starting frequencies slightly favouring rotations by allowing more time in the “low frequency” parameter space.
-
+    
+    
+This can be understood intuitively. When there are no costs, the dynamics are the same, it is simply that sequential deployment proceeds in a few, larger steps while rotations proceeds in more numerous smaller steps; both reach the same point in around the same time. However dominance effects on cost and resistance can act to keep frequencies low in a rotations policy. Recall that at low frequencies of resistance most resistance alleles are present as heterozygotes RS and only a vey small proportions heterozygotes. However costs are dominant and still act at low frequencies. This is illustrated on Figure Y. Relatively rapid rotations keep the allele frequencies at the LH side of Figure 10 where costs during the periods when the insecticide is not deployed greatly outweigh the selection for IR during the periods when the insecticide is deployed. We believe the explanation is therefore that rotations keep allele frequencies in the parameter space to the left of Fig 10 and hence acts to slow the evolution of IR compared to sequences which allow frequencies to rise to relatively high levels before the insecticide is replaced. Note also that starting frequency, as expected, had an impact (Fig 8), lower starting frequencies slightly favouring rotations by allowing more time in the “low frequency” parameter space. [*Andy not sure that the effect of starting frequencies in the PRCC is notable, seems very close to the line of not having an effect either way*]
+    
+    
 In rare circumstances, when there are costs of resistance, rotations can lead to the resistance frequencies for a group of insecticides being kept below resistance thresholds for the length of the simulations where sequences run out of insecticides within around 100 generations. Is it possible that these rare circumstances where parameter values are 'just-right' could be implemented operationally ? The problem is that these rare circumstances rely on high costs of resistance, high dominance of these costs and low dominance of the selection for the resistance itself. These parameters are all not easy to measure and there isn't agreement on their likely values [@Kliot2012, @Bourguet2000]. 
-
+    
+    
 Note however that this combination of recessive resistance and high dominance costs are exactly the features most desirable in any insecticide irrespective of how it is deployed. We discuss fitness below but note here that it is very difficult to maintain insecticide concentration at the level required to make resistance recessive. Concentrations decay post-application in most deployment strategies and this cause resistance to gradually change from being recessive to being dominant; see Figure 1 of [@Levick2017] and our more extensive discussion in [cite South et al WoS manuscript].
-
+    
+    
 The importance of resistance costs for substantial evolutionary benefits of rotations over sequences points to the importance of the debate over the fitness costs of insecticide resistance e.g. [@Kliot2012].
 *extend this discussion of fitness costs*
-
+    
+    
 We also found frequency of rotations had little effect. This is important in the control of vectors of human diseases such as malaria and dengue. These predominantly occur in resource-poor areas often with poor healthcare infrastructure. Experience suggests that rotation targets would often be missed (e.g rotations occur approximately every 15 generations rather than the planned “official” 10 generations) but our simulations suggest this would not fatally undermine a rotations policy.
-
-
+    
+    
 ### Caveats
 
 The model does not include the potential effects of modifier genes ameliorating the costs of resistance alleles. To include this would require a more detailed model tracking linkage disequilibrium between each resistance locus and its modifier. It has been suggested that rotations could be favoured as a strategy because they keep resistance frequences lower and restrict selection pressure for modifier genes [@WHO2012]. However, there is little evidence to support the existence of such modifier genes in insectide resistance []. Even with the existence of modifier genes it is unlikely that they would provide much of an advantage to rotations in the scenarios we describe. In the modelled scenarios the use of an insecticide is stopped when the resistance frequency for that insecticide reaches 0.5. Thus in all scenarios resistance frequencies do not remain at high levels for long. In this situation it seems unlikely that modifiers would be selected for. 
-
-
+    
+    
 ### Conclusions
 
 In their effect on the evolution of insecticide resistance, rotations and sequences are most often the same. If costs of resistance are included, infrequently (less than 7% of model runs set between plausible limits) there are substantial benefits to the rotation strategy over a sequence. There was never a substantial benefit of a sequence over a rotation. Whether or not insecticide rotations are predicted to offer sizeable benefits over sequences is dependent on coarse and fine scale issues about the nature of insecticide resistance that are yet to be agreed upon. The model shows that resistance costs are necessary to provide a substantial evolutionary advantage to rotations. However even when these requirements are satisfied particular combinations of inputs are required to generate the advantage of rotations.
-
+    
+    
 The model only compares rotations and sequences in terms of their effect on the evolution of resistance. There are other operational reasons for why a sequence or a rotation may be favoured.
-
+    
+    
 In summary, we show that rotations are invariably better than sequential use, although the difference may often be small (figure 4); certainly rotations should not be seen as a panacea capable of removing the threat of resistance evolution. Rotations may have a large impact if fitness costs are prints and dominant (these are genetic/physiological factors outside our control)  and if resistance can be kept recessive. The latter is under our control to some extent (fig 1 of Levick et al ) but it is extremely difficult to deploy and maintain insecticide concentrations at levels that ensure recessively (cite WoS ms): as concentrations decline resistance become dominant and any befits of rotations largely disappear.
-
+    
+    
 ## TODO
 
 1. *add to methods description of how fitness determined in model, move & modify fig 1*
 1. *add caveat about polygenic resistance*
+1. *talk about cross resistance*
 
 
 \pagebreak
@@ -328,7 +356,6 @@ grid.arrange(ggrot, ggseq, ncol=1)
 
 ```{r Fig4, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 4. Comparing the increase in resistance frequencies over time for a rotation and a sequence with dispersal from untreated refugia. The upper plot shows a rotation with a regular interval and the lower plot a sequence when the insecticide is changed when a resistance threshold of 0.5 is reached. In this example the rotation and the sequence last the same time. In both cases the resistance frequencies in the treated areas (red lines) increase when an insecticide is in use. Resistance frequencies in the untreated areas (blue lines) increase after those in the treated areas as a result of dispersal from the treated areas. When an insecticide stops being used the resistance frequency in the treated area declines due to dispersal from the untreated area. For the sequence the resistance frequency for each insecticide increases to reach the threshold in one step and consistent with the previous figure resistance frequencies decline when the insecticide is not in use allowing it to be used again. For the rotation the resistance frequency for each insecticide increases in shorter steps while it is in use and similarly declines while not. There are three insecticides, the resistance frequency for each is shown in the sub-plots, and the shaded boxes within each sub-plot show when that insecticide was in use. The simulation is stopped when there are no remaining insecticides for which the resistance frequency is below the threshold. All other inputs are kept constant between the rotation and the sequence. Effectiveness=0.7, exposure=0.7, male exposure proportion=0.5, resistance restoration=0.5, dominance of resistance=1, cost=0, coverage=0.5, dispersal=0.1."}
 
-# revisit how best to do model runs from within the paper 
 
 linputs <- list()
 
@@ -350,8 +377,8 @@ dfseq <- do.call(run_rot, linputs)
 linputs$rot_interval=10
 dfrot <- do.call(run_rot, linputs)
 
-ggrot <- rot_plot_resistance(dfrot, plot_refuge=FALSE, logy=TRUE, plot=FALSE, title='A. Rotation')
-ggseq <- rot_plot_resistance(dfseq, plot_refuge=FALSE, logy=TRUE, plot=FALSE, title='B. Sequence')
+ggrot <- rot_plot_resistance(dfrot, plot_refuge=TRUE, logy=TRUE, plot=FALSE, title='A. Rotation')
+ggseq <- rot_plot_resistance(dfseq, plot_refuge=TRUE, logy=TRUE, plot=FALSE, title='B. Sequence')
 library(gridExtra)
 grid.arrange(ggrot, ggseq, ncol=1)
 
@@ -494,7 +521,7 @@ ggplot(df_cost_long, aes_string(x='success',y='input_value', color='success')) +
 
 \pagebreak
 
-```{r Fig6, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=4, fig.show='hold', fig.align='center', fig.cap="Figure 6. Effect of cost and dispersal on the difference between rotations and sequences from model runs. The y axis shows the number of model runs for the different caegories of difference between rotations and sequences. A) when there are no resistance costs or dispersal from untreated refugia, rotations and sequences produce the same results. B),D) when costs are added there are infrequent model runs where rotations last longer below resistance thresholds than sequences. For between 6 and 7% of runs including costs, rotations last more than 20% longer than sequences. C) when dispersal from untreated refugia is included without costs there are even less frequent runs where rotations last longer than sequences (in just 4 out of 10000 runs rotations lasted greater than 20% longer than sequences)."}
+```{r Fig6, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=4, fig.show='hold', fig.align='center', fig.cap="Figure 6. Effect of cost and dispersal on the difference between rotations and sequences from model runs. The y axis shows the number of model runs for the different categories of difference between rotations and sequences. A) when there are no resistance costs or dispersal from untreated refugia, rotations and sequences produce the same results. B),D) when costs are added there are infrequent model runs where rotations last longer below resistance thresholds than sequences. For between 6 and 7% of runs including costs, rotations last more than 20% longer than sequences. C) when dispersal from untreated refugia is included without costs there are even less frequent runs where rotations last longer than sequences (in just 4 out of 10000 runs rotations lasted greater than 20% longer than sequences)."}
 
   # remove runs where thresholds not reached for seq & rot
   # with cost_mig ~ 65% of runs don't reach thresholds
@@ -621,7 +648,7 @@ ggplot(df_cost_long, aes_string(x='success',y='input_value', color='success')) +
 # seems OK that they are after other runs removed
 #scenarios_to_plot <- c(624,2167,602,4028,5771)
 
-#now that non thershold runs are not removed :
+#now that non threshold runs are not removed :
 #which(df_cost$pcent_rot_adv > 200)
 #987 1023 1324 1365 1511 2051 2717 3187 3196 3582 3589 3768 4128 4219 4835 4880 6233 6538 6913 8666 9361
 scenarios_to_plot <- c(2717)
@@ -693,6 +720,7 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
              geom_point(shape=1, colour='red') +
              theme(axis.text.x = axis_text_x) +
              geom_hline(yintercept = 0, linetype=3) +
+             theme_minimal() +
              #theme(panel.grid.major.y = element_line(color = "grey", size = 1)) +
              ylim(-1,1) +
              #ggtitle(paste(strat_name[strategy_num])) +
@@ -733,7 +761,8 @@ plot(gg)
 \pagebreak
 
 
-```{r Fig10, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 10. Simplified indication of how fitness differences between selective advantages and costs are expected to change according to dominance and resistance allele frequencies. Top left : high dominance of cost, low dominance of selection, difference between cost and selection fitness components can be very low at low allele frequencies, difference increases as allele frequencies increase. Lower left: low dominance of cost, low dominance of selection : increased difference at the lowest frequencies. Top right: increased dominance of selection markedly increases benefits of resistance at low frequencies and thus the difference between costs and benefits even when dominance of cost is high. This shows why dominance of selection needs to be low and dominance of cost needs to be high, when dominance of selection is high the difference between costs and benefits is high even at low frequencies irrespective of the value of dominance of cost. When dominance of selection is low a high dominance of cost can lead to very small differences between costs and benefits at low frequencies. In these latter circumstances if rotations can keep frequencies low they can reduce the long term development of resistance. Plot calculation assumes Hardy-Weinberg equilibrium which will not be the case under selection but the general pattern will be similar. Fitness cost set to 0.05 and selective advantage of resistance to 0.4."}
+```{r Fig10, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, fig.show='hold', fig.align='center', fig.cap="Figure 10. Simplified indication of how fitness differences between selective advantages and costs are expected to change according to dominance and resistance allele frequencies. Top left : high dominance of cost, low dominance of selection, difference between cost and selection fitness components can be very low at low allele frequencies, difference increases as allele frequencies increase. Lower left: low dominance of cost, low dominance of selection : increased difference at the lowest frequencies. Top right: increased dominance of selection markedly increases benefits of resistance at low frequencies and thus the difference between costs and benefits even when dominance of cost is high. This shows why dominance of selection needs to be low and dominance of cost needs to be high, when dominance of selection is high the difference between costs and benefits is high even at low frequencies irrespective of the value of dominance of cost. When dominance of selection is low a high dominance of cost can lead to very small differences between costs and benefits at low frequencies. In these latter circumstances if rotations can keep frequencies low they can reduce the long term development of resistance. Note that with higher costs or lower benefits of resistance there is the potential for the cost and benefit lines to cross and for there to be a region at low frequencies where resistance is not selected for. Plot calculation assumes Hardy-Weinberg equilibrium proportion of genotypes. The equilibriun will not be followed in this case because the resistance locus is under selection but it serves as an approximation to illustrate the general effect. Fitness cost set to 0.05 and selective advantage of resistance to 0.4."}
+
 
 # high dominance of cost, low dominance of selection
 # difference between cost and selection fitness components can be very low at low allele frequencies
