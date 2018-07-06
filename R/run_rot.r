@@ -277,6 +277,8 @@ run_rot <- function(max_gen = 200,
     # to work with single start_freqs value too
     if (length(start_freqs) == 1) start_freqs <- rep(start_freqs, n_insecticides)
     
+    
+    #todo implement a no_r_below_mut option here
     if ( no_r_below_start )
     {
       for(insecticide in 1:n_insecticides)

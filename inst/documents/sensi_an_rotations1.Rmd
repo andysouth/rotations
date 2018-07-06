@@ -79,23 +79,21 @@ if (already_ran)
     # inputs (could also be saved to a dataframe first & extracted one row at a time)
     linputs <- list()
     
-    # for Ians Q1 set coverage to 1 & cost to 0 
-    # April 2018, having go at including variable cost, may want to do some cost=0 runs later
-    
     ## constant inputs ##
     linputs$coverage <- 1
     linputs$migration <- 0
-    linputs$cost <- 0 #variable cost below
+    #linputs$cost <- 0 #variable cost below
     linputs$max_gen <- max_gen
     
     #beware min_rwr_interval, it's to stop repeated small rotations
-    linputs$min_rwr_interval = 1
-    linputs$min_gens_switch_back <- 5
+    linputs$min_rwr_interval <- 5
+    linputs$min_gens_switch_back <- 1
+    linputs$no_r_below_start <- FALSE #BEWARE this has been set to TRUE in all earlier runs
     #set plot to F if using grid.arrange as in phaps-rotations-better.Rmd
     linputs$plot <-     FALSE
   
     ## variable inputs ##
-    #linputs$cost <-           runif(1, min=0,   max=0.1) 
+    linputs$cost <-           runif(1, min=0,   max=0.1) 
     #linputs$cost <-           0 
     linputs$expo_hi <-        runif(1, min=0.4, max=0.9)  #min=0.1, max=0.9
     linputs$male_expo_prop <- runif(1, min=0,   max=1)

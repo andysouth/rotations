@@ -1,0 +1,107 @@
+---
+title: "Recent insecticide resistance literature for rotations and wos papers"
+
+# output: pdf_document:
+
+output: word_document
+bibliography: library.bib
+csl: biomed-central.csl
+
+---
+
+
+  
+#### Gassmann 2009 fitness costs in Bt - Good
+A review of 65 experimental studies of the costs of resistance to Bt toxins [@Gassmann2009] found fitness costs in around half. From 16 studies looking at fitness components they found that in 26% of comparisons fitness of rs was lower than that of ss indicating dominance of cost greater than zero. In four studies there was evidence that costs were dominant i.e. the fitness of the rs was equal to the rr. Based on these they suggest that for species with no data a recessive fitness cost of 25% be assumed for resistance to Bt.
+
+Suppplemental table 4 shows that four studies and eight fitness components indicate dominant costs of resistance. Studies 6,8,13 and 16.
+
+
+"Nonrecessive costs strongly favor decreased r allele frequency through selection against rs in refuges, despite selection on Bt crops favoring rr individuals. Accordingly, the dominance of fitness costs is critical, just as the dominance of resistance is critical."
+
+  
+#### Andow 2015 resistance to Bt in corn rootworm - Good
+Good accessible description e.g. of high dose strategy.
+[@Andow2015]
+
+The different experiences with resistance to Bt maize in two different moth pests points to the importance of these population genetic parameters. Resistance has become a problem for the Western corn rootworm where resistance is not recessive, there are minimal costs of resistance and low dispersal. In contrast resistance has yet to become a problem for the European corn borer where resistance is recessive, there are higher costs of resistance and low dispersal. [@Andow2015]
+
+(originally from tweet : https://twitter.com/alimanfoo/status/1014120657540575232)
+
+
+High-dose in high-dose strategy means that all heterozgotes are killed and resistance is effectively recessive. But also defined operationally as 25 x the amount of toxin needed to kill 99.99% of a susceptible population. 
+
+
+
+#### Duke 2017 pesticide doses many implications
+todo reread
+  
+#### Onstad 2001 rootworm model used to inform EPA  
+Dominance of resistance was the most important parameter influencing evolution of resistance. If fully recessive (dominance 0) resistance not reached in 99 years, if fully dominant, resistance took just 2–5 years when refuges were 5% to 30% [@Onstad2001].  
+  
+#### Carriere 2018
+Measured the decline in frequencies of alleles conferring resistance to Bt toxins in pink bollworm raised in the absence of the toxin. By comparing observed and simulated changes in resistance they estimated that costs of resistance were between 14% and 36%. For one allele the results pointed to the costs being completely recessive and the other they suggested a small cost of 2% for the heterozygote suggesting a dominance of cost of 0.08.
+
+The fitness costs of resistance to Bt toxins within the pink bollworm have been shown to be sufficient to reduce the frequency of resistance in the absence of the toxin but they are almost completely recessive. [@Carriere2018]
+
+"When the frequency of resistance declines, selection against resistance alleles with recessive costs also declines because homozygous-resistant individuals become relatively rare. By contrast, selection against alleles with non-recessive costs is higher because heterozygotes remain relatively abundant. Accordingly, alleles inducing non-recessive costs should be eliminated at a faster rate than alleles inducing recessive costs." cites Falconer81 Intro to quantitative genetics.
+
+"However, non-recessive costs of Bt resistance affecting fitness components seem relatively common. In 16 studies evaluating the dominance of costs, the percentage of non-recessive costs was 43% for development time, 21% for survival and 0% for growth rate.[@Gassmann2009]"
+  
+
+#### Tabashnik2005 Delayed resistance to Bt cotton
+Monitoring of resistance in the pink bollworm to Bt toxins from transgenic plants showed no increase in resistance for 8 years despite widespread planting [@Tabashnik2005]. Combined experimental and simulation results suggest this could be due to untreated refuges, resistance being completely recessive, low resistance restoration, and resistance costs. A simulation showed that with 50% refuges and resistance restoration set to 0.6, fitness costs greater than 38% were required for resistance to decrease.
+
+(Note that they assume that costs as well as resistance are recessive). 
+
+(We could try to produce something similar to Fig 2 in [@Tabashnik2005].)
+ 
+  
+#### Carriere 2001
+Simple equation for whether resistance is expected to increase or decrease based on benefits and costs [@Carriere2001]. Be good for us to indicated how our model differs from this.
+
+They found some similar things to us, e.g. resistance not increasing when dominance of resistance low and dominance of cost high.
+
+
+#### Glunt 2018 Impact of temperature on insecticide toxicity.
+Relevant to window of selection. 
+In arabiensis & funestus with deltamethrin, generally mortalities higher when temperatures either higher or lower than standard. The difference between resistant and susceptible mortality is generally less, suggesting that the window of selction may be lower outside of standard lab conditions [@Glunt2018]. 
+
+
+#### Hackett 2016 model of resistance to transgenic crops
+Similar results to us on the importance of dominance of resistance and cost :
+"the most significant constraint upon model behaviour is the dominance of the resistant phenotype, with greater dominance decreasing Bt usage. For a given level of dominance of resistance, the type and dominance of any fitness costs may relax these constraints, allowing for larger areas of Bt crop [smaller refuges to control resistance evolution]" [@Hackett2016]
+
+
+#### Helps 2017 model of effect of high dose on resistance selection
+*to do* look at this again. [@Helps2017] across a wide range of demographics etc.
+"It is demonstrated that with high immigration resistance can be suppressed. This suppression how- ever, is rarely lost if the insecticide dose is reduced, and is absent altogether when individuals move from the treated population back into an untreated population. Reducing the dose of insecticide often resulted in slower development of resistance, except where the population combined a high influx of less resis- tant individuals into the treated population, a recessive resistance gene and a high efficacy, in which case reducing the dose of insecticide could result in faster selection for resistance.""
+
+#### Immaraju 1990 Field Evaluation of Insecticide Rotation and Mixtures as Strategies for Citrus Thrips
+[@Immaraju1990]
+
+#### Kleinschmidt 2018 Implications of insecticide resistance for malaria vector control
+WHO study
+[@Kleinschmidt2018]
+
+#### mbepera 2017 susceptibility higher in older anopheles
+[@mbepera2017]
+
+
+
+#### Curtis 1993 good quotes and references about rotations.
+*todo, look at more*
+It covers the oncheriasis control program which is taken by some to be evidence in favour of rotations.
+Fig 3 & 4 is lab data comparing sequence & rotation, very similar to our plots, I should definitely cite it. [@Curtis1993]
+
+Curtis cites how his 1987 work has already included effect of modifier genes, and shows it here in Fig 6.
+"Supporters of prearranged rotations usually tacitly or explicitly assume that the general fitness due to resistance genes will improve if they are exposed to selection for many generations. Curtis (1987) simulated the behaviour of a modifer gene which could have this effect and found that it would only have an appreciable influence if one allowed resistance gene frequencies to become very high before switching insecticides.""
+
+"One possible objection to the reactive system is that it requires an efficient and comprehensive system for testing for resistance to avoid ‘overshooting’ and
+getting stuck as in the dotted line in Fig. 6. However, running a prearranged
+rotation without a monitoring system would mean that one would have no way
+of knowing if the system was still working."
+
+
+## References
+<!-- now auto created here-->

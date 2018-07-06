@@ -1,6 +1,5 @@
 #rotations_notes.Rmd
 
-Just rough notes.
 
 *4/10/2017*
   
@@ -1018,7 +1017,6 @@ gens_under_thresh(dfseq)
 
 Still have difference between 24 & 22 for i2 in above example
 
-
 # add in_use columns  
   dfrot <- dfrot %>%
     mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), 1, NA)) 
@@ -1051,7 +1049,6 @@ Could it be because :
 ~ can I print an example ?
 
 Ian said that at higher dominance the difference in change between low & high frequencies will be greater, so might expect the difference between rot and seq to be greater. Try it and see.
-
 
 linputs <- list()
 
@@ -1093,7 +1090,6 @@ Just rebooted and that fixed it.
 *Seems that rotations favoured by higher costs, higher dominance of cost, lower start freq (longer to act), shorter rot interval (more changes)*
 
 *3/4/18*
-
 ~ set up initial sensi analysis of 1000 runs
 ~ 200 runs take < 30 mins
 
@@ -1107,7 +1103,6 @@ around 79% of runs failing to make thresholds
 upped max gens to 500 and the lower exposure val to try to improve number making thresholds
 
 *4/4/2018*
-
 ooo with new ranges getting a few runs where there is a big advantage to rotation. Seems to be assoc with high dom_cos > 0.8
 Only c 1% of scenarios, 2 out of 200
 
@@ -1156,8 +1151,7 @@ So if the increase in resistance while in use was the same as the decrease when 
 Curtis cites how his 1987 work has already included effect of modifier genes, and shows it here in Fig 6.
 "Supporters of prearranged rotations usually tacitly or explicitly assume that the general fitness due to resistance genes will improve if they are exposed to selection for many generations. Curtis (1987) simulated the behaviour of a modifer gene which could have this effect and found that it would only have an appreciable influence if one allowed resistance gene frequencies to become very high before switching insecticides.""
 
-"One possible objection to the reactive system is that it requires an efficient and
-comprehensive system for testing for resistance to avoid ‘overshooting’ and
+"One possible objection to the reactive system is that it requires an efficient and comprehensive system for testing for resistance to avoid ‘overshooting’ and
 getting stuck as in the dotted line in Fig. 6. However, running a prearranged
 rotation without a monitoring system would mean that one would have no way
 of knowing if the system was still working."
@@ -1168,8 +1162,7 @@ It's negative about rotations :
 'Except where there are seasonal/environmental reasons for a pre-arranged rotation (as in the OCP), we do not find that such rotations are likely to have any advantage over well-managed reactive rotation, and we do not consider that the latter can validly be called a 'strategy' for resistance management. The use of a suitable insecticide mixture seems more promising in the light of the limited data so far available on resistance in relation to insecticide impregnated bednets.'
 
 I would like to get the Curtis 1987 paper
-Curtis CF. 1987. Genetic aspects of selection for resistance. In Ford MG, Holloman DW, Khambay BPS,
-Sawicki RM, eds. Combating resistance to xenobiotics. Chichester, U.K.: Ellis Horwood, 15e161.
+Curtis CF. 1987. Genetic aspects of selection for resistance. In Ford MG, Holloman DW, Khambay BPS, Sawicki RM, eds. Combating resistance to xenobiotics. Chichester, U.K.: Ellis Horwood, 15e161.
 
 but couldn't find and probably adds little
 
@@ -1191,7 +1184,6 @@ turned off plotting in sensi_an_rotations
 10,000 runs took c 100 minutes (1hr20)
 
 *27/4/2018*
-
 First draft of paper3
 
 trying to get references to work without having to copy the .bib file from resistance
@@ -1208,7 +1200,6 @@ Need to go throught the bib file and look for error.
 Can I reduce size of the bib file to just the IR papers ? What did I do for ecocrop ?
 
 # 30/4/18
-
 100 runs with no cost all had identical times for rotations and sequences
 
 from Rmd got error when tried 1000
@@ -1222,18 +1213,13 @@ Now trying 1000 runs with coverage and dispersal set between 0.1 and 0.9
 Seems that less benefit to rotations with dispersal rather than costs.
 
 *2/5/18*
-
 exchanging emails with Ian
 
 Thanks Ian, I'm getting closer to understanding. I'm just trying to understand why the lines cross, which suggests to me that resistance wouldn't be selected for at low frequencies ?
 
-
 This is a simple text description of how I'm starting to understand. Is it true ? (we can work on improving the wording later).
 
-
-
 Resistance increases when an insecticide is in use and, if there are resistance costs, decreases when it is not.
-
 
 If the difference between this increase and decrease over periods of use and non-use is positive then resistance will keep increasing.
 
@@ -1242,7 +1228,6 @@ If the positive difference between the increase and decrease is lower at lower f
 
 
 In this latter scenario sequential use leads to higher frequencies where increases during periods of use are more likely to outweigh decreases during periods of non-use. 
-
 
 done ~ Can I change histograms of count of rot advantage to have different bins, we're only interested in whether difference is 0, moderate or substantial.
 
@@ -1402,7 +1387,7 @@ done ~ add to fig Y legend Ians caveats
 ~ Paper3, decsribing results and adding to methods clarifiying model constraints.
 
 Before sending to Ian.
-~ resize no square figs, make sure one per page
+~ resize non square figs, make sure one per page
 
 looking at how I made smaller reference bib file for uea work.
 
@@ -1474,25 +1459,79 @@ Genotype-specific fitness cost of resistance to Bt
 Relevant to window of selection. 
 In arabiensis & funestus with deltamethrin, generally mortalities higher when temperatures either higher or lower than standard. The difference between resistant and susceptible mortality is generally less, suggesting that the window of selction may be lower outside of standard lab conditions. Bendiocarb mortality increased with temperature and unsurprisingly was similar between strains susceptible and resistant to pyrethroids.
 
+*21/5/2018*
+Gould et al. Science paper.
+Wicked evolution: Can we address the sociobiological dilemma of pesticide resistance?
 
+If we are to address this recalcitrant issue of pesticide resistance, we must treat it as a “wicked
+problem,” in the sense that there are social, economic, and biological uncertainties and complexities
+interacting in ways that decrease incentives for actions aimed at mitigation. Here, we summarize
+the interacting factors and conclude with a call for government support of ambitious landscape-level experiments to assess which pesticide use strategies decrease resistance risks.
+
+In sexually reproducing weeds and insects, the rate of resistance evolution is strongly influenced by the relative fitness (dominant to recessive) of heterozygotes, and this sometimes depends on the dose of pesticide encountered in the field (Fig. 3). Thus, it is difficult (and controversial) to determine whether resistance is expected to evolve more rapidly to higher or lower application concentrations of a pesticide [e.g., 16, 17]. 
+Even more complexity arises in attempts to predict resistance evolution when combinations of pesticides are applied (18, 19). Although the idea that such combinations will slow resistance evolution is theoretically controversial and lacks empirical support, mixtures are often recommended at the field level (15).
+
+Model-based analysis has shown that if disease vector resistance to pyrethroids
+becomes widespread, cases of malaria averted with ITNs could decline by 40% (25). Coupled with the estimate that bednets averted more than 65 million clinical malaria cases in sub- Saharan Africa in 2015 (7), and assuming that this figure provides a lower bound for potential cases averted in subsequent years, this would imply around 26 million additional clinical cases of malaria per year as a result of widespread vector resistance. Assuming an approximate lower bound cost of illness of at least $10 per malaria episode (26), insecticide resistance could conservatively cost sub-Saharan Africa at least $260 million per year.
+
+*24/5/18*
+replotted PRCC for all scenarios
+
+resistance cost comes out as a negative impact on benefit of rotations. This could be because higher cost runs tend to be equal because they both sequences and rotations don't reach resistance thresholds. Maybe the PRCC is confusing ?
+
+*25/5/18*
+While out for a run I thought that the constraint on allele frequencies not going below their starting values could have implications for difference between rotations & sequences. I did 10k cost simulations with the constraint removed to check. Either way I should include something about this in the discussion.
+
+*2/7/18* back to rotations after while on wos
+
+try to knit rotations paper get : error in do.call ... object 'run_rot' not found 
+Build & reload fixed it.
+
+Also the citations aren't being picked up now ? Because I messed up export of library.bib from Mendeley, exporting just a single selected reference.
+
+*4/7/2018* 
+looking at Hackett2016, downloaded R code which is <100 lines and the script works to produce the first figure.
+
+I was thinking that this could be a simpler model that we could also use with the same inputs that we use currently. This could possibly allow us to look at popn size, and to have a quick assessment of when resistance will increase and decrease.
+
+The growth of the pest population is described by a density-dependent selection model (Roughgarden 1971) which uses the two parameter density dependence function developed by Maynard Smith & Slatkin (1973).
+
+But maybe the way it works isn't appropriate for mosquitoes :
+
+1. Pests divided between refuge and toxic patch
+2. Pests within the Bt patch are exposed to toxins and mortality dependent on genotype.
+3. Pest mortality via intraspecific competition (incl. costs of resistance)
+4. Surviving larvae mature and mate at random to generate the next generation.
+
+In mosquitoes competition likely to occur at larval stage, maybe doesn't matter ?
 
 
 # TODO
 
-*today*
-done ~ reread Ians text about dominance
-~ move rotations repo back to my github
-~ update R
-done ~ tweet to malaria journal
-~ think more about rotations datavis
-done ~ read the alphey oxitech modelling papers
 
-To talk with Ian about next week :
-~ min_rwr_interval vs min_gens_switch_back
+~ check on the runs with the freq limit removed :
+df_res_all_rot_cost10000_no_freq_limit.rda
 
-Look at Hackett R code. Could it be an even simpler model that we could use ?
-The R code is here and looks quite accessible :
-https://datadryad.org//resource/doi:10.5061/dryad.4s405
+~ think about whether I can implement allele frequencies just being constrained to their starting values the first time that each insecticide is used.
+
+~ talk to Ian about Hackett2016 paper and whether we can use similarly simple model
+
+
+~ ask Ian to check through the rotations algebra when he writes up the SI.
+
+rotations paper :
+~ develop flow of story
+~ think about what questions managers will want answered
+
+A) when do both strategies work (include looking at insecticides and rotation level)
+ - maybe do PRCC
+B) if neither work, when are rotations better ?
+
+small changes :
+~ dominance of resistance
+~ how to term success. 'At least one insecticide still below resistance thresholds' 
+
+
 
 Looking at moving rotations repo back to me. Seems transfer may be best way :
 https://help.github.com/articles/about-repository-transfers/
@@ -1522,7 +1561,6 @@ In rotations and WoS MS we should talk about high dose/refuge strategy for trans
 
 ~ save Ians comments on figY of
 
-~ try decision tree to predict rot_minus_seq from inputs
 
 
 ~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
@@ -1531,9 +1569,6 @@ In rotations and WoS MS we should talk about high dose/refuge strategy for trans
 think about killer plot to display difference between rot & seq generations
 
 
-
-~ *decide on min_rwr_interval for sensi analysis
-~ one generation per month, 12 generations per year, 500 gens is ~40 years
 
 
 
@@ -1641,13 +1676,18 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
     a_fitloc[ paste0('RS',locusNum), 'no'] <- 1 - (a_dom[locusNum, 'no'] * a_cost[locusNum])
     a_fitloc[ paste0('RR',locusNum), 'no'] <- 1 - a_cost[locusNum]
 
-# good refs for paper
+# good refs for rotations paper
 resistance : malERA2017_updated-research-agenda-resistance-in-malaria.pdf
 
 "What are the benefits of insecticide rotations, mixtures, or spatial mosaics of different compounds?
 What is the impact of adding nonpyrethroid IRS where LLINs are already deployed at high coverage and quality? When should new insecticides be adopted? What is the ideal rotation period or mosaic configuration? How many insecticide classes are needed for effective rotation or mosaic strategies? Despite the absence of data to answer these questions, some countries have already developed operational frameworks for resistance management that could be adopted by other programmes.""
 
 The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
+
+Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide
+resistance management strategies
+
+
 
 
 # state of play
