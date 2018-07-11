@@ -1,8 +1,8 @@
 #' calculate resistance allele frequency at mutation-selection balance
 #' 
 #' @param mutation mutation rate
-#' @param cost cost of resistance
-#' @param dom_cos dominance of cost
+#' @param cost cost(s) of resistance (can be a vector)
+#' @param dom_cos dominance(s) of cost (can be a vector)
 #' 
 #' @examples 
 #' mutn_seln_bal()
@@ -45,14 +45,19 @@ mutn_seln_bal <- function ( mutation = 1e-9,
   # I imagine there is a way of avoiding the if statement and getting 
   # one eq. to work for dominance 0 and >0 
   
-  if (dom_cos == 0)
-  {
-    resist_freqs <- sqrt(mutation / cost )       
-  } else
-  {
-    resist_freqs <- mutation / (cost * dom_cos)    
-  }
+  # if (dom_cos == 0)
+  # {
+  #   resist_freqs <- sqrt(mutation / cost )       
+  # } else
+  # {
+  #   resist_freqs <- mutation / (cost * dom_cos)    
+  # }
 
+  #ifelse to be able to cope with vectors of dom_cos
+  resist_freqs <- ifelse(dom_cos==0,
+                         sqrt(mutation / cost ),
+                         mutation / (cost * dom_cos)
+                         )
   
   return(resist_freqs)
 }

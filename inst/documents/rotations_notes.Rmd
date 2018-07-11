@@ -1505,8 +1505,84 @@ But maybe the way it works isn't appropriate for mosquitoes :
 
 In mosquitoes competition likely to occur at larval stage, maybe doesn't matter ?
 
+*9/7/18* mutation-seln balance
+
+not quite working in run_rot() yet 
+
+run_rot(no_r_below_start=FALSE,no_r_below_mut = TRUE)
+
+Ian said that mutation rate of 10e-9 is used in malaria studies. John Maynard Smith, Evolutionary Genetics p62 suggests mutation rate per generation per locus from drosophila of 10e-6.
+
+Ian suggested that he expected these frequencies to be so low that using them as a lower limit will not effect simulations. 
+
+
+Checking ability to do runs where insecticides differ.
+Code at end of sensi_an_rotations1
+
+Currently getting these warnings, & seemingly more rows than scenarios in df_res_all ...
+1: In if (dom_cos == 0) { ... :
+  the condition has length > 1 and only the first element will be used
+
+fixed vectorising mutn_seln_bal.r
+
+Running for insecticides with different inputs now works :
+dfr <- run_rot(n_insecticides=3, eff=c(1,0.6,0.4), rot_interval=0)
+
+but I don't get one row per scenario in df_res_all from sensi_an_rotations
+
+for 10 runs I get 31 rows
+because I'm getting 1 row per insecticide in each run
+where does that happen ?
+seems it happens in this line :
+
+df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq))
+
+when linputs contains some elements that are vectors (repeated for each insecticide) the resulting dataframe has one row per insecticide.
+
+I would rather have one row per scenario and have all the vector elements saved to one record, perhaps as a comma delimited string ?
+
+seems that as.data.frame is the culprit. what about tidyverse option ? no didn't work
+
+this is the issue I have :
+as.data.frame(c(double=c(9,6), single=7))
+
+converts to this :
+double1                               9
+double2                               6
+single                                7
+
+when I want something like 
+double1                               9,6
+single                                7
+
+
+
 
 # TODO
+
+
+~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
+~ ian suggested talking to Simon if we need to run something for longer
+
+1. check out these runs that have the mut-sel balance option enabled
+df_res_all_rot_cost10000_mut_sel_bal.rda
+2. check ability to do runs where insecticides differ
+
+Currently getting these warnings, & seemingly more rows than scenarios in df_res_all ...
+1: In if (dom_cos == 0) { ... :
+  the condition has length > 1 and only the first element will be used
+
+
+
+~ think - are all rotation runs so far based on insecticides with equal effectiveness, resistance restoration, cost etc. ? What might happen if we allow differences between insecticides ? Can we easily represent that ?
+I could possibly run one set of simulations where insecticides are allowed to be different.
+I think that could be set up by changing :
+linputs$expo_hi <-  runif(1, min=0.4, max=0.9)
+to:
+runif(n_insecticides, min=0.4, max=0.9)
+This might break stuff.
+Can just check that prop runs in which rotations are better doesn't increase.
+I suspect input params may be saved to outfiles as comma delimited strings ?
 
 
 ~ check on the runs with the freq limit removed :

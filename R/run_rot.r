@@ -21,6 +21,7 @@
 #' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
+#' @param no_r_below_mut to stop resistance frequencies going below mutation-selection balance TRUE or FALSE
 #' @param exit_rot whether to exit rotation interval if rot_criterion is reached
 #' @param min_gens_switch_back minimum num gens before can switch back to an insecticide
 # @param df_ins number of generations since each insecticide used
@@ -38,6 +39,8 @@
 #' dfr <- run_rot(rot_interval=50, max_gen = 300)
 #' dfr <- run_rot(rot_interval=0, max_gen = 300)
 #' dfr <- run_rot(rot_interval=0, max_gen = 300, migration=0.01)
+#' #running for insecticides with different inputs
+#' dfr <- run_rot(n_insecticides=3, eff=c(1,0.6,0.4), rot_interval=0)
 #' 
 #' @import tidyverse 
 #to try help with standard evaluation of dplyr couldn't get to work
@@ -66,6 +69,7 @@ run_rot <- function(max_gen = 200,
                     fitSS = 1,
                     min_rwr_interval = 1,
                     no_r_below_start = TRUE,
+                    no_r_below_mut = FALSE,
                     exit_rot = TRUE,
                     min_gens_switch_back = 10,
                     
@@ -136,7 +140,17 @@ run_rot <- function(max_gen = 200,
     if (exposure[temp_int, 'm', 'no']<0) message(sprintf("warning from calibration: m exposure to no insecticide %d is <0\n", temp_int)) 
     if (exposure[temp_int, 'f', 'no']<0) message(sprintf("warning from calibration: f exposure to no insecticide %d is <0\n", temp_int)) 
   }
-  
+ 
+  # calc mutation-selection balance if option selected
+  if (no_r_below_mut)
+  {
+    if (no_r_below_start) stop("you can't have no_r_below_start and no_r_below_mut")
+    
+    mut_sel_freqs <- mutn_seln_bal( mutation=1e-9, cost=cost, dom_cos=dom_cos )
+    # to cope with insecticides with different inputs
+    if (length(mut_sel_freqs) < n_insecticides) mut_sel_freqs <- rep(mut_sel_freqs,n_insecticides)
+  }
+   
   
   # usually start the rotation sequence at #1 but can specify any one start
   current_insecticide <- start_insecticide 
@@ -271,15 +285,15 @@ run_rot <- function(max_gen = 200,
     }
     
     ######
-    # ensure that resistance stays above starting values if the option selected
-    # TODO check with Ian that this goes after migration
+    # ensure that resistance stays above start or mutation-selection balance 
+    # if options selected
     
     # to work with single start_freqs value too
     if (length(start_freqs) == 1) start_freqs <- rep(start_freqs, n_insecticides)
     
     
     #todo implement a no_r_below_mut option here
-    if ( no_r_below_start )
+    if ( no_r_below_start | no_r_below_mut )
     {
       for(insecticide in 1:n_insecticides)
       {
@@ -287,9 +301,18 @@ run_rot <- function(max_gen = 200,
         {
           for(site in dimnames(RAF)[[3]])
           {
-           if ( RAF[insecticide,sex,site,gen] < start_freqs[insecticide]) 
-             
-             RAF[insecticide,sex,site,gen] <- start_freqs[insecticide]
+           if ( no_r_below_start & RAF[insecticide,sex,site,gen] < start_freqs[insecticide]) 
+           {
+             RAF[insecticide,sex,site,gen] <- start_freqs[insecticide]            
+           }
+           # if frequency has gone below the mutation-selection balance restore it if option selected  
+           else if (no_r_below_mut)
+           {
+             if (RAF[insecticide,sex,site,gen] < mut_sel_freqs[insecticide] )
+             {
+               RAF[insecticide,sex,site,gen] <- mut_sel_freqs[insecticide]              
+             }             
+            }
           }         
         }
       }
@@ -362,7 +385,7 @@ run_rot <- function(max_gen = 200,
    } #### end of max_gen loop
 
   # warning
-  if ( gen == max_gen ) warning("thresholds not reached before max generations, consider rerunning whith higher max_gen")
+  if ( diagnostics & gen == max_gen ) message("thresholds not reached before max generations, consider rerunning with higher max_gen")
       
   #####################################  
   # recording results of resistance frequency
