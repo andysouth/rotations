@@ -165,14 +165,22 @@ if (already_ran)
     # need to make sure I retain the rot_interval for rot
   
     # add scenario id column onto results
-    # this isn't doing anything
-    # res$scenario <- i
-    df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq))
+    df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, id=i))
     df_in_out$rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
     
     # rbind this scenario inputs & results onto previous
     # not a good speed or memory way of doing ... but a start
-    df_res_all <- rbind(df_res_all, df_in_out)
+    #df_res_all <- rbind(df_res_all, df_in_out)
+    
+    #instead set up the dataframe to the required size in scenario1
+    if (i==1)
+    {
+      df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=n_scenarios))
+      names(df_res_all) <- names(df_in_out)
+    }
+    
+    #putting results into one row of overall results dataframe
+    df_res_all[i,] <- df_in_out 
     
     if (plot_scenarios)
     {  
@@ -505,7 +513,7 @@ ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) +
 ```  
 
 # Have a go at running for insecticides with different parameters
-
+# starting to work ...
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
 
 
@@ -513,11 +521,9 @@ ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) +
 set.seed(2)
 max_gen         <- 500
 plot_scenarios  <- FALSE
-n_scenarios     <- 10 #000 
+n_scenarios     <- 100 #1000 #000 
 
-
-
-  df_res_all <- data.frame()
+  #df_res_all <- data.frame()
   
   for(i in 1:n_scenarios)
   {
@@ -554,7 +560,8 @@ n_scenarios     <- 10 #000
     linputs$rr  <-            runif(n_ins, min=0.1, max=0.9)
     linputs$dom_sel <-        runif(n_ins, min=0,   max=1)
     linputs$dom_cos <-        runif(n_ins, min=0,   max=1) 
-    linputs$start_freqs <-    runif(n_ins, min=0.005,   max=0.1) #note not log yet   
+    #DIFFERENT
+    linputs$start_freqs <-    runif(n_ins, min=0.0001,   max=0.01) #note not log yet   
 
     # dispersal (initially with cost set to 0)
     #linputs$coverage <-       runif(1, min=0.1, max=0.9)
@@ -612,15 +619,27 @@ n_scenarios     <- 10 #000
     # make an output row for each scenario with inputs, gens_rot, gens_seq
     # need to make sure I retain the rot_interval for rot
   
-    # add scenario id column onto results
-    # this isn't doing anything
-    # res$scenario <- i
-    df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq))
+    # to cope with multiple values per scenario convert them to strings
+    linputs2 <- lapply(linputs, function(x) ifelse(length(x)>1,toString(x),x))
+    
+    #added scenario id column
+    df_in_out <- as.data.frame(c(linputs2, gens_rot=gens_rot, gens_seq=gens_seq, id=i), stringsAsFactors=FALSE)
+    
     df_in_out$rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
     
     # rbind this scenario inputs & results onto previous
     # not a good speed or memory way of doing ... but a start
-    df_res_all <- rbind(df_res_all, df_in_out)
+    #df_res_all <- rbind(df_res_all, df_in_out)
+    
+    #instead set up the dataframe to the required size in scenario1
+    if (i==1)
+    {
+      df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=n_scenarios))
+      names(df_res_all) <- names(df_in_out)
+    }
+    
+    #putting results into one row of overall results dataframe
+    df_res_all[i,] <- df_in_out   
     
     if (plot_scenarios)
     {  
@@ -672,9 +691,47 @@ n_scenarios     <- 10 #000
       # save object containing inputs and results as rda for analysis
       save(df_res_all, file='df_res_all_rot.rda') #paste0(outFolder,'*.rda'))    
     } 
-    
   } #end scenario loop  
+
   
+  
+#to allow plotting of chosen scenarios by re-running them 
+#initially didn't work for diff insecticides because the inputs are saved as strings 
+#now the strings get converted back to vectors below
+  
+scenarios_to_plot <- c(13)
+
+for(scenario in scenarios_to_plot)
+{
+  #cat(scenario,"\n")
+  linputs <- as.list( df_res_all[scenario, 1:15] )
+  
+  #converting multiple insecticide inputs back from strings
+  #have to ignore the ones that aren't strings
+  #linputs2 <- lapply(linputs, function(x) as.numeric(unlist(strsplit(as.character(x),split=", "))))
+  
+  #note the space after the comma in split=", "
+  linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
+                                          as.numeric(unlist(strsplit(as.character(x),split=", "))))
+  
+  #TESTING changing min_rwr_interval from 5
+  linputs$min_rwr_interval <- 0
+    
+  # run one scenario (rotation)
+  dfres <- do.call(run_rot, linputs)
+  
+  ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
+   
+  #now run as sequence
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  
+  ggseq <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE) 
+  
+  grid.arrange(ggrot, ggseq, ncol=1)
+  
+}  
+    
 
 
 ```
