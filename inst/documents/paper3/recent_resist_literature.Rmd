@@ -73,9 +73,14 @@ Similar results to us on the importance of dominance of resistance and cost :
 "the most significant constraint upon model behaviour is the dominance of the resistant phenotype, with greater dominance decreasing Bt usage. For a given level of dominance of resistance, the type and dominance of any fitness costs may relax these constraints, allowing for larger areas of Bt crop [smaller refuges to control resistance evolution]" [@Hackett2016]
 
 
-#### Helps 2017 model of effect of high dose on resistance selection
+#### Helps 2017 model of effect of high dose on resistance selection in agriculture
 *to do* look at this again. [@Helps2017] across a wide range of demographics etc.
-"It is demonstrated that with high immigration resistance can be suppressed. This suppression how- ever, is rarely lost if the insecticide dose is reduced, and is absent altogether when individuals move from the treated population back into an untreated population. Reducing the dose of insecticide often resulted in slower development of resistance, except where the population combined a high influx of less resis- tant individuals into the treated population, a recessive resistance gene and a high efficacy, in which case reducing the dose of insecticide could result in faster selection for resistance.""
+for wos
+"One management strategy that has long been advocated is the application of insecticides at the maximum permitted dose. This has been found, under some circumstances, to be able to prevent the resistance allele frequency from increasing. However this approach may, under different circumstances, lead to rapid selection for resistance to the insecticide."
+
+"It is demonstrated that with high immigration resistance can be suppressed. This suppression however, is rarely lost if the insecticide dose is reduced, and is absent altogether when individuals move from the treated population back into an untreated population. Reducing the dose of insecticide often resulted in slower development of resistance, except where the population combined a high influx of less resis- tant individuals into the treated population, a recessive resistance gene and a high efficacy, in which case reducing the dose of insecticide could result in faster selection for resistance."
+
+"Because insecticides can have adverse impacts on non-target organisms, regulators have to ensure that the maximum permitted dose on the product la- bel is also the minimum dose required to achieve effective control ( Anon, 2012 ). The process of determining that dose was described by Finney (1993) , as follows. In farm crops, there are many fac- tors that affect the level of control achieved with any given dose. Hence, if dose-response experiments are repeated across many sites and seasons, many different dose-response curves result. For practical purposes, the label recommended dose is usually set at the level which gives a high level of control in a high proportion of circumstances. Finney suggested 80–90% control in 80–90% of field experiments as a typical aim, although higher levels of control may be required for insect pests, for example, to prevent insect contam- ination in horticultural crops. There are two consequences of this process of determining the full label dose which are relevant to the analysis presented here. Firstly, the label dose will not be set at a level which gives 100% control, even of sensitive strains, since, as previously mentioned, this is not the aim of the maximum al- lowed dose specified on a product label. Hence, the modelling ap- proach presented assumes that it is not possible to drive resistant strains to extinction by insecticide treatment, within the range of doses permitted."
 
 #### Immaraju 1990 Field Evaluation of Insecticide Rotation and Mixtures as Strategies for Citrus Thrips
 [@Immaraju1990]
@@ -102,6 +107,16 @@ getting stuck as in the dotted line in Fig. 6. However, running a prearranged
 rotation without a monitoring system would mean that one would have no way
 of knowing if the system was still working."
 
+#### Venter2017 Benchmarking insecticide resistance intensity bioassays
+The operational effect of insecticides will depend on doses and the resistancve phenotypes of mosquitoes. Resistance intensity assays are a way of qauntifying this, here intensity assays are related to the resistance phenotypes of lab strains with characterised resistance mechanisms. 
+probably Cite this in windows paper.
+
+#### Mbida2018 nets collected from the field against kdr resistant mosquitoes
+Shows that field collected nets kill all susceptible mosquitoes but low proportions of field collected mosquitoes. Genotyping the field collected mosquitoes exposed to the field collected nets (Table 4) showed that 7-35 % of the surviviors had the susceptible kdr allele and none of those killed had the resistance allele. This demonstrates that the nets are within the window of selection and will be selecting for kdr resistance.
+
+#### Denholm1992
+In an agricultural context points out that theory suggests that rotations and sequences should be equivalent.
+"Despite theoretical misgivings regarding the benefit of alternations, the prevalence of this tactic in existing strategies on cotton and elsewhere demonstrates its intuitive appeal and relative ease of implementation." [@Denholm1992]
 
 ## References
 <!-- now auto created here-->

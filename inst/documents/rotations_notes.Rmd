@@ -1555,22 +1555,81 @@ when I want something like
 double1                               9,6
 single                                7
 
+*13/7/18*
+
+ltst <- list(d=c(9,6),s=7)
+
+This nearly does what I want but loses names of columns
+paste0(ltst)
+[1] "c(9, 6)" "7"      
+
+cool this does it :
+lapply(ltst,toString)
+$`d`
+[1] "9, 6"
+$s
+[1] "7"
+
+linputs2 <- lapply(linputs, toString)
+df_in_out <- as.data.frame(c(linputs2, gens_rot=gens_rot, gens_seq=gens_seq))
+
+Seems that with variable insecticides there are more runs where sequences are better (i.e. highly negative rot_minus_seq) ?
+
+See :
+df_res_all_rot1000-diffI-lowstart.rda
+
+
+*17/7/18*
+To be able to plot specific scenarios with different insecticides I need to get the strings that I saved above back into vectors.
+
+strsplit seems it should do the job :
+
+tst <- as.character(linputs$rr)
+unlist(strsplit(tst,split=", ")) #note the space after the comma
+
+*30/7/18*
+continuing getting it to cope with multiple insecticides in sensi_an_rotaions
+
+I'm trying to convert string representations of mutliple parameters (that were needed to save in an output file) back to vector versions so I can rerun function with them.
+
+  linputs2 <- lapply(linputs, function(x) ifelse(grepl(",",x),
+    as.numeric(unlist(strsplit(as.character(x),split=", "))),x))
+
+Currently I just get the first value
+> linputs$cost
+[1] "0.0209911216050386, 0.00808626485522836, 0.0159290118375793"
+> linputs2$cost
+[1] 0.02099112
+
+There was something a bit weird about the ifelse that meant just the first dimension was returned.
+This now works :
+
+  linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
+                                          as.numeric(unlist(strsplit(as.character(x),split=", "))))
+
+                                          
+Examples with different insecticides where sequences last much longer than rotations seem to be caused by one of the 3 insecticides lasting much longer in the sequence, in the rotation it gets to a stage where it is the only one remaining, and our changing algorithm doesn't allow switching back to it from itself. 
+
 
 
 
 # TODO
 
+~ and run_id to outputs in sensi_an_rotations to make things easier in future, e.g. to identify runs with particular behaviour.
+
+~ check on 1000 runs with lower startfreqs and differing insecticides 
+~ is something weird going on favouring rotations more when insecticides differ ?
+~ yes
 
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
+~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
 ~ ian suggested talking to Simon if we need to run something for longer
 
 1. check out these runs that have the mut-sel balance option enabled
 df_res_all_rot_cost10000_mut_sel_bal.rda
-2. check ability to do runs where insecticides differ
+done 2. check ability to do runs where insecticides differ
 
-Currently getting these warnings, & seemingly more rows than scenarios in df_res_all ...
-1: In if (dom_cos == 0) { ... :
-  the condition has length > 1 and only the first element will be used
+
 
 
 
