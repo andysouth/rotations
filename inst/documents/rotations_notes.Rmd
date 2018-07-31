@@ -1610,12 +1610,37 @@ This now works :
                                           
 Examples with different insecticides where sequences last much longer than rotations seem to be caused by one of the 3 insecticides lasting much longer in the sequence, in the rotation it gets to a stage where it is the only one remaining, and our changing algorithm doesn't allow switching back to it from itself. 
 
+~ added id to outputs in sensi_an_rotations to make things easier in future, e.g. to identify runs with particular behaviour.
+
+~ also made more efficient by declaring size of results df at start of loop
+
+The scenarios with the biggest differences seem to be where insecticide1 is the better one.
+Just want to check it isn't something else screwy ???
+
+*31/7/18*
+Getting this error pushing to github :
+0 [main] us 0 init_cheap: VirtualAlloc pointer is null, Win32 error 487
+AllocationBase 0x0, BaseAddress 0x68570000, RegionSize 0x340000, State 0x10000
+C:\Program Files (x86)\Git\bin\ssh.exe: *** Couldn't reserve space for cygwin's heap, Win32 error 0
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rightsand the repository exists.
+
+updating RStudio didn't fix, had once before and rebooting fixed it then ...
+
+rebooting didn't fix, this post suggested updating git to v2 from https://gitforwindows.org/
+https://stackoverflow.com/a/31970708/1718356
+
+git --version 
+git version 1.9.5.msysgit.0
+
+now I have 2.18.0.windows1, the installer sorted uninstalling the old version, and I didn't have to change anything in RStudio.
 
 
 
 # TODO
 
-~ and run_id to outputs in sensi_an_rotations to make things easier in future, e.g. to identify runs with particular behaviour.
+~ try a solution to the diff insecticide problem. If no other insecticides are below resistance thresh and this one is then can keep using it in a rotation ...
 
 ~ check on 1000 runs with lower startfreqs and differing insecticides 
 ~ is something weird going on favouring rotations more when insecticides differ ?
@@ -1819,8 +1844,7 @@ What is the impact of adding nonpyrethroid IRS where LLINs are already deployed 
 
 The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
 
-Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide
-resistance management strategies
+Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide resistance management strategies
 
 
 

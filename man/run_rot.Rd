@@ -77,5 +77,7 @@ run_rot(rot_interval=100)
 dfr <- run_rot(rot_interval=50, max_gen = 300)
 dfr <- run_rot(rot_interval=0, max_gen = 300)
 dfr <- run_rot(rot_interval=0, max_gen = 300, migration=0.01)
+#running for insecticides with different inputs
+dfr <- run_rot(n_insecticides=3, eff=c(1,0.6,0.4), rot_interval=0)
 
 }

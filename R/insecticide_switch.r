@@ -34,8 +34,6 @@ insecticide_switch <- function( RAF,
   next_insecticide_found <- FALSE
   candidate <- current_insecticide 
   
-  #TODO use df_results to stop switching to an insecticide that has been used recently
-  
   for(temp_int in 1:n_insecticides)
   {
     #search through insecticides and go back to start if reach end
