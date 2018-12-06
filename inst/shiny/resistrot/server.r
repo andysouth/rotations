@@ -23,6 +23,25 @@ shinyServer(function(input, output) {
         
         #cat("running resistSimple with these inputs:", input$P_1, input$P_2*input$P_1, input$h.RS1_00, input$h.RS2_00,"\n")
         
+        # a hack to output the inputs, so it can be run from the console
+        cat("A:\n")
+        cat("run_rot( n_insecticides =",input$n_A,",", 
+            "max_gen =",input$max_gen,",", 
+            "start_freqs =",input$frequency_A,",", 
+            "rot_interval =",input$rot_interval_A,",",
+            "eff =",input$effectiveness_A,",",
+            "dom_sel =",input$dom_sel_A,",",
+            "dom_cos =",input$dom_cos_A,",",
+            "rr =",input$advantage_A,",",
+            "expo_hi =",input$exposure_A,",",
+            "coverage =",input$coverage_A,",",
+            "migration =",input$migration_A,",",
+            "cost =",input$cost_A,",",
+            "logy =",input$logy,",",
+            "no_r_below_start =",input$no_r_below_start,",",
+            "min_rwr_interval =",input$min_rwr_interval,            
+            ")\n" )
+        
         run_rot(n_insecticides =    input$n_A, 
                 max_gen =   input$max_gen,
                 start_freqs =       input$frequency_A,
@@ -39,24 +58,6 @@ shinyServer(function(input, output) {
                 no_r_below_start =  input$no_r_below_start,
                 min_rwr_interval =  input$min_rwr_interval )
                 
-        # a hack to output the inputs, so it can be run from the console
-        cat("A:\n")
-        cat("run_rot( n_insecticides =",input$n_A,",", 
-                      "max_gen =",input$max_gen,",", 
-                      "start_freqs =",input$frequency_A,",", 
-                      "rot_interval =",input$rot_interval_A,",",
-                      "eff =",input$effectiveness_A,",",
-                      "dom_sel =",input$dom_sel_A,",",
-                      "dom_cos =",input$dom_cos_A,",",
-                      "rr =",input$advantage_A,",",
-                      "expo_hi =",input$exposure_A,",",
-                      "coverage =",input$coverage_A,",",
-                      "migration =",input$migration_A,",",
-                      "cost =",input$cost_A,",",
-                      "logy =",input$logy,
-                      "no_r_below_start =",input$no_r_below_start,
-                      "min_rwr_interval =",input$min_rwr_interval,            
-                      ")\n" )
         
                
       }) #end isolate  
@@ -102,8 +103,8 @@ shinyServer(function(input, output) {
             "coverage =",input$coverage_B,",",
             "migration =",input$migration_B,",",
             "cost =",input$cost_B,",",
-            "logy =",input$logy,
-            "no_r_below_start =",input$no_r_below_start,
+            "logy =",input$logy,",",
+            "no_r_below_start =",input$no_r_below_start,",",
             "min_rwr_interval =",input$min_rwr_interval,
             ")\n" )
         
