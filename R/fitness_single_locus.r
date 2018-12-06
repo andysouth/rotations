@@ -73,9 +73,11 @@ fitness_single_locus <- function ( n_insecticides = NULL,
     
   sel <- rr * eff #selection coeff is resistance restoration * effectiveness
   
+  #BEWARE lo & hi will not work differently here
+  #because we don't have option to input different eff,dom and rr which will be depemdent on concentration
   for( exposID in c('lo','hi') )
   {
-    #? is effectiveness, dominance & selection the same in lo as hi
+    #BEWARE effectiveness, dominance & selection not the same in lo as hi
     a_fitloc[ ,'SS', exposID] <- 1 - eff
     
     a_fitloc[ ,'RS', exposID] <- 1 - eff + dom_sel * sel
