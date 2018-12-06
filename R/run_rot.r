@@ -323,6 +323,9 @@ run_rot <- function(max_gen = 200,
     }
     
     
+    if (diagnostics) message(sprintf("generation %d\n", gen))
+    
+    
     ######
     # check if insecticide switch is needed
     # drop=FALSE imp to preserve site dimension when coverage=1

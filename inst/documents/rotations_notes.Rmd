@@ -1727,6 +1727,32 @@ Doing it for rotations project did fix the problem straight away. I didn't even 
 
 # TODO
 
+fix :
+Warning: Error in raf_get: object 'RAF' not found
+run_rot() can create it but when I add breakpoints it disappears
+
+where is raf_get called ?
+insecticide_check()
+rot_migrate()
+
+I suspect problem is here in insecticide_check()    
+#end of rotation reached
+    if (gens_this_insecticide >= rot_interval) 
+      {
+      # 31/7/18 I could add a check in here for case
+      # where only this insecticide remains below resistance threshold
+      # in which case don't want to change
+      # if I reset gens-this-insecticide then it will be used for another rot_interval
+      #I can use either of these to get the freqs for all other insecticides
+      # RAF[-current_insecticide, 'f','intervention',1]
+      
+e.g.
+raf_get(a)
+Error in raf_get(a) : object 'a' not found
+
+
+
+
 
 
 For rotations send Jim a scaled down version of the rotations sensitivity analysis code. That just runs the sensitivity analysis and Jim will have a go at parallelising it.
