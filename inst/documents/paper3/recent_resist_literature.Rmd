@@ -10,6 +10,9 @@ csl: biomed-central.csl
 ---
 
 
+#### Record of which publications show mortality vs concentration for RR SR SS
+[@Gould2018, @Bourguet2000, @Mallett1989]
+Dose response plots for RR,SR and SS showing change in effective resistance with increasing concentration are shown in a large number of publications but no one has turned them around the other way and related them to time.
   
 #### Gassmann 2009 fitness costs in Bt - Good
 A review of 65 experimental studies of the costs of resistance to Bt toxins [@Gassmann2009] found fitness costs in around half. From 16 studies looking at fitness components they found that in 26% of comparisons fitness of rs was lower than that of ss indicating dominance of cost greater than zero. In four studies there was evidence that costs were dominant i.e. the fitness of the rs was equal to the rr. Based on these they suggest that for species with no data a recessive fitness cost of 25% be assumed for resistance to Bt.
@@ -31,10 +34,14 @@ The different experiences with resistance to Bt maize in two different moth pest
 
 High-dose in high-dose strategy means that all heterozgotes are killed and resistance is effectively recessive. But also defined operationally as 25 x the amount of toxin needed to kill 99.99% of a susceptible population. 
 
+#### Tabshnik2017 review of insecticide resistance to Bt crops, another good accessible summary
+In a review of insect resistance to engineered plants they found that 0 out of 17 studies where resistance has been detected met the high-dose standard, in contrast where susceptibility remains, 9 out of 13 cases did not meet the high-dose standards. [@Tabashnik2017]. Points to low doses prompting evolution of resistance through reduced dominance. One example also suggests that having larger refuges can compensate for the high-dose standard not being met.
+
+Concludes that the main lesson overall is that abundant refuges delay resistance to transgeni crops. In a public health context this points to the importance of understanding the proportion of insect vector populations that are exposed to insecticide interventions. It also warns of a potential increase in the evolution of resistance as intervention coverage is increased for example as a part of malaria elimination efforts.
 
 
-#### Duke 2017 pesticide doses many implications
-todo reread
+#### Gressel 2017
+High doses likely to select for resistance conferred by single genes of major effect whereas low doses can allow the accumulation of many genes of minor effect. [@Gressel2017].
   
 #### Onstad 2001 rootworm model used to inform EPA  
 Dominance of resistance was the most important parameter influencing evolution of resistance. If fully recessive (dominance 0) resistance not reached in 99 years, if fully dominant, resistance took just 2–5 years when refuges were 5% to 30% [@Onstad2001].  
@@ -65,7 +72,7 @@ They found some similar things to us, e.g. resistance not increasing when domina
 
 #### Glunt 2018 Impact of temperature on insecticide toxicity.
 Relevant to window of selection. 
-In arabiensis & funestus with deltamethrin, generally mortalities higher when temperatures either higher or lower than standard. The difference between resistant and susceptible mortality is generally less, suggesting that the window of selction may be lower outside of standard lab conditions [@Glunt2018]. 
+In arabiensis & funestus with deltamethrin, generally mortalities higher when temperatures either higher or lower than standard. The difference between resistant and susceptible mortality is generally less, suggesting that the window of selection may be lower outside of standard lab conditions [@Glunt2018]. 
 
 
 #### Hackett 2016 model of resistance to transgenic crops
@@ -108,8 +115,11 @@ rotation without a monitoring system would mean that one would have no way
 of knowing if the system was still working."
 
 #### Venter2017 Benchmarking insecticide resistance intensity bioassays
-The operational effect of insecticides will depend on doses and the resistancve phenotypes of mosquitoes. Resistance intensity assays are a way of qauntifying this, here intensity assays are related to the resistance phenotypes of lab strains with characterised resistance mechanisms. 
-probably Cite this in windows paper.
+The operational effect of insecticides will depend on doses and the resistance phenotypes of mosquitoes. Resistance intensity assays are a way of qauntifying this, here intensity assays are related to the resistance phenotypes of lab strains with characterised resistance mechanisms. 
+probably cite this in windows paper.
+
+#### lopezmonroy2018
+Relates the frequency and intensity of pyr resistance in aedes to the frequency of kdr genes. Useful in translating between our modelling work and field measurements of resistance.
 
 #### Mbida2018 nets collected from the field against kdr resistant mosquitoes
 Shows that field collected nets kill all susceptible mosquitoes but low proportions of field collected mosquitoes. Genotyping the field collected mosquitoes exposed to the field collected nets (Table 4) showed that 7-35 % of the surviviors had the susceptible kdr allele and none of those killed had the resistance allele. This demonstrates that the nets are within the window of selection and will be selecting for kdr resistance.
@@ -117,6 +127,17 @@ Shows that field collected nets kill all susceptible mosquitoes but low proporti
 #### Denholm1992
 In an agricultural context points out that theory suggests that rotations and sequences should be equivalent.
 "Despite theoretical misgivings regarding the benefit of alternations, the prevalence of this tactic in existing strategies on cotton and elsewhere demonstrates its intuitive appeal and relative ease of implementation." [@Denholm1992]
+
+#### Matowo2015 rapid increase in Bendiocarb resistance following IRS, support for our modelling approach
+There was a sharp decrease in mortality in An. gambiae s.l. exposed to bendiocarb (carbamate) from 84% in November 2011 to 31% in December 2012 after two rounds of bendiocarb-based indoor residual spraying (IRS). Anopheles gambiae s.l. remained susceptible to pirimiphos-methyl
+(organophosphate). Bendiocarb-based IRS did not lead to the reversion of pyrethroid resistance.
+We could maybe model this. They have some data on various gene frequencies.
+
+#### Gullberg2011 Selection of Resistant Bacteria at Very Low Antibiotic Concentrations
+Shows windows of selection for antibiotic resistance in bacteria and how these extend to very low concentrations where the antibiotics are not effective. [@Gullberg2011]
+
+
+
 
 ## References
 <!-- now auto created here-->

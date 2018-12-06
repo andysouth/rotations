@@ -1636,11 +1636,115 @@ git version 1.9.5.msysgit.0
 
 now I have 2.18.0.windows1, the installer sorted uninstalling the old version, and I didn't have to change anything in RStudio.
 
+All rotation runs before were based on insecticides with equal effectiveness, resistance restoration, cost etc. These new runs allow differences between insecticides.
+
+One thing that they showed was that a sequence could do much better than a rotation due to the logic of when to change an insecticide.
+
+because just one insecticide remained below the resistance threshold and our logic didn't allow it to keep being used. These were generated when I allowed insecticides to differ.
+Below is the result for the same inputs of adding a condition to check all the other insecticides, and to allow us to keep using one if it is the last remaining. I have set the minimum rotation interval to 5 otherwise it keeps switching back to the other insecticides for a single generation. This gives more similar results for the rotation and sequence.
+
+*1/8/2018*
+Reading Curtis(1987) Genetic aspects of selection for resistance. Good short article.
+Summary :
+~ rotations and sequences very similar
+~ fitness modifiers unlikely to give benefit to rotations (unless resistance thresholds and costs very high)
+~ there maybe operational reasons for favouring sequences
+
+I should try to make sure our rotations paper is as easy to read as this.
+
+It is a good justification for not using modifiers so I don't think we need to implement modifiers but if we did, this is how he describes what he did - although all the details not there.
+"assumed a single modifier of each major resistance gene. The fitness disdavantage of each major gene was eliminated when the modifier was homozygous and halved when it was heterozygous. The modifier itself caused slight fitness disadvantage and was initially maintained in equilibrium by a blance of origin by mutation and elimination by selection."
+
+Other papers in the book:
+Denholm, Laboratory simulation of selection for resistance. Pyrethroid resistance in houseflies. Compares model results and lab experiments. Concludes that more field work needed before models can be operationally useful.
+
+Dennehy, Decision making for managing pest resistance to pesticides. Brief possibly useful stuff on decision making criteria in agriculture.
+
+Sawicki, chap9. Definition, detection and documentation of insecticide resistance.
+
+Tried a solution to the diff insecticide problem. If no other insecticides are below resistance thresh and this one is then can keep using it in a rotation ...
+
+*12/11/2018*
+Coming back to this after a while before presenting to IVCC.
+
+from UI :
+Warning: Error in raf_get: object 'RAF' not found
+but works for 2nd plot on right ?
+
+must be from run_rot()
+I don't understand why sceanrio A fails and B doesn't ?
+
+  178: raf_get [C:/rsprojects/rotations/R/insecticide_check.r#70]
+  177: insecticide_check [C:/rsprojects/rotations/R/insecticide_check.r#70]
+  176: run_rot [C:/rsprojects/rotations/R/run_rot.r#325]
+
+
+Also fails from the command line :
+
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 10 , eff = 0.8 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.01 , logy = TRUE , no_r_below_start = TRUE , min_rwr_interval = 5 )
+
+Error in raf_get(RAF, insecticide = -current_insecticide, sex = "f", gen = 1,  : 
+  object 'RAF' not found
+
+BUT now seems to be working from the command line ???
+and is working from shiny ... weird.
+
+this error then popped up again from shiny later on. 
+
+*13/11/2018*
+preparing slides for IVCC talk next week
+
+~ add a slide about decision rules :
+because just one insecticide remained below the resistance threshold and our logic didn't allow it to keep being used. 
+Below is the result for the same inputs of adding a condition to check all the other insecticides, and to allow us to keep using one if it is the last remaining. I have set the minimum rotation interval to 5 otherwise it keeps switching back to the other insecticides for a single generation. This gives more similar results for the rotation and sequence.
+
+23/11/18
+#to output script as pdf for Ian to print
+library(knitr)
+stitch(script="R/run_rot.r")
+
+stitch(script="R/run_rot.r", system.file("misc", "knitr-template.Rhtml", package="knitr"))
+stitch(script="R/rot_migrate.r", system.file("misc", "knitr-template.Rhtml", package="knitr"))
+
+Then open html in a browser, print to pdf, set landscape and scale=150
+
+4/12/18
+Met with Jim he offered to look at parallelising.
+
+5/12/18
+making scaled down version of sensi analysis for Jim
+
+6/12/18
+Check why git changes are thinking that whole file has changed. How did I fix that for rnaturalearth ??
+
+GitHub suggests that you should make sure to only use \n as a newline character in git-handled repos. There's an option to auto-convert:
+
+git config --global core.autocrlf true #global didn't work
+git config core.autocrlf true #just this project
+
+Doing it for rotations project did fix the problem straight away. I didn't even have to restart RStudio.
 
 
 # TODO
 
-~ try a solution to the diff insecticide problem. If no other insecticides are below resistance thresh and this one is then can keep using it in a rotation ...
+
+
+For rotations send Jim a scaled down version of the rotations sensitivity analysis code. That just runs the sensitivity analysis and Jim will have a go at parallelising it.
+
+Still occasionally getting error from shinyUI resistrot :
+Warning: Error in raf_get: object 'RAF' not found
+
+It is only from scenarioA.
+Could it be something about sequence versus rotations ?
+Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
+But then when I start trying to look at it even from a new session it seems to dissappear.
+
+~ check on Rex consortium table of when rot better, what studies were they ? ag or pub health
+
+
+
+
+
 
 ~ check on 1000 runs with lower startfreqs and differing insecticides 
 ~ is something weird going on favouring rotations more when insecticides differ ?
@@ -1648,25 +1752,12 @@ now I have 2.18.0.windows1, the installer sorted uninstalling the old version, a
 
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
 ~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
-~ ian suggested talking to Simon if we need to run something for longer
 
 1. check out these runs that have the mut-sel balance option enabled
 df_res_all_rot_cost10000_mut_sel_bal.rda
-done 2. check ability to do runs where insecticides differ
 
 
 
-
-
-~ think - are all rotation runs so far based on insecticides with equal effectiveness, resistance restoration, cost etc. ? What might happen if we allow differences between insecticides ? Can we easily represent that ?
-I could possibly run one set of simulations where insecticides are allowed to be different.
-I think that could be set up by changing :
-linputs$expo_hi <-  runif(1, min=0.4, max=0.9)
-to:
-runif(n_insecticides, min=0.4, max=0.9)
-This might break stuff.
-Can just check that prop runs in which rotations are better doesn't increase.
-I suspect input params may be saved to outfiles as comma delimited strings ?
 
 
 ~ check on the runs with the freq limit removed :
@@ -1731,8 +1822,6 @@ think about killer plot to display difference between rot & seq generations
 
 
 
-
-
 ~ maybe come back to i_in_use ribbons not meeting issue
 ~ rename rot_criterion to rot_threshold
 ~ add in some unit-tests ?
@@ -1752,17 +1841,7 @@ rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 ~ move github repo back to mine
 ~~ From Github I merged changes from Ians with a pull request after comparing across the forks.
 ~~ Now I can possibly change RStudio to point to the repo on my Github (do when I have a bit more time)
-~~ update R
 
-
-
-
-These are not about insecticide resistance (they are about resistance to the gene itself but may have useful pointers)
-Alphey2011. Modeling resistance to genetic control of insects
-https://doi.org/10.1016/j.jtbi.2010.11.016
-
-Watkinson-Powell2017 Resistance to genetic insect control: Modelling the effects of space
-https://doi.org/10.1016/j.jtbi.2016.10.014
 
 
 Combining the high-dose/refuge strategy and self-limiting transgenic
@@ -1773,8 +1852,7 @@ submit links to UIs and paper once it is published to :
 vectorlearningxchange.com
 
 
-~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? 
-
+~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? I don't think so because it requires linkage.
 
 ~ add error-check to run_rot if n.insecticides=1 & migration > 0 
 
@@ -1783,8 +1861,6 @@ Maybe explore idea from Rowland (1981) that resistance declines faster when it i
 Look into data on changing allele frequencies over time (e.g. for Kdr)...
 
 It occurred to me that maybe a benefit of rotations is that if it is difficult to measure resistance allele frequencies they provide a lower risk of reaching resistance thresholds for any insecticide. i.e. are they a better strategy in light of uncertainty in resistance allele frequencies ?
-
-
 
 ~ can we get cost to decrease over time at high frequency as suggested in GPIRM ?
 
@@ -1820,9 +1896,6 @@ I suspect one of the advantages of rotations (and the presence of refugia) is th
 
 
 
-
-
-
 ~ test fitness_single_locus() from run_rot() and add to Rmd
 
 ~ check in resistance::fitnessSingleLocus() on separation of dominance of cost & selection. Was probably OK for Levick et al because we didn't have cost in. 
@@ -1845,7 +1918,6 @@ What is the impact of adding nonpyrethroid IRS where LLINs are already deployed 
 The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
 
 Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide resistance management strategies
-
 
 
 
