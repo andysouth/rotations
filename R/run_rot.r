@@ -184,11 +184,11 @@ run_rot <- function(max_gen = 200,
         coeff_2 <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RS', ] )
         coeff_3 <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RS', ] )
         
-        # male RR (Eqn 4)
+        # male RR (Eqn 3 rotations MS)
         temp_coeff <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'RR', ] )
         raf_m_r_new <- raf_m * raf_f * temp_coeff + coeff_1*coeff_2
         
-        # male SS (Eqn 5)
+        # male SS (Eqn 4 rotation MS)
         temp_coeff <- sum( exposure[insecticide, 'm', ]*fitness[insecticide, 'SS', ] )
         raf_m_s_new <- (1-raf_m) * (1-raf_f) * temp_coeff + coeff_1*coeff_2
     
@@ -197,11 +197,11 @@ run_rot <- function(max_gen = 200,
         RAF[insecticide, 'm', 'intervention', gen] <- raf_m_r_new / norm_coeff
     
         
-        # female RR
+        # female RR (Eqn 5 rotation MS)
         temp_coeff <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'RR', ] )    
         raf_f_r_new <- raf_m * raf_f * temp_coeff + coeff_1*coeff_3
         
-        #female SS 
+        #female SS (Eqn 6 rotation MS)
         temp_coeff <- sum( exposure[insecticide, 'f', ]*fitness[insecticide, 'SS', ] )  
         raf_f_s_new <- (1-raf_m) * (1-raf_f) * temp_coeff + coeff_1*coeff_3 
       
@@ -222,6 +222,10 @@ run_rot <- function(max_gen = 200,
                    raf_f * (1-raf_m)) *
                    0.5*fitness[insecticide, 'RS', 'no']
  
+       # 23/11/18 talking to Ian
+       # fitness of adults is calculated same for m&f when not exposed
+       # because m & f can be exposed differently has to be done differently for mf above
+       
        # male RR
        raf_m_r_new <- raf_m * raf_f *
                                 fitness[insecticide, 'RR', 'no'] + rs_coeff
