@@ -47,7 +47,7 @@ rot_plot_resistance <- function(df_res2,
   df_res2 <- df_res2 %>%
     #mutate( i_in_use = ifelse(stringr::str_detect(region,paste0(insecticide,"_active")),1.05,NA))    
     #now that active & refuge on same plot
-    mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA))    
+    dplyr::mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA))    
   
   # only colour by active_or_refuge if there is a refuge
   if (plot_refuge) {
@@ -114,7 +114,7 @@ rot_plot_resistance <- function(df_res2,
 
     # try adding insecticide use for 2nd scenario
     df_resanother <- df_resanother %>%
-      mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA))  
+      dplyr::mutate( i_in_use = ifelse(resist_gene==paste0('insecticide',insecticide), to_plot_in_use, NA))  
     
     gg <- gg +    
           geom_ribbon( data=df_resanother, aes_string(x='generation', ymin=0, ymax='i_in_use'), colour="grey30", fill = "grey80", alpha=0.2, linetype=3 ) 

@@ -15,7 +15,7 @@
 #' df3 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.1, sel_rr = 0.4, dom_sel = 0.9)
 #' df4 <- freq_fitness_simple(cos_rr = 0.05, dom_cos = 0.9, sel_rr = 0.4, dom_sel = 0.9)
 #' 
-#' @import tidyverse 
+#' @import ggplot2 
 #' @return dataframe of results
 #' @export
 
@@ -29,7 +29,7 @@ freq_fitness_simple <- function( cos_rr = 0.05, #fitness cost of the RR genotype
 ) {
   
   num_freqs <- 100 
-  df_ex <- data_frame(freq=rep(NA,num_freqs),
+  df_ex <- dplyr::data_frame(freq=rep(NA,num_freqs),
                       cost=NA,
                       selection=NA,
                       dom_cos=dom_cos,

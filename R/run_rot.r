@@ -42,7 +42,7 @@
 #' #running for insecticides with different inputs
 #' dfr <- run_rot(n_insecticides=3, eff=c(1,0.6,0.4), rot_interval=0)
 #' 
-#' @import tidyverse 
+# @import tidyr 
 #to try help with standard evaluation of dplyr couldn't get to work
 # @importFrom rlang .data 
 #' @return dataframe of results
@@ -417,9 +417,10 @@ run_rot <- function(max_gen = 200,
   }
   
   # to enable facetting by intervention later
-  df_res2 <- df_results %>%
-    gather(names(l_gene_plus_activity),
-           key=region, value=resistance)
+  df_res2 <- tidyr::gather(df_results,
+                           names(l_gene_plus_activity),
+                           key=region, 
+                           value=resistance)
   
   # use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
   # to get active & refuge into the same subplot
@@ -431,17 +432,17 @@ run_rot <- function(max_gen = 200,
   # this does give the answer, but only 1 per insecticide
   # NSE problem fixed by dplyr::filter 
   df_res2 <- df_res2 %>%
-    dplyr::filter(active_or_refuge=='active') %>%
-    group_by(resist_gene) %>%
+    dplyr::filter(.data$active_or_refuge=='active') %>%
+    group_by(.data$resist_gene) %>%
     # for all insecticides in all generations  
     # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
     # just for deployed insecticides 
-    summarise(gens_dep_under50 = sum(resistance < rot_criterion &
+    summarise(gens_dep_under50 = sum(.data$resistance < rot_criterion &
                                        #finds insecticide in use = this one
-                                       resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
+                                       .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE)) %>%
     #summarise(tot_dep_gens_under50 = sum(gens_dep_under50)) %>%    
-    ungroup() %>%
-    left_join(df_res2, by='resist_gene')
+    dplyr::ungroup() %>%
+    dplyr::left_join(df_res2, by='resist_gene')
   
   # if migration is set to 0, or coverage==1 don't show refuge in plots
   plot_refuge <- ifelse(migration==0 | coverage==1,FALSE,TRUE)

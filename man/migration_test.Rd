@@ -4,8 +4,8 @@
 \alias{migration_test}
 \title{migration_test to testimplementation of migration between an implementation area and refugia}
 \usage{
-migration_test(migration = 0.5, coverage = 0.6, startfreqs = c(0.2, 0.8),
-  max_gen = 10)
+migration_test(migration = 0.5, coverage = 0.6, startfreqs = c(0.2,
+  0.8), max_gen = 10)
 }
 \arguments{
 \item{migration}{migration between 0-1}

@@ -5,8 +5,8 @@
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
 rot_plot_resistance(df_res2, plot_refuge = TRUE, rot_criterion = 0.5,
-  logy = TRUE, add_gens_under50 = TRUE, df_resanother = NULL, lwd = 1.5,
-  title = NULL, plot = TRUE)
+  logy = TRUE, add_gens_under50 = TRUE, df_resanother = NULL,
+  lwd = 1.5, title = NULL, plot = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}

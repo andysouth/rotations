@@ -4,8 +4,8 @@
 \alias{insecticide_switch}
 \title{insecticide_switch choose a new insecticide to switch to}
 \usage{
-insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion, gen,
-  min_gens_switch_back, df_ins, df_results, diagnostics)
+insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion,
+  gen, min_gens_switch_back, df_ins, df_results, diagnostics)
 }
 \arguments{
 \item{RAF}{array of resistance allele frequencies}

@@ -4,8 +4,8 @@
 \alias{insecticide_check}
 \title{insecticide_check check if insecticide needs to be changed}
 \usage{
-insecticide_check(RAF1gen, current_insecticide, rot_interval, rot_criterion,
-  gens_this_insecticide, min_rwr_interval, exit_rot)
+insecticide_check(RAF1gen, current_insecticide, rot_interval,
+  rot_criterion, gens_this_insecticide, min_rwr_interval, exit_rot)
 }
 \arguments{
 \item{RAF1gen}{single generation array of resistance allele frequencies}
