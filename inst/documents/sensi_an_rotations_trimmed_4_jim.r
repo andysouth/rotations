@@ -5,9 +5,9 @@
 
 
 #install.packages("devtools")
-require(devtools)    
-#install_github('AndySouth/rotations')  
-require(rotations)
+library(devtools)    
+install_github('ian-hastings/rotations', upgrade = 'never')  
+library(rotations)
 
 # linputs       a list of inputs for one scenario
 # run_rot()     runs a single scenario
