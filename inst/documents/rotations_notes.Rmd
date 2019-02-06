@@ -1714,6 +1714,8 @@ Met with Jim he offered to look at parallelising.
 5/12/18
 making scaled down version of sensi analysis for Jim
 
+For rotations sent Jim a scaled down version of the rotations sensitivity analysis code. That just runs the sensitivity analysis and Jim will have a go at parallelising it.
+
 6/12/18
 Check why git changes are thinking that whole file has changed. How did I fix that for rnaturalearth ??
 
@@ -1724,8 +1726,20 @@ git config core.autocrlf true #just this project
 
 Doing it for rotations project did fix the problem straight away. I didn't even have to restart RStudio.
 
+6/2/19
+
+before meeting with Jim to look at rotations code
+
+previous error in raf_get() seems OK now
+
+
 
 # TODO
+
+
+# todo: we want to look at changing insecticides according to mortality rather than resistance frequency
+
+# Jim suggest
 
 fix :
 Warning: Error in raf_get: object 'RAF' not found
@@ -1751,25 +1765,13 @@ raf_get(a)
 Error in raf_get(a) : object 'a' not found
 
 
-
-
-
-
-For rotations send Jim a scaled down version of the rotations sensitivity analysis code. That just runs the sensitivity analysis and Jim will have a go at parallelising it.
-
-Still occasionally getting error from shinyUI resistrot :
-Warning: Error in raf_get: object 'RAF' not found
-
 It is only from scenarioA.
 Could it be something about sequence versus rotations ?
 Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
 But then when I start trying to look at it even from a new session it seems to dissappear.
 
+
 ~ check on Rex consortium table of when rot better, what studies were they ? ag or pub health
-
-
-
-
 
 
 ~ check on 1000 runs with lower startfreqs and differing insecticides 
@@ -1783,9 +1785,6 @@ But then when I start trying to look at it even from a new session it seems to d
 df_res_all_rot_cost10000_mut_sel_bal.rda
 
 
-
-
-
 ~ check on the runs with the freq limit removed :
 df_res_all_rot_cost10000_no_freq_limit.rda
 
@@ -1793,8 +1792,6 @@ df_res_all_rot_cost10000_no_freq_limit.rda
 
 ~ talk to Ian about Hackett2016 paper and whether we can use similarly simple model
 
-
-~ ask Ian to check through the rotations algebra when he writes up the SI.
 
 rotations paper :
 ~ develop flow of story
@@ -1869,10 +1866,6 @@ rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 ~~ Now I can possibly change RStudio to point to the repo on my Github (do when I have a bit more time)
 
 
-
-Combining the high-dose/refuge strategy and self-limiting transgenic
-insects in resistance management- a test in experimental mesocosms 
-Zhou2017
 
 submit links to UIs and paper once it is published to :
 vectorlearningxchange.com

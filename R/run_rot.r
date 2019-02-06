@@ -296,7 +296,7 @@ run_rot <- function(max_gen = 200,
     if (length(start_freqs) == 1) start_freqs <- rep(start_freqs, n_insecticides)
     
     
-    #todo implement a no_r_below_mut option here
+    #options to stop resistance frequency going below start level or the mutation-selection balance
     if ( no_r_below_start | no_r_below_mut )
     {
       for(insecticide in 1:n_insecticides)
