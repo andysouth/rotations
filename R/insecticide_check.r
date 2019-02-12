@@ -35,6 +35,14 @@ insecticide_check <- function( RAF1gen,
     # because have drop=false to preserve site dimension the gen dimension is preserved too
     # so just has a single item in the final dimension : RAF1gen[,,,1]
     
+    # TODO this is where to add mortality-based change criteria
+    # how to calculate mortality from allele frequency and effectiveness etc. ?
+    # I think I want to calculate freq of RR,SR,SS (from HW I assume)
+    # then calculate expected proportion mortality for each (for SR will need dominance)
+    # freqRR = func(RAF)
+    # mortSS = effectiveness*
+    
+    
     if ( RAF1gen[current_insecticide, 'f','intervention',1] > rot_criterion &
          #to add a min interval to stop lots short switches
          #BEWARE this min_rwr_interval can cause unexpected behaviour, 
@@ -73,7 +81,7 @@ insecticide_check <- function( RAF1gen,
       #TODO check whether I need to assess that current insecticide is below its frequency
       #& RAF1gen[current_insecticide, 'f','intervention',1] <= rot_criterion 
       
-      # 31/7/18 new condition, only change of one to change to
+      # 31/7/18 new condition, only change if one to change to
       if ( min(other_ins_freqs) <= rot_criterion )
       {
         # time to rotate so need to identify the next insecticide in the rotation

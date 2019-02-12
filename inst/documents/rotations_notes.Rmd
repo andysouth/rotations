@@ -1739,7 +1739,11 @@ previous error in raf_get() seems OK now
 
 # todo: we want to look at changing insecticides according to mortality rather than resistance frequency
 
-# Jim suggest
+# Jim suggests making flow chart
+# make branch of rotations repo and send instructions to Jim
+# get rotations repo back from Ian
+
+
 
 fix :
 Warning: Error in raf_get: object 'RAF' not found
