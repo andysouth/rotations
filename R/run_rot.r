@@ -98,6 +98,11 @@ run_rot <- function(max_gen = 200,
                                          stringsAsFactors = FALSE,
                                          l_gene_plus_activity))  
   
+  # 13/2/2019 adding a df (maybe temporary) to record tested mortality of females
+  # as a prelude to using mortality as an alternative criteria to switch between insecticides
+  df_mortali <- df_results
+  
+  
   # 11/5/18 adding an df to store for each insecticide the last time it was used
   df_ins <- data.frame(last_used=rep(Inf, n_insecticides))
   # set value for this to 0 each time an insecticide is in use
@@ -275,6 +280,26 @@ run_rot <- function(max_gen = 200,
         #if (diagnostics) message(sprintf("generation %d: completed selection against locus %d in refugia\n", gen, insecticide))
       
       } # end if coverage < 1
+      
+      
+      # 13/2/2019 put something here to calculate mortality
+      # maybe can just pass RAF and fitness to a function ?
+      # can I do for all insecticides and sites at once ?
+      # this does for m & f, even though only probably need for f
+      # TODO make this dryer and more efficient
+      # freqs are calculated by HardyWeinberg
+      # currently in first example mortalities always below 0.785 ?
+      freqRR <- RAF[insecticide,,,gen-1]^2
+      mortRR <- freqRR * (1 - fitness[insecticide, 'RR', 'hi'])
+      freqSR <- 2 * (RAF[insecticide,,,gen-1] * 1-RAF[insecticide,,,gen-1])
+      mortSR <- freqSR * (1 - fitness[insecticide, 'RS', 'hi'])
+      freqSS <- (1-RAF[insecticide,,,gen-1])^2
+      mortSS <- freqSS * (1 - fitness[insecticide, 'SS', 'hi'])      
+      # only for f in the intervention site
+      mort <- mortRR['f','intervention'] + mortSR['f','intervention'] + mortSS['f','intervention']
+      #cat(mort," ")
+      # end temp new bit
+      
      } #end of cycling insecticides
     
     
@@ -388,6 +413,7 @@ run_rot <- function(max_gen = 200,
  
     # recording the insecticide that's going to be used in next timestep
     df_results$insecticide[gen] <- current_insecticide    
+    df_mortali$insecticide[gen] <- current_insecticide        
   
    } #### end of max_gen loop
 
@@ -410,7 +436,6 @@ run_rot <- function(max_gen = 200,
       df_results[[paste0('insecticide',i_num,'_refuge')]] <- 0.5*(RAF[i_num, 'm','refugia', ]+
                                                                   RAF[i_num, 'f','refugia', ])       
     }
-
     
     #df_res_active$region[[(i_num-1)*max_gen:(i_num)*max_gen]] <- paste0("insecticide",i_num)
     #df_res_active$resistance[[(i_num-1)*max_gen:(i_num)*max_gen]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])

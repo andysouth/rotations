@@ -1733,6 +1733,28 @@ before meeting with Jim to look at rotations code
 previous error in raf_get() seems OK now
 
 
+13/2/2019
+
+looking at saving tested mortality levels for the different insecticides over time
+(as a prelude to using it as a criteria for switching insecticides)
+
+resistance frequency results are saved in df_results
+think I can create df_mort with the same structure and then put it through the same plotting function.
+
+but df_results summaries are only calculated at the end so df_mortali couldn't allow mortality to be used as a switching criteria.
+
+BUT also I need an equivalent of RAF[] (without the sex dimension, or maybe easier to leave it in)
+to enable switching
+
+  # RAF[, 'm', 'intervention', 1] = freqs
+  # dim1 :n_insecticides
+  # dim2 :sex: m,f
+  # dim3 :site: intervention,refuge
+  # dim4 : generations
+
+see run_rot for initial test mortality calculation
+
+
 
 # TODO
 

@@ -37,10 +37,10 @@ insecticide_check <- function( RAF1gen,
     
     # TODO this is where to add mortality-based change criteria
     # how to calculate mortality from allele frequency and effectiveness etc. ?
-    # I think I want to calculate freq of RR,SR,SS (from HW I assume)
-    # then calculate expected proportion mortality for each (for SR will need dominance)
-    # freqRR = func(RAF)
-    # mortSS = effectiveness*
+    # Ian defines in the rotations SI
+    # calculate freq of RR,SR,SS (from HW)
+    # multiply each by fitness in a_fitloc[current_insecticide, 'SS', 'hi']
+    # calculated in fitness_single_locus()
     
     
     if ( RAF1gen[current_insecticide, 'f','intervention',1] > rot_criterion &
