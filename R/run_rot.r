@@ -111,10 +111,15 @@ run_rot <- function(max_gen = 200,
   
   ### set starting allele frequencies 
   #todo add checks thats start_freqs is either length 1 or n_insecticides
+  #TODO rename RAF to a_rfreq or similar
   RAF <- set_start_freqs( n_insecticides=n_insecticides, 
                           max_gen=max_gen, 
                           freqs = start_freqs,
                           coverage = coverage )
+  #create array to hold mortality data
+  #first test by copying from RAF
+  #todo check that gen 1 gets mortalities replaced or not used
+  a_mort <- RAF
   
   #old hardcoded test function
   #RAF <- set_start_freqs_test( n_insecticides=n_insecticides, max_gen=max_gen )    
@@ -283,6 +288,7 @@ run_rot <- function(max_gen = 200,
       
       
       # 13/2/2019 put something here to calculate mortality
+      #from bioassays so assumes all exposed and exposure doesn't need to be included
       # maybe can just pass RAF and fitness to a function ?
       # can I do for all insecticides and sites at once ?
       # this does for m & f, even though only probably need for f
@@ -291,12 +297,15 @@ run_rot <- function(max_gen = 200,
       # currently in first example mortalities always below 0.785 ?
       freqRR <- RAF[insecticide,,,gen-1]^2
       mortRR <- freqRR * (1 - fitness[insecticide, 'RR', 'hi'])
-      freqSR <- 2 * (RAF[insecticide,,,gen-1] * 1-RAF[insecticide,,,gen-1])
+      freqSR <- 2 * RAF[insecticide,,,gen-1] * (1-RAF[insecticide,,,gen-1])
       mortSR <- freqSR * (1 - fitness[insecticide, 'RS', 'hi'])
       freqSS <- (1-RAF[insecticide,,,gen-1])^2
       mortSS <- freqSS * (1 - fitness[insecticide, 'SS', 'hi'])      
       # only for f in the intervention site
       mort <- mortRR['f','intervention'] + mortSR['f','intervention'] + mortSS['f','intervention']
+      #save
+      a_mort[insecticide,'f','intervention',gen-1] <- mort
+      
       #cat(mort," ")
       # end temp new bit
       
@@ -437,16 +446,35 @@ run_rot <- function(max_gen = 200,
                                                                   RAF[i_num, 'f','refugia', ])       
     }
     
+    # 14/2/19
+    # save mortality here too
+    # does calculation for all generations (final dimension in RAF array)
+    df_mortali[[paste0('insecticide',i_num,'_active')]] <- a_mort[i_num, 'f','intervention', ]
+    
+    
     #df_res_active$region[[(i_num-1)*max_gen:(i_num)*max_gen]] <- paste0("insecticide",i_num)
     #df_res_active$resistance[[(i_num-1)*max_gen:(i_num)*max_gen]] <-  0.5*(RAF[i_num, 'm','intervention', ]+                                                                                            RAF[i_num, 'f','intervention', ])
   }
   
-  # to enable facetting by intervention later
+  # restructure data
+  # to enable plot facetting by intervention later
   df_res2 <- tidyr::gather(df_results,
                            names(l_gene_plus_activity),
                            key=region, 
                            value=resistance)
   
+  # similarly restructure mortality outputs
+  df_mor2 <- tidyr::gather(df_mortali,
+                           names(l_gene_plus_activity),
+                           key=region, 
+                           value=mortality)  
+  
+  # join mortality data onto resistance
+  # could just cbind but should probably rbind to avoid risk that rows have been re-ordered
+  # BEWARE this vulnerable to rows having been re-ordered
+  df_res2$mortality <- df_mor2$mortality
+
+    
   # use tidyr::separate() to get from r1_refuge to r1 & refuge in different columns.
   # to get active & refuge into the same subplot
   df_res2 <- tidyr::separate(df_res2, region, into=c("resist_gene","active_or_refuge"))

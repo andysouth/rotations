@@ -1754,16 +1754,98 @@ to enable switching
 
 see run_rot for initial test mortality calculation
 
+Removed these comments from todo because think we have moved on :
+1. check out these runs that have the mut-sel balance option enabled
+df_res_all_rot_cost10000_mut_sel_bal.rda
+
+~ check on the runs with the freq limit removed :
+df_res_all_rot_cost10000_no_freq_limit.rda
+
+~ think about whether I can implement allele frequencies just being constrained to their starting values the first time that each insecticide is used.
+
+
+14/2/2019
+
+starting to get mortality recording working
+
+currently looking at the df_mortali array from within a stop put inside run_rot()
+
+with current starting resistance frequencies and effectiveness the mortalities start below the threshold where we would stop using the insecticide (90%)
+
+we can set starting frequencies lower and effectiveness higher e.g. 
+run_rot(eff=1, start_freqs=0.001)
+
+# moved rotations repo back from Ian
+https://help.github.com/articles/about-repository-transfers/
+Transfer is at the bottom of settings, options : from Ians account
+
+
+#20/2/2019
+
+watched Ellies talk
+~ she particularly talked about the benefit of combining complementary interventions in future (e.g. community larvel source management, ATSBs, etc.)
+~ How these combine will depend on which part of the transmission cycle they target, e.g. outdoor biters
+~ she showed quite nice cartoons of how untreated nets, treated nets and IRS can reduce tranmsission in different ways
+~ made me think there may be potential to develop a clearer visualisation of the transmission cycle and how interventions can work, similar to stuff I did with Gerry
+~ other interesting thing that Hilary asked about is how the different insecticides can modify both repellance and killing and how this may change due to resistance. Maybe similar to converstaions we had with Francis Rowland.
+~ but I don't really have the inclination to move in the modelling direction but may be options to keep some interests going parallel with it.
+
+
+~ more on how to record and display mortality
+
+currently resistance frequencies : 
+stored in an array (RAF), 
+saved to a dataframe (df_res) 
+converted to a diff format (df_res2) 
+plotted with rot_plot_resistance()
+
+for mortality :
+store in (a_mort)
+saved to df_mortali
+...
+
+Alternative Options
+A. convert df_mortali to df_mort2 so that can use rot_plot_resistance()
+
+B. save resistance and mortality in same structure, maybe able to add mortality on as a column to df_res2
+
+Tried the above, seems to work.
+
+This shows there is a very consistent relationship between mortality & resistance.
+plot(df_res2$mortality ~ df_res2$resistance)
+
+So maybe we don't even need to save mortality ???
+
+this showed not quite linear
+plot(lm(df_res2$mortality ~ df_res2$resistance))
+
+So can we just calculate a conversion from resistance to mortality that will allow us to estimate the resistance frequency that corresponds to 90% mortality ??
+
+I can probably just calculate the conversion from the code I've written recently ?
+
+Does this mean that the frequency differences of the different genotypes are not directly important ?
+
+see genotype_freq() and mort_from_resist()
+
+sent msg to Ian
+
+
 
 
 # TODO
+
+~ recording mortality - is now the time to try and record data in a 'tidier' way ?
+
+~ do I need to be able to plot mortality over time ?
+~~ on the same graph as resistance frequency or a different one ?
+
+
 
 
 # todo: we want to look at changing insecticides according to mortality rather than resistance frequency
 
 # Jim suggests making flow chart
-# make branch of rotations repo and send instructions to Jim
-# get rotations repo back from Ian
+
 
 
 
@@ -1807,14 +1889,6 @@ But then when I start trying to look at it even from a new session it seems to d
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
 ~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
 
-1. check out these runs that have the mut-sel balance option enabled
-df_res_all_rot_cost10000_mut_sel_bal.rda
-
-
-~ check on the runs with the freq limit removed :
-df_res_all_rot_cost10000_no_freq_limit.rda
-
-~ think about whether I can implement allele frequencies just being constrained to their starting values the first time that each insecticide is used.
 
 ~ talk to Ian about Hackett2016 paper and whether we can use similarly simple model
 
@@ -1832,10 +1906,6 @@ small changes :
 ~ how to term success. 'At least one insecticide still below resistance thresholds' 
 
 
-
-Looking at moving rotations repo back to me. Seems transfer may be best way :
-https://help.github.com/articles/about-repository-transfers/
-Transfer is at the bottom of settings, options : from Ians account
 
 Look into whether to use min_rwr_interval OR min_gens_switch_back 
 I'm thinking that I'll stick with min_rwr_interval
