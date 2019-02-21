@@ -1830,9 +1830,17 @@ see genotype_freq() and mort_from_resist()
 sent msg to Ian
 
 
+# 21/2/2019
+
+Cool getting there with mortality checking :
+Best to set logy to F to be able to see 90% mort
+
+dfr <- run_rot(start_freqs = 0.0001, eff=1, logy=FALSE)
 
 
 # TODO
+
+~ change origin of git repo in RStudio, probably need to do from git
 
 ~ recording mortality - is now the time to try and record data in a 'tidier' way ?
 

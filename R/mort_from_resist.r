@@ -12,7 +12,7 @@
 #' 
 #' @examples 
 
-#' @return fitness values
+#' @return total mortality
 #' @export
 
 mort_from_resist <- function ( resist_freq = 0.01,
@@ -21,33 +21,19 @@ mort_from_resist <- function ( resist_freq = 0.01,
                                    dom_cos = 0.5,
                                    rr = 0.5,
                                    cost = 0,
-                                   fitSS = 1,
-                                   plot = FALSE)
+                                   fitSS = 1)
 {
   
   a_genfreq <- genotype_freq(resist_freq)
-  #just to set up array
-  a_mort <- a_genfreq
   
-  sel <- rr * eff #selection coeff is resistance restoration * effectiveness
+  #formals() passes all args from this function
+  a_mort <- mort_by_genotype(formals())
   
-  #TODO check this
-  #TODO have an intermediate step that returns the mortality of each genotype
-  a_mort['RR'] <- (eff-sel)
-  a_mort['RS'] <- (eff-(sel*dom_sel))
-  a_mort['SS'] <- eff
-  
-  # a_mort['RR'] <- a_genfreq['RR'] * (eff-sel)
-  # a_mort['RS'] <- a_genfreq['RS'] * (eff-(sel*dom_sel))
-  # a_mort['SS'] <- a_genfreq['SS'] * eff
-  
-  return(a_mort)
-
-  #TODO implement the below
   #proportional mortality
-  #a_propmort <- a_mort * a_genfreq   
-  #mort <- sum(a_propmort)
+  a_propmort <- a_mort * a_genfreq   
   
-  #return(mort)
+  mort <- sum(a_propmort)
+  
+  return(mort)
 }
 

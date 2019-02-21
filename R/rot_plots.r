@@ -9,6 +9,7 @@
 #' @param lwd line thickness for resistance curves
 #' @param title optional title for plot, NULL for no title
 #' @param plot whether to plot results
+#' @param plot_mortality whether to add mortality to plots
 #'
 # check said that namespace dependencies not required
 # @import ggplot2
@@ -30,7 +31,8 @@ rot_plot_resistance <- function(df_res2,
                                 df_resanother = NULL,
                                 lwd = 1.5,
                                 title = NULL,
-                                plot = TRUE) {
+                                plot = TRUE,
+                                plot_mortality = TRUE) {
   
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
@@ -52,7 +54,7 @@ rot_plot_resistance <- function(df_res2,
   # only colour by active_or_refuge if there is a refuge
   if (plot_refuge) {
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge') ) +
-    geom_line( alpha=0.5, lwd=1.5 ) +
+    geom_line( alpha=0.5, lwd=lwd ) +
     #legend for the lines, allows me to set title & labels  
     scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
   }   else
@@ -63,7 +65,20 @@ rot_plot_resistance <- function(df_res2,
     #scale_colour_manual("",values=c("red3"))      
   }
 
+  # testing adding mortality to the plot
+  # note mortality currently added in run_rot but actually we can calc from fixed conversion
+  if (plot_mortality) {
+    #gg <- ggplot( df_res2, aes_string(x='generation',y='mortality')) +
+    #  geom_line( alpha=0.5, lwd=lwd, colour='red3' )
+    dfactive <- df_res2[df_res2$active_or_refuge=='active',]
+    gg <- gg +
+      # add 90% mortality threshold
+      geom_hline(yintercept=0.9, colour='green', linetype=3) +
+    #  geom_line( aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='purple', linetype=3 )    
+      geom_line( data=dfactive, aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='darkgreen', linetype=1 )    
+
     
+    }  
    
   gg <- gg + 
 
