@@ -5,15 +5,16 @@
 #' @param max_gen maximum number of mosquito generations to run the simulation
 #' @param n_insecticides number of insecticides (and hence loci)
 #' @param start_freqs starting frequencies of resistance either one per insecticide or same for all
-#' @param rot_interval frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant
-#' @param rot_criterion resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.
+#' @param rot_interval frequency of rotation (in generations) if set to zero means sequence, i.e. change when threshold reached
+#' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
+#' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
 #' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
 #' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
 #' @param start_insecticide which insecticide to start with
 #' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
 #' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
 #' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
-#' @param eff effectiveness, for all insecticides or individually
+#' @param eff effectiveness propn. SS killed by insecticide, for all insecticides or individually
 #' @param dom_sel dominance of selection, for all insecticides or individually
 #' @param dom_cos dominance of cost, for all insecticides or individually
 #' @param rr resistance restoration, for all insecticides or individually 
@@ -22,7 +23,7 @@
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
 #' @param no_r_below_mut to stop resistance frequencies going below mutation-selection balance TRUE or FALSE
-#' @param exit_rot whether to exit rotation interval if rot_criterion is reached
+#' @param exit_rot whether to exit rotation interval if threshold is reached
 #' @param min_gens_switch_back minimum num gens before can switch back to an insecticide
 # @param df_ins number of generations since each insecticide used
 #' 
@@ -33,6 +34,7 @@
 # @param hardcode_exposure whether to use hardcoded exposure, default FALSE
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50 pcent resistance
+#' @param plot_mort whether to add mortality to plots
 #' 
 #' @examples 
 #' run_rot(rot_interval=100)
@@ -53,7 +55,8 @@ run_rot <- function(max_gen = 200,
                     n_insecticides = 4, 
                     start_freqs = 0.01,
                     rot_interval = 10, 
-                    rot_criterion = 0.5, 
+                    threshold = 0.5, 
+                    mort_or_freq = 'mort', #'freq'
                     migration = 0.01, 
                     #migrate_intervention = 0.01, 
                     coverage = 0.8, 
@@ -80,7 +83,8 @@ run_rot <- function(max_gen = 200,
                     #same_insecticides = TRUE,
                     #hardcode_exposure = FALSE,
                     logy = TRUE,
-                    add_gens_under50 = FALSE ) 
+                    add_gens_under50 = FALSE,
+                    plot_mort = TRUE ) 
   {
   
   
@@ -366,10 +370,14 @@ run_rot <- function(max_gen = 200,
     change_insecticide <- insecticide_check( RAF1gen = RAF[,,,gen, drop=FALSE],
                                              current_insecticide, 
                                              rot_interval=rot_interval, 
-                                             rot_criterion=rot_criterion, 
+                                             threshold=threshold,
+                                             mort_or_freq=mort_or_freq,
                                              gens_this_insecticide=gens_this_insecticide,
                                              min_rwr_interval=min_rwr_interval,
-                                             exit_rot=exit_rot)
+                                             exit_rot=exit_rot,
+                                             eff=eff,
+                                             dom_sel=dom_sel,
+                                             rr=rr)
 
     
     if (! change_insecticide)
@@ -383,12 +391,16 @@ run_rot <- function(max_gen = 200,
       current_insecticide <- insecticide_switch(RAF=RAF,
                                                 current_insecticide=current_insecticide,
                                                 n_insecticides=n_insecticides, 
-                                                rot_criterion=rot_criterion,
+                                                threshold=threshold,
+                                                mort_or_freq=mort_or_freq,
                                                 gen=gen,
                                                 min_gens_switch_back=min_gens_switch_back,
                                                 df_ins=df_ins,
                                                 df_results=df_results,
-                                                diagnostics=diagnostics)
+                                                diagnostics=diagnostics,
+                                                eff=eff,
+                                                dom_sel=dom_sel,
+                                                rr=rr)
     } 
   
     #message("gen", gen, " curr_ins=", current_insecticide, " change=", change_insecticide)
@@ -412,7 +424,7 @@ run_rot <- function(max_gen = 200,
     # if no suitable insecticide left, break out of generations loop
     if (current_insecticide == 0) #(next_insecticide_found==0)
     {
-      if (diagnostics) message(sprintf("\nsimulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  rot_criterion))
+      if (diagnostics) message(sprintf("\nsimulation terminating at generation %d because all RAFs above threshold of %f\n", gen,  threshold))
       for (temp_int in 1:n_insecticides)
       {
         if (diagnostics) message(sprintf("frequency of resistance in females to insecticide %d is %f", temp_int, RAF[temp_int, 'f','intervention', gen]))  
@@ -490,7 +502,7 @@ run_rot <- function(max_gen = 200,
     # for all insecticides in all generations  
     # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
     # just for deployed insecticides 
-    summarise(gens_dep_under50 = sum(.data$resistance < rot_criterion &
+    summarise(gens_dep_under50 = sum(.data$resistance < threshold &
                                        #finds insecticide in use = this one
                                        .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE)) %>%
     #summarise(tot_dep_gens_under50 = sum(gens_dep_under50)) %>%    
@@ -503,7 +515,8 @@ run_rot <- function(max_gen = 200,
   # do the plots
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
                                 logy=logy, add_gens_under50=add_gens_under50,
-                                rot_criterion=rot_criterion)
+                                threshold=threshold,
+                                plot_mort=plot_mort)
 
   
   invisible(df_res2)

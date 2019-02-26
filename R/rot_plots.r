@@ -2,14 +2,15 @@
 #'
 #' @param df_res2 dataframe of resistance results from run_rot()
 #' @param plot_refuge whether to plot refuge as well as intervention
-#' @param rot_criterion resistant allele frequency threshold to add to plots, set to NULL to not add
+#' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
+#' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
 #' @param lwd line thickness for resistance curves
 #' @param title optional title for plot, NULL for no title
 #' @param plot whether to plot results
-#' @param plot_mortality whether to add mortality to plots
+#' @param plot_mort whether to add mortality to plots
 #'
 # check said that namespace dependencies not required
 # @import ggplot2
@@ -25,14 +26,15 @@
 #' 
 rot_plot_resistance <- function(df_res2,
                                 plot_refuge = TRUE,
-                                rot_criterion = 0.5,
+                                threshold = 0.5,
+                                mort_or_freq = 'mort',
                                 logy = TRUE,
                                 add_gens_under50 = TRUE,
                                 df_resanother = NULL,
                                 lwd = 1.5,
                                 title = NULL,
                                 plot = TRUE,
-                                plot_mortality = TRUE) {
+                                plot_mort = TRUE) {
   
   # column names of input dataframe
   # "generation"  "insecticide"     "resist_gene"  "active_or_refuge" "resistance"
@@ -67,13 +69,16 @@ rot_plot_resistance <- function(df_res2,
 
   # testing adding mortality to the plot
   # note mortality currently added in run_rot but actually we can calc from fixed conversion
-  if (plot_mortality) {
-    #gg <- ggplot( df_res2, aes_string(x='generation',y='mortality')) +
-    #  geom_line( alpha=0.5, lwd=lwd, colour='red3' )
+  if (plot_mort) {
+
+    # set y intercept for horiz line to threshold if mort, otherwise default to 0.9
+    if (mort_or_freq=='mort') yintercept <- threshold
+    else yintercept <- 0.9
+    
     dfactive <- df_res2[df_res2$active_or_refuge=='active',]
     gg <- gg +
       # add 90% mortality threshold
-      geom_hline(yintercept=0.9, colour='green', linetype=3) +
+      geom_hline(yintercept=yintercept, colour='green', linetype=3) +
     #  geom_line( aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='purple', linetype=3 )    
       geom_line( data=dfactive, aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='darkgreen', linetype=1 )    
 
@@ -114,7 +119,13 @@ rot_plot_resistance <- function(df_res2,
     theme_minimal() +
     
     # add line at resistance threshold
-    if (! is.null(rot_criterion)) geom_hline(yintercept=rot_criterion, linetype=3) 
+    # set y intercept for horiz line to threshold if freq, otherwise default to 0.5
+    if (! is.null(threshold))
+    {
+      if (mort_or_freq=='freq') yintercept <- threshold
+      else yintercept <- 0.5
+      geom_hline(yintercept=yintercept, linetype=3)       
+    }
   
   # experimenting with plotting a 2nd scenario on the same graph
   if (!is.null(df_resanother))

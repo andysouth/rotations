@@ -181,24 +181,24 @@ Still little difference between sequence and rotation.
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 0"}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, rot_criterion = 0.9, start_freqs = 0.001)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, threshold = 0.9, start_freqs = 0.001)
 
 ```
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 0."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, rot_criterion = 0.9, start_freqs = 0.001)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 0, threshold = 0.9, start_freqs = 0.001)
 
 ```
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 1."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, rot_criterion = 0.9, start_freqs = 0.001)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=0, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, threshold = 0.9, start_freqs = 0.001)
 
 ```
 
 ```{r, eval=TRUE, fig.height=2.5, fig.width=7, fig.show='hold', fig.align='left', fig.cap="dominance of cost 1."}
 
-dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, rot_criterion = 0.9, start_freqs = 0.001)
+dfr <- run_rot(n_insecticides=2, max_gen = 200, rot_interval=10, expo_hi=0.5, eff=0.8, cost=0.005, coverage=1, migration = 0, dom_cos = 1, threshold = 0.9, start_freqs = 0.001)
 
 ```

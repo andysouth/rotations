@@ -4,7 +4,9 @@
 #' threshold while that insecticide is deployed.
 #'
 #' @param dfres dataframe of resistance results from run_rot()
-#' @param rot_criterion resistant allele frequency threshold
+#' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
+#' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
+#' 
 # @import ggplot2
 #' @importFrom rlang .data
 #' @return integer num generations
@@ -16,23 +18,35 @@
 #' 
 
 gens_under_thresh <- function(dfres,
-                              rot_criterion = 0.5)
+                              threshold = 0.5,
+                              mort_or_freq = 'freq')
 {
 
 
 res <- dfres %>%
   # only assess in control areas not in refugia  
   dplyr::filter(.data$active_or_refuge=='active') %>%
-  group_by(.data$resist_gene) %>%
+  group_by(.data$resist_gene)
   # for all insecticides in all generations  
   # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
   # summarise(mean_gens_under50 = mean(gens_under50)) %>%
   # just for deployed insecticides 
-  summarise(gens_dep_under50 = sum(.data$resistance < rot_criterion &
-                                     #finds insecticide in use = this one
-                                     .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE)) %>%
-  summarise(tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%    
-  unlist()
+  ## TODO check change this to 1-.data$mortality for when freq_or_mort == 'mort 
+if ( mort_or_freq == 'freq' )
+  res <- summarise(res, gens_dep_under50 = sum(.data$resistance < threshold &
+                                   #finds insecticide in use = this one
+                                   .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))
+
+else if ( mort_or_freq == 'mort' )
+{
+  res <- summarise(res, gens_dep_under50 = sum(.data$mortality < threshold &
+                                                 #finds insecticide in use = this one
+                                                 .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))
+}
+        
+    
+summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%    
+unlist()
 
 return(res)
 

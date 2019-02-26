@@ -4,8 +4,9 @@
 \alias{insecticide_switch}
 \title{insecticide_switch choose a new insecticide to switch to}
 \usage{
-insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion,
-  gen, min_gens_switch_back, df_ins, df_results, diagnostics)
+insecticide_switch(RAF, current_insecticide, n_insecticides, threshold,
+  mort_or_freq, gen, min_gens_switch_back, df_ins, df_results, diagnostics,
+  eff, dom_sel, rr)
 }
 \arguments{
 \item{RAF}{array of resistance allele frequencies}
@@ -14,7 +15,9 @@ insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion,
 
 \item{n_insecticides}{number of insecticides (and hence loci)}
 
-\item{rot_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
+\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+
+\item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 
 \item{gen}{generation number}
 
@@ -25,6 +28,12 @@ insecticide_switch(RAF, current_insecticide, n_insecticides, rot_criterion,
 \item{df_results}{results of sim so far}
 
 \item{diagnostics}{whether to output running info}
+
+\item{eff}{effectiveness, for all insecticides or individually}
+
+\item{dom_sel}{dominance of selection, for all insecticides or individually}
+
+\item{rr}{resistance restoration, for all insecticides or individually}
 }
 \value{
 integer : insecticide number to switch to, if 0 none found

@@ -4,8 +4,9 @@
 \alias{insecticide_check}
 \title{insecticide_check check if insecticide needs to be changed}
 \usage{
-insecticide_check(RAF1gen, current_insecticide, rot_interval,
-  rot_criterion, gens_this_insecticide, min_rwr_interval, exit_rot)
+insecticide_check(RAF1gen, current_insecticide, rot_interval, threshold,
+  mort_or_freq, gens_this_insecticide, min_rwr_interval, exit_rot, eff,
+  dom_sel, rr)
 }
 \arguments{
 \item{RAF1gen}{single generation array of resistance allele frequencies}
@@ -14,13 +15,23 @@ insecticide_check(RAF1gen, current_insecticide, rot_interval,
 
 \item{rot_interval}{frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant}
 
-\item{rot_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
+\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+
+\item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 
 \item{gens_this_insecticide}{num generations this insecticide has been used for}
 
 \item{min_rwr_interval}{minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.}
 
-\item{exit_rot}{whether to exit rotation interval if rot_criterion is reached}
+\item{exit_rot}{whether to exit rotation interval if threshold is reached}
+
+\item{eff}{effectiveness propn. SS killed by insecticide, for all insecticides or individually}
+
+\item{dom_sel}{dominance of selection, for all insecticides or individually}
+
+\item{rr}{resistance restoration, for all insecticides or individually}
+
+\item{dom_cos}{dominance of cost, for all insecticides or individually}
 }
 \value{
 TRUE/FALSE whether to change

@@ -1837,8 +1837,35 @@ Best to set logy to F to be able to see 90% mort
 
 dfr <- run_rot(start_freqs = 0.0001, eff=1, logy=FALSE)
 
+# 26/2/2019
+
+starting to get mortality switch working.
+
+seems OK from messages but plots don't look right 
+
+in the plots looks like still responding to frequency rather than mortality ??
+
+Something a bit weird going on ...
+Currently the threshold mortality is not reached in the plots, but seems that frequency is. 
+
+Fixed!!! mostly a problem that eff,dom_sel,rr was not passed to new calc functions (and I didn't notice because they had defaults).
+
+dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
+
 
 # TODO
+
+~ fix that mortality calc in plots and that for switching is currently repeated
+~ check it works with diff insecticides i.e. eff=c(0.7,0.8,0.9) I suspect not because mort_from_resist() or something else not properly vectorised.
+
+
+whatever I do I need to make mort/survival thing more transparent
+
+options
+~ pass as mortality and then convert to survival for calculation
+~ pass as survival convert to mortality for plot
+
+
 
 ~ change origin of git repo in RStudio, probably need to do from git
 
@@ -1847,10 +1874,6 @@ dfr <- run_rot(start_freqs = 0.0001, eff=1, logy=FALSE)
 ~ do I need to be able to plot mortality over time ?
 ~~ on the same graph as resistance frequency or a different one ?
 
-
-
-
-# todo: we want to look at changing insecticides according to mortality rather than resistance frequency
 
 # Jim suggests making flow chart
 
@@ -1950,7 +1973,6 @@ think about killer plot to display difference between rot & seq generations
 
 
 ~ maybe come back to i_in_use ribbons not meeting issue
-~ rename rot_criterion to rot_threshold
 ~ add in some unit-tests ?
 ~ check how gens_under_thresh are counted in sensi_an_rotations1
     summarise(gens_dep_under50 = sum(resistance < 0.5 &

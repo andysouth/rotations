@@ -5,14 +5,14 @@
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
 run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
-  rot_interval = 10, rot_criterion = 0.5, migration = 0.01,
-  coverage = 0.8, start_insecticide = 1, expo_hi = 0.8,
-  expo_lo = 0, male_expo_prop = 1, eff = 0.8, dom_sel = 0.5,
-  dom_cos = 0.5, rr = 0.5, cost = 0.1, fitSS = 1,
+  rot_interval = 10, threshold = 0.5, mort_or_freq = "mort",
+  migration = 0.01, coverage = 0.8, start_insecticide = 1,
+  expo_hi = 0.8, expo_lo = 0, male_expo_prop = 1, eff = 0.8,
+  dom_sel = 0.5, dom_cos = 0.5, rr = 0.5, cost = 0.1, fitSS = 1,
   min_rwr_interval = 1, no_r_below_start = TRUE,
   no_r_below_mut = FALSE, exit_rot = TRUE, min_gens_switch_back = 10,
   plot = TRUE, diagnostics = FALSE, logy = TRUE,
-  add_gens_under50 = FALSE)
+  add_gens_under50 = FALSE, plot_mort = TRUE)
 }
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
@@ -21,9 +21,11 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{start_freqs}{starting frequencies of resistance either one per insecticide or same for all}
 
-\item{rot_interval}{frequency of rotation (in generations) NB if set to zero mean RwR i.e. rotate when resistant}
+\item{rot_interval}{frequency of rotation (in generations) if set to zero means sequence, i.e. change when threshold reached}
 
-\item{rot_criterion}{resistant allele frequency that triggers a RwR change or precludes a insecticide from being rotated in.}
+\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+
+\item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 
 \item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 
@@ -37,7 +39,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{male_expo_prop}{proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)}
 
-\item{eff}{effectiveness, for all insecticides or individually}
+\item{eff}{effectiveness propn. SS killed by insecticide, for all insecticides or individually}
 
 \item{dom_sel}{dominance of selection, for all insecticides or individually}
 
@@ -55,7 +57,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{no_r_below_mut}{to stop resistance frequencies going below mutation-selection balance TRUE or FALSE}
 
-\item{exit_rot}{whether to exit rotation interval if rot_criterion is reached}
+\item{exit_rot}{whether to exit rotation interval if threshold is reached}
 
 \item{min_gens_switch_back}{minimum num gens before can switch back to an insecticide}
 
@@ -66,6 +68,8 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 \item{logy}{whether to use log scale for y axis}
 
 \item{add_gens_under50}{whether to add a label of num generations under 50 pcent resistance}
+
+\item{plot_mort}{whether to add mortality to plots}
 }
 \value{
 dataframe of results
