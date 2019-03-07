@@ -56,9 +56,12 @@ rot_plot_resistance <- function(df_res2,
   # only colour by active_or_refuge if there is a refuge
   if (plot_refuge) {
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge') ) +
-    geom_line( alpha=0.5, lwd=lwd ) +
+    geom_line( alpha=0.5, lwd=lwd )
     #legend for the lines, allows me to set title & labels  
-    scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
+    if (!plot_mort & mort_or_freq=='freq')
+    {
+      gg <- gg + scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
+    }
   }   else
   {
     gg <- ggplot( df_res2, aes_string(x='generation',y='resistance')) +
@@ -72,16 +75,44 @@ rot_plot_resistance <- function(df_res2,
   if (plot_mort) {
 
     # set y intercept for horiz line to threshold if mort, otherwise default to 0.9
-    if (mort_or_freq=='mort') yintercept <- threshold
-    else yintercept <- 0.9
+    # TODO change yintercept bit only plot one thresh
+    if (mort_or_freq=='mort') 
+    {
+      yintercept <- threshold 
+      thresh_name <- "threshold mortality"
+      thresh_col <- "green"
+    }
+    else 
+    {
+      yintercept <- 0.9
+      thresh_name <- "threshold resistance"
+      thresh_col <- "red"      
+    }
+
     
     dfactive <- df_res2[df_res2$active_or_refuge=='active',]
     gg <- gg +
       # add 90% mortality threshold
-      geom_hline(yintercept=yintercept, colour='green', linetype=3) +
+      # BEWARE the colour='dummy' in here is critical to get other lines to appear in legend
+      geom_hline(aes(yintercept=yintercept, colour='dummy'), linetype=3) + #, show.legend=TRUE
     #  geom_line( aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='purple', linetype=3 )    
-      geom_line( data=dfactive, aes_string(x='generation',y='mortality'), alpha=0.5, lwd=1, colour='darkgreen', linetype=1 )    
-
+      geom_line( data=dfactive, aes(x=generation,y=mortality,colour='mortality'), 
+                 alpha=0.5, lwd=1, linetype=1) + #, colour='darkgreen'
+      #this just added green on top of existing legend colours
+      #, show.legend=TRUE )
+      
+      #trying & initially failing to get mortality line to appear in legend 
+      #fiddled with the orders of values & labels to get to correspond to lines
+      scale_colour_manual("areas connected\nby migration",values=c("red3",thresh_col,"darkgreen","navy"), 
+                           labels=c("resistance\nin treated",thresh_name,"mortality in treated","resistance in\nuntreated refugia"),
+                           guide = guide_legend(linetype=c(1,3,1,1)))
+                           #guide = guide_legend(override.aes = list(fill = NA)))
+    
+      
+      #legend for mortality, allows me to set title & labels  
+      #but this overwrites other legend
+      # scale_colour_manual("mortality",values=c("darkgreen","darkgreen"), labels=c("assay","threshold"),
+      #                     guide = guide_legend(override.aes = list(fill = NA)))
     
     }  
    
@@ -89,7 +120,7 @@ rot_plot_resistance <- function(df_res2,
 
     facet_wrap('resist_gene', ncol=1) +
     
-    ylab("resistance allele frequency") +
+    #ylab("resistance allele frequency") +
     
     #theme(axis.text.x = element_blank()) +
     
@@ -120,12 +151,19 @@ rot_plot_resistance <- function(df_res2,
     
     # add line at resistance threshold
     # set y intercept for horiz line to threshold if freq, otherwise default to 0.5
-    if (! is.null(threshold))
+    # stopped plotting this when thresh is mortality
+    # BEWARE value of plot_mort too
+    if (! is.null(threshold) & mort_or_freq=='freq')
     {
       if (mort_or_freq=='freq') yintercept <- threshold
       else yintercept <- 0.5
-      geom_hline(yintercept=yintercept, linetype=3)       
+      geom_hline(yintercept=yintercept, linetype=3, colour='red')       
     }
+  
+    if (plot_mort) gg <- gg + ylab("resistance frequency or mortality")
+    else gg <- gg + ylab("resistance allele frequency")
+  
+  
   
   # experimenting with plotting a 2nd scenario on the same graph
   if (!is.null(df_resanother))

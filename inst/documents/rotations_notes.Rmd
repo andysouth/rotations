@@ -1852,8 +1852,46 @@ Fixed!!! mostly a problem that eff,dom_sel,rr was not passed to new calc functio
 
 dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
 
+1/3/19
+
+Had idea to try to plot regio of parameter space where mortality less than 90%.
+Not sure it is very useful, but did make a start.
+
+see plot_mort_thresh.r
+
+5/3/19
+~ added mort_or_freq switch to rotresist1/ui.r
+~ added threshold to UI
+
+7/3/19
+
+Using mortality switch for sequences, currently it switches back to other insecticides even when they are below threshold.
+
+Aha I think that is due to the min_rwr_interval. When it is set to 0 then the sim doesn't proceed.
+
+~ struggled to add legend for green mortality lines
+fixed now
+
+
+
 
 # TODO
+
+fix error
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 10 , eff = 0.95 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
+
+~ rot_interval > 0
+in insecticide_check()
+Error in genotype_freq(rfreq) : 
+  argument "rfreq" is missing, with no default
+
+~ publish to shinyapps and send link to Ian
+
+~ try to fix that min_rwr_interval seems to allow switching back to insecticides
+
+~ check that per-diem for Geneva made it to my bank
+
+dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
 
 ~ fix that mortality calc in plots and that for switching is currently repeated
 ~ check it works with diff insecticides i.e. eff=c(0.7,0.8,0.9) I suspect not because mort_from_resist() or something else not properly vectorised.
