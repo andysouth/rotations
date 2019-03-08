@@ -180,7 +180,7 @@ shinyUI(fluidPage( theme = "bootstrap_simplex.css",
     column(1, h6("Advanced options :")),
     column(1, checkboxInput("no_r_below_start", "no_r_below_start", FALSE)), 
     column(1, NULL),
-    column(1, sliderInput("min_rwr_interval", "min rwr interval", val=5, min = 0, max = 20, step = 1, ticks=FALSE))
+    column(1, sliderInput("min_rwr_interval", "min rwr interval", val=0, min = 0, max = 20, step = 1, ticks=FALSE))
            
   ) #end fluid row
 

@@ -1872,18 +1872,18 @@ Aha I think that is due to the min_rwr_interval. When it is set to 0 then the si
 ~ struggled to add legend for green mortality lines
 fixed now
 
-
+8/3/19
+eeek, found that there is a cran package called rotations, and this seems to be messing up deployment to shinyapps
 
 
 # TODO
 
-fix error
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 10 , eff = 0.95 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
+why in this scenario does it rotate insecticides even though it starts below mortality threshold
+(to do with min_rwr threshold)
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 0 , eff = 0.9 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.6 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
 
-~ rot_interval > 0
-in insecticide_check()
-Error in genotype_freq(rfreq) : 
-  argument "rfreq" is missing, with no default
+
+~ fix plot error when coverage==1
 
 ~ publish to shinyapps and send link to Ian
 

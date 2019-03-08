@@ -15,6 +15,7 @@
 #' @param dom_sel dominance of selection, for all insecticides or individually
 #' @param dom_cos dominance of cost, for all insecticides or individually
 #' @param rr resistance restoration, for all insecticides or individually 
+#' @param diagnostics whether to output running info
 
 # @examples 
 #' 
@@ -32,7 +33,8 @@ insecticide_check <- function( RAF1gen,
                                exit_rot,
                                eff,
                                dom_sel,
-                               rr
+                               rr,
+                               diagnostics = FALSE
                               ) 
 {
   #check that required value
@@ -66,8 +68,8 @@ insecticide_check <- function( RAF1gen,
     }
 
     
-
-    message(paste0("insecticide",current_insecticide, " check=",check_value, 
+    if (diagnostics)
+      message(paste0("insecticide",current_insecticide, " check=",check_value, 
                    " freq=", freq,
                    " surv=", surv
     ))
@@ -80,7 +82,8 @@ insecticide_check <- function( RAF1gen,
     {
       change_insecticide <- TRUE 
       
-      message(paste0("change from insecticide",current_insecticide, " check=",check_value,"\n"))
+      if (diagnostics)
+         message(paste0("change from insecticide",current_insecticide, " check=",check_value,"\n"))
     }
     
 
@@ -109,9 +112,7 @@ insecticide_check <- function( RAF1gen,
       # convert to survival if mortality option is selected
       # BEWARE mort-survival conversion
       # then check is if value is < survival same as for frequency
-      # ARG can't do this because mort_from_resist is not vectorised
-      # sapply fixes it
-      #PROBLEM HERE giving arg 'rfreq' is missing error from UI
+      # sapply allows mort_from_resist to be applied to all
       if (mort_or_freq == 'mort' & length(other_ins_checks)>0 ) 
       {
         #other_ins_checks <- 1 - mort_from_resist(other_ins_checks)       

@@ -377,7 +377,8 @@ run_rot <- function(max_gen = 200,
                                              exit_rot=exit_rot,
                                              eff=eff,
                                              dom_sel=dom_sel,
-                                             rr=rr)
+                                             rr=rr,
+                                             diagnostics=diagnostics)
 
     
     if (! change_insecticide)

@@ -6,7 +6,7 @@
 library(shiny)
 #before deploying to shinyapps need to install rotations from github
 #library(devtools)
-#install_github('ian-hastings/rotations')
+#install_github('AndySouth/rotations')
 library(rotations)
 
 
