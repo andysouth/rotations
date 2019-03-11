@@ -9,19 +9,19 @@
 #' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
 #' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
 #' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
-#' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).
+#' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia), if coverage set to 1 no refugia.
 #' @param start_insecticide which insecticide to start with
-#' @param expo_hi exposure to insecticide in hi niche, either single or vector of 1 per insecticide
-#' @param expo_lo exposure to insecticide in lo niche, either single or vector of 1 per insecticide
-#' @param male_expo_prop proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
-#' @param eff effectiveness propn. SS killed by insecticide, for all insecticides or individually
+#' @param expo_hi proportion of females exposed to insecticide in hi niche, either single or vector of 1 per insecticide
+#' @param expo_lo optional proportion of females exposed to insecticide in lo niche, either single or vector of 1 per insecticide
+#' @param male_expo_prop proportion that males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)
+#' @param eff effectiveness propn. SS killed by insecticide, one value for all insecticides or individually
 #' @param dom_sel dominance of selection, for all insecticides or individually
 #' @param dom_cos dominance of cost, for all insecticides or individually
-#' @param rr resistance restoration, for all insecticides or individually 
+#' @param rr resistance restoration, how much resistance restores fitness of RR in presence of insecticide, for all insecticides or individually 
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
-#' @param fitSS fitness of SS if no insecticide, for all insecticides or individually
+#' @param fitSS fitness of SS if no insecticide, usually assumed to be 1, for all insecticides or individually
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
-#' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE
+#' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE, beware can cause odd results
 #' @param no_r_below_mut to stop resistance frequencies going below mutation-selection balance TRUE or FALSE
 #' @param exit_rot whether to exit rotation interval if threshold is reached
 #' @param min_gens_switch_back minimum num gens before can switch back to an insecticide
@@ -107,7 +107,7 @@ run_rot <- function(max_gen = 200,
   df_mortali <- df_results
   
   
-  # 11/5/18 adding an df to store for each insecticide the last time it was used
+  # 11/5/18 adding a df to store for each insecticide the last time it was used
   df_ins <- data.frame(last_used=rep(Inf, n_insecticides))
   # set value for this to 0 each time an insecticide is in use
   # each generation if the value is not Inf add 1 to it for all insecticides not in use
@@ -292,13 +292,10 @@ run_rot <- function(max_gen = 200,
       
       
       # 13/2/2019 put something here to calculate mortality
-      #from bioassays so assumes all exposed and exposure doesn't need to be included
-      # maybe can just pass RAF and fitness to a function ?
-      # can I do for all insecticides and sites at once ?
+      # from bioassays so assumes all exposed and exposure doesn't need to be included
       # this does for m & f, even though only probably need for f
       # TODO make this dryer and more efficient
       # freqs are calculated by HardyWeinberg
-      # currently in first example mortalities always below 0.785 ?
       freqRR <- RAF[insecticide,,,gen-1]^2
       mortRR <- freqRR * (1 - fitness[insecticide, 'RR', 'hi'])
       freqSR <- 2 * RAF[insecticide,,,gen-1] * (1-RAF[insecticide,,,gen-1])
@@ -311,7 +308,6 @@ run_rot <- function(max_gen = 200,
       a_mort[insecticide,'f','intervention',gen-1] <- mort
       
       #cat(mort," ")
-      # end temp new bit
       
      } #end of cycling insecticides
     
