@@ -1878,10 +1878,22 @@ but was OK when I installed my rotations from github
 
 ~ published to shinyapps and sent link to Ian
 
+12/03/19
+~ change origin of git repo in RStudio, probably need to do from git
+remote: This repository moved. Please use the new location:        
+remote:   git@github.com:AndySouth/rotations.git    
+from the commandline :
+git remote rm origin
+git remote add origin git@github.com:AndySouth/rotations.git
+
+
 
 # TODO
 
-~ change origin of git repo in RStudio, probably need to do from git
+
+
+
+
 
 ~~ why in this scenario does it rotate insecticides even though it starts below mortality threshold
 (to do with min_rwr threshold)
