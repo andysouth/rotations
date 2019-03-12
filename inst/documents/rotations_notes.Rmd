@@ -1874,18 +1874,20 @@ fixed now
 
 8/3/19
 eeek, found that there is a cran package called rotations, and this seems to be messing up deployment to shinyapps
+but was OK when I installed my rotations from github
+
+~ published to shinyapps and sent link to Ian
 
 
 # TODO
 
-why in this scenario does it rotate insecticides even though it starts below mortality threshold
+~ change origin of git repo in RStudio, probably need to do from git
+
+~~ why in this scenario does it rotate insecticides even though it starts below mortality threshold
 (to do with min_rwr threshold)
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 0 , eff = 0.9 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.6 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
 
-
 ~ fix plot error when coverage==1
-
-~ publish to shinyapps and send link to Ian
 
 ~ try to fix that min_rwr_interval seems to allow switching back to insecticides
 
@@ -1896,6 +1898,7 @@ dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort'
 ~ fix that mortality calc in plots and that for switching is currently repeated
 ~ check it works with diff insecticides i.e. eff=c(0.7,0.8,0.9) I suspect not because mort_from_resist() or something else not properly vectorised.
 
+~ TIDY UP CODE AND IMPROVE DOCUMENTATION e.g. function args
 
 whatever I do I need to make mort/survival thing more transparent
 
@@ -1904,13 +1907,8 @@ options
 ~ pass as survival convert to mortality for plot
 
 
-
-~ change origin of git repo in RStudio, probably need to do from git
-
 ~ recording mortality - is now the time to try and record data in a 'tidier' way ?
 
-~ do I need to be able to plot mortality over time ?
-~~ on the same graph as resistance frequency or a different one ?
 
 
 # Jim suggests making flow chart
@@ -2024,10 +2022,6 @@ dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff
 dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
 rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 
-
-~ move github repo back to mine
-~~ From Github I merged changes from Ians with a pull request after comparing across the forks.
-~~ Now I can possibly change RStudio to point to the repo on my Github (do when I have a bit more time)
 
 
 
