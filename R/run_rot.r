@@ -296,13 +296,18 @@ run_rot <- function(max_gen = 200,
       # this does for m & f, even though only probably need for f
       # TODO make this dryer and more efficient
       # freqs are calculated by HardyWeinberg
-      freqRR <- RAF[insecticide,,,gen-1]^2
+      #freqRR <- RAF[insecticide,,,gen-1]^2
+      # TRY TO STOP LOSING INTERVENTION dimension when coverage=1
+      # BUT can't do that because rely on losing other dimensions
+      freq <- abind::adrop(RAF[insecticide,,,gen-1, drop=FALSE], drop=c(1,4))
+      freqRR <- freq^2     
       mortRR <- freqRR * (1 - fitness[insecticide, 'RR', 'hi'])
-      freqSR <- 2 * RAF[insecticide,,,gen-1] * (1-RAF[insecticide,,,gen-1])
+      freqSR <- 2 * freq * (1-freq)
       mortSR <- freqSR * (1 - fitness[insecticide, 'RS', 'hi'])
-      freqSS <- (1-RAF[insecticide,,,gen-1])^2
+      freqSS <- (1-freq)^2
       mortSS <- freqSS * (1 - fitness[insecticide, 'SS', 'hi'])      
       # only for f in the intervention site
+      # TODO this fails if coverage==1, because no intervention dimension in the array
       mort <- mortRR['f','intervention'] + mortSR['f','intervention'] + mortSS['f','intervention']
       #save
       a_mort[insecticide,'f','intervention',gen-1] <- mort
