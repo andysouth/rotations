@@ -44,10 +44,10 @@ else if ( mort_or_freq == 'mort' )
                                                  .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))
 }
         
-    
-summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%    
+##14/6/19 corrected bug here by adding back res <-      
+res <- summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%    
 unlist()
 
-return(res)
+return(res) 
 
 }
