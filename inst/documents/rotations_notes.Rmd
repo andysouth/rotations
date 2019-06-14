@@ -1878,7 +1878,7 @@ but was OK when I installed my rotations from github
 
 ~ published to shinyapps and sent link to Ian
 
-12/03/19
+#12/03/19
 ~ change origin of git repo in RStudio, probably need to do from git
 remote: This repository moved. Please use the new location:        
 remote:   git@github.com:AndySouth/rotations.git    
@@ -1886,20 +1886,41 @@ from the commandline :
 git remote rm origin
 git remote add origin git@github.com:AndySouth/rotations.git
 
+#14/06/2019
+Testing before sending to Sam.
+Error in mortRR["f", "intervention"] : incorrect number of dimensions
+
+This is when coverage set to 1, because there is no intervention dimension in mortRR[] in run_tot()
+
+fixed
+
+then got this from the script because it is trying to cast a tibble with an insecticide column and gens to a number
+Error: (list) object cannot be coerced to type 'double'
+
+so I modified gens_under_thresh() to just return the numeric column
+
+BUT this doesn't solve and I don't know why this problem appeared when it wasn't there before ???
+
+gens_under_thresh() is giving one row per insecticide, is that what I'm expecting ??
+No it is supposed to be :
+'the sum across all insecticides for the number of generations below threshold while that insecticide is deployed'
+
+so why has it changed ?? BUG introduced by the mortality addition
+##14/6/19 corrected bug here by adding back res <-      
+res <- summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%  
+
 
 
 # TODO
 
 
-
-
+~ fix plot error when coverage==1
 
 
 ~~ why in this scenario does it rotate insecticides even though it starts below mortality threshold
 (to do with min_rwr threshold)
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 0 , eff = 0.9 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.6 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
 
-~ fix plot error when coverage==1
 
 ~ try to fix that min_rwr_interval seems to allow switching back to insecticides
 

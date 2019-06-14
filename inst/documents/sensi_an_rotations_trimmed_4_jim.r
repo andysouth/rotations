@@ -6,13 +6,13 @@
 
 #install.packages("devtools")
 library(devtools)    
-install_github('ian-hastings/rotations', upgrade = 'never')  
+install_github('AndySouth/rotations', upgrade = 'never')  
 library(rotations)
 
-# linputs       a list of inputs for one scenario
-# run_rot()     runs a single scenario
-# dfres         detailed results from one scenario
-# df_res_all    summary results one row per scenario across all scenarios
+# linputs       list of inputs for one scenario
+# run_rot()     main function that runs a single scenario
+# dfres         dataframe with detailed results from one scenario
+# df_res_all    dataframe with summary results one row per scenario across all scenarios
 
 # example for 1 scenario
 # linputs <- list(max_gen = 50, n_insecticides = 2)
@@ -29,7 +29,7 @@ df_res_all <- data.frame()
 
 for(i in 1:n_scenarios)
 {
-  #message should output to the R markdown console
+  #message
   if (i%%200 == 1) message("scenario ",i," of ",n_scenarios," ",Sys.time())
   
   # blank list for inputs 
@@ -77,11 +77,7 @@ for(i in 1:n_scenarios)
   df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, id=i))
   df_in_out$rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
   
-  # previously I used rbind this scenario inputs & results onto previous
-  # not a good speed or memory way of doing
-  # df_res_all <- rbind(df_res_all, df_in_out)
   
-  # now replaced with this better way
   # set a dataframe for the outputs to the required size in scenario1
   if (i==1)
   {

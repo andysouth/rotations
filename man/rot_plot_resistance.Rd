@@ -5,8 +5,9 @@
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
 rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
-  logy = TRUE, add_gens_under50 = TRUE, df_resanother = NULL,
-  lwd = 1.5, title = NULL, plot = TRUE, plot_mort = TRUE)
+  mort_or_freq = "mort", logy = TRUE, add_gens_under50 = TRUE,
+  df_resanother = NULL, lwd = 1.5, title = NULL, plot = TRUE,
+  plot_mort = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
@@ -14,6 +15,8 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
 \item{plot_refuge}{whether to plot refuge as well as intervention}
 
 \item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+
+\item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 
 \item{logy}{whether to use log scale for y axis}
 
@@ -28,8 +31,6 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
 \item{plot}{whether to plot results}
 
 \item{plot_mort}{whether to add mortality to plots}
-
-\item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 }
 \value{
 ggplot object

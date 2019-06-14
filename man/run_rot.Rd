@@ -29,31 +29,31 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 
-\item{coverage}{proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia).}
+\item{coverage}{proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia), if coverage set to 1 no refugia.}
 
 \item{start_insecticide}{which insecticide to start with}
 
-\item{expo_hi}{exposure to insecticide in hi niche, either single or vector of 1 per insecticide}
+\item{expo_hi}{proportion of females exposed to insecticide in hi niche, either single or vector of 1 per insecticide}
 
-\item{expo_lo}{exposure to insecticide in lo niche, either single or vector of 1 per insecticide}
+\item{expo_lo}{optional proportion of females exposed to insecticide in lo niche, either single or vector of 1 per insecticide}
 
-\item{male_expo_prop}{proportion tht males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)}
+\item{male_expo_prop}{proportion that males are exposed relative to f, default 1, likely to be <1 (could possibly be a vector per insecticide)}
 
-\item{eff}{effectiveness propn. SS killed by insecticide, for all insecticides or individually}
+\item{eff}{effectiveness propn. SS killed by insecticide, one value for all insecticides or individually}
 
 \item{dom_sel}{dominance of selection, for all insecticides or individually}
 
 \item{dom_cos}{dominance of cost, for all insecticides or individually}
 
-\item{rr}{resistance restoration, for all insecticides or individually}
+\item{rr}{resistance restoration, how much resistance restores fitness of RR in presence of insecticide, for all insecticides or individually}
 
 \item{cost}{fitness cost of RR in no insecticide, for all insecticides or individually}
 
-\item{fitSS}{fitness of SS if no insecticide, for all insecticides or individually}
+\item{fitSS}{fitness of SS if no insecticide, usually assumed to be 1, for all insecticides or individually}
 
 \item{min_rwr_interval}{minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.}
 
-\item{no_r_below_start}{to stop resistance frequencies going below starting values TRUE or FALSE}
+\item{no_r_below_start}{to stop resistance frequencies going below starting values TRUE or FALSE, beware can cause odd results}
 
 \item{no_r_below_mut}{to stop resistance frequencies going below mutation-selection balance TRUE or FALSE}
 
