@@ -1,7 +1,8 @@
 # sensi_an_rotations_trimmed_4_jim.r 
 
 # Minimal example of sensitivity analysis for rotations for Jim Maas to investigat parallelisation potential."
-# andy south December 2018
+# and starting point for Sam Jones
+# andy south June 2019
 
 
 #install.packages("devtools")
