@@ -40,7 +40,12 @@ insecticide_switch <- function( RAF,
 {
   next_insecticide_found <- FALSE
   candidate <- current_insecticide 
-  
+
+  # for mortality convert mort thresh to survival
+  # then check is if value is < survival same as for frequency
+  # before 20/8/19 nasty bug that this conversion was in look below and got repeated
+  if (mort_or_freq == 'mort') threshold <- 1-threshold
+
   for(temp_int in 1:n_insecticides)
   {
     #search through insecticides and go back to start if reach end
@@ -57,22 +62,34 @@ insecticide_switch <- function( RAF,
     if (mort_or_freq == 'mort')
     {
       check_value <- 1-mort_from_resist(rfreq=check_value, eff=eff, dom_sel=dom_sel, rr=rr ) 
-      threshold <- 1-threshold
+      #don't want the below causes nasty bug due to multiple insecticides
+      #threshold <- 1-threshold
     }
 
-
+    # only switch to an insecticide that has lower frequency or survival than threshold
     if (check_value < threshold & 
         #optional condition of not going back to recently used insecticide
         df_ins$last_used[candidate] > min_gens_switch_back )
     {
       
-      if (diagnostics) message(sprintf("generation %d, switch from insecticide %d to %d; frequencies = %f and %f",
-                      gen, current_insecticide, candidate,
-                      RAF[current_insecticide, 'f','intervention', gen], RAF[candidate, 'f','intervention', gen]))
+      if (diagnostics) 
+      {
+        if (mort_or_freq == 'mort')
+        {
+          message(sprintf("generation %d, switch from insecticide %d to %d; new mortality vs threshold = %f vs %f",
+                          gen, current_insecticide, candidate,
+                          check_value, threshold)) 
+        } else
+        {
+          message(sprintf("generation %d, switch from insecticide %d to %d; new frequency vs threshold = %f and %f",
+                          gen, current_insecticide, candidate,
+                          check_value, threshold))           
+        }
+      }
+
       
       next_insecticide_found <- TRUE 
       current_insecticide <- candidate 
-      #change_insecticide <- 0 
     }
     
     if (next_insecticide_found) break   
