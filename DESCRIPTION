@@ -1,7 +1,7 @@
 Package: rotations
 Title: Simulating the Evolution of Insecticide Resistance under Rotations
 Version: 0.0.0.9000
-Authors@R: c(person("Ian", "Hastings", email = "Ian.Hastings@lstmed.ac.uk", role = c("aut")), person("Andy", "South", email = "southandy@gmail.com", role = c("aut", "cre")))
+Authors@R: c(person("Andy", "South", email = "southandy@gmail.com", role = c("aut", "cre")), person("Ian", "Hastings", email = "Ian.Hastings@lstmed.ac.uk", role = c("aut")))
 Description: Preliminary work simulating the population genetics of insecticide resistance evolution under rotation strategies.
 Depends: R (>= 3.4.0)
 License: Early work please don't use it yet, but do get in touch.
