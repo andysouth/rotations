@@ -1,6 +1,7 @@
 #' insecticide_switch choose a new insecticide to switch to
 #'
-#' 
+#' only gets called if insecticide_check() has already identified that the previous insecticide needed to be changed.   
+#' Checks that the new insecticide is below resistance or survival thresholds.
 #' 
 #' @param RAF array of resistance allele frequencies
 #' @param current_insecticide id number of current insecticide
@@ -62,7 +63,7 @@ insecticide_switch <- function( RAF,
     if (mort_or_freq == 'mort')
     {
       check_value <- 1-mort_from_resist(rfreq=check_value, eff=eff, dom_sel=dom_sel, rr=rr ) 
-      #don't want the below causes nasty bug due to multiple insecticides
+      #don't want the below causes nasty bug due to multiple insecticides, fixed by moving above outside loop
       #threshold <- 1-threshold
     }
 
