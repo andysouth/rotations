@@ -1909,6 +1909,30 @@ so why has it changed ?? BUG introduced by the mortality addition
 ##14/6/19 corrected bug here by adding back res <-      
 res <- summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%  
 
+# 20/8/19
+checking this message below from my notes, problem is that simulation continues even when mortality starts below thresholds. Inputs are set for sequence, what it does is switch between the insecticides for the min_rwr_interval. If the min_rwr_interval is set greater the length of the use periods increases too. 
+
+Probably I need to check that mortality not below threshold at start of the r_w_r interval ? In insecticide_check() 
+
+~~ why in this scenario does it rotate insecticides even though it starts below mortality threshold
+(to do with min_rwr threshold)
+run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 0 , eff = 0.9 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.6 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
+
+# this is the part in insecticide_check() that causes problem
+    if ( check_value > threshold &
+         #20/8/19 also this allows an inseticide to start being used even when outside threshold
+         gens_this_insecticide > min_rwr_interval )
+    {
+      change_insecticide <- TRUE 
+
+OR does it ? surely the problem is that insecticide_switch() is choosing an insecticide that is already outside threshold ?
+
+something weird going on in insecticide_switch() mortality threshold should be converted to survival for the comparison but doesn't seem to be :
+
+switch from insecticide 1 to 3; new mortality vs threshold = 0.100044 vs 0.900000
+
+AHA! NASTY BUG! there are multiple insecticides and it cycles through them because I do threshold <- 1-threshold that can give uncertain results.
+
 
 
 # TODO
@@ -1916,15 +1940,8 @@ res <- summarise(res, tot_gens_dep_under50 = sum(.data$gens_dep_under50)) %>%
 
 ~ fix plot error when coverage==1
 
+STill if have min_rwr_interval > 0 an insecticide at very start of simulation outside the threshold will continue to be used. Mostly I think min_rwr_interval not a good idea, but does kind of represent what you might expect to happen in field when it is set to a year i.e. that once sprayed can't be unsprayed.
 
-~~ why in this scenario does it rotate insecticides even though it starts below mortality threshold
-(to do with min_rwr threshold)
-run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 1e-04 , rot_interval = 0 , eff = 0.9 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.6 , migration = 0.01 , cost = 0.01 , logy = FALSE , no_r_below_start = FALSE , min_rwr_interval = 5 , threshold = 0.9 , mort_or_freq ='mort' )
-
-
-~ try to fix that min_rwr_interval seems to allow switching back to insecticides
-
-~ check that per-diem for Geneva made it to my bank
 
 dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
 
@@ -1940,11 +1957,7 @@ options
 ~ pass as survival convert to mortality for plot
 
 
-~ recording mortality - is now the time to try and record data in a 'tidier' way ?
 
-
-
-# Jim suggests making flow chart
 
 
 
@@ -1979,9 +1992,6 @@ Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
 But then when I start trying to look at it even from a new session it seems to dissappear.
 
 
-~ check on Rex consortium table of when rot better, what studies were they ? ag or pub health
-
-
 ~ check on 1000 runs with lower startfreqs and differing insecticides 
 ~ is something weird going on favouring rotations more when insecticides differ ?
 ~ yes
@@ -1989,8 +1999,6 @@ But then when I start trying to look at it even from a new session it seems to d
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
 ~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
 
-
-~ talk to Ian about Hackett2016 paper and whether we can use similarly simple model
 
 
 rotations paper :
@@ -2006,39 +2014,22 @@ small changes :
 ~ how to term success. 'At least one insecticide still below resistance thresholds' 
 
 
-
 Look into whether to use min_rwr_interval OR min_gens_switch_back 
 I'm thinking that I'll stick with min_rwr_interval
 
-Revisit Ians paragraph about the rare conditions that give large benefit to rotations.
-
-"Note however that this combination of recessive resistance and high dominance costs are exactly the features most desirable in any insecticide irrespective of how it is deployed. ... it is very difficult to maintain insecticide concentration at the level required to make resistance recessive. Concentrations decay post-application in most deployment strategies and this cause resistance to gradually change from being recessive to being dominant.""
-me is there anything similar on the dominance of costs ?
 
 I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
 
 May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
 
-In rotations and WoS MS we should talk about high dose/refuge strategy for transgenic crops (specifically Bt corn). The high dose part is that the dose is sufficiently high to kill all heterozygotes i.e. making resistance recessive. But if this was used across a large area the evolution of resistance would be very rapid - because only homozygous resistant individuals would be left. The refuge part is to provide a source of susceptible immigrants which can generate heterozygous offspring that are vulnerable to the dose. 
-
-~ try changing scenario 2167 from df_cost
-~~ initial attempts in UI not working
-~~ could it be that it requires just right combination of params and that modifying them just slightly removes the advantage for rotations ?
 
 ~ can I create some simple figs to illustrate how an increasing rate of resistance evolution with frequency can lead to rotations being favoured   
-~~ maybe just see how dom_cos changes shape of frequency plot
-~~ can I look at through UI ?
-
-~ save Ians comments on figY of
-
 
 
 ~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
 
 
 think about killer plot to display difference between rot & seq generations
-
-
 
 
 ~ maybe come back to i_in_use ribbons not meeting issue
@@ -2056,10 +2047,6 @@ dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff
 rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
 
 
-
-
-submit links to UIs and paper once it is published to :
-vectorlearningxchange.com
 
 
 ~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? I don't think so because it requires linkage.
@@ -2144,8 +2131,3 @@ Slater2016. Use of an individual-based simulation model to explore and evaluate 
 # useful
 ~ one generation per month, 12 (or 10) generations per year, 500 gens is ~40-50 years
 
-
-# funding opportunities
-https://lstmed.sharepoint.com/research/RBPS/Pages/Funding%20Information/Funding-Opportunities.aspx     
-https://www.researchprofessional.com/funding/simple?q=software#1509451534514
-                         
