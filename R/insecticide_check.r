@@ -1,6 +1,7 @@
 #' insecticide_check check if insecticide needs to be changed
 #'
-#' based on a fixed interval no. generations, or rotate-when-resistant if interval is 0
+#' based on a fixed interval no. generations, or rotate-when-resistant if interval is 0.    
+#' The actual switching of insecticides is done in insecticide_switch().
 #' 
 #' @param RAF1gen single generation array of resistance allele frequencies
 #' @param current_insecticide id number of current insecticide
@@ -42,7 +43,7 @@ insecticide_check <- function( RAF1gen,
   
   change_insecticide <- FALSE
   
-  # if rotate-when resistant OR exit_rot==TRUE so rotation can be exited
+  # if rotate-when-resistant OR exit_rot==TRUE so rotation can be exited
   if (rot_interval == 0 | exit_rot == TRUE)
   {  
     #BEWARE that switch criterion is female only
@@ -58,7 +59,7 @@ insecticide_check <- function( RAF1gen,
       
     check_value <- freq 
     
-    # convert to survival if mortality option is selected
+    # convert threshold to survival if mortality option is selected
     # BEWARE mort-survival conversion
     # then check is if value is > survival same as for frequency
     if (mort_or_freq == 'mort') 
@@ -71,13 +72,15 @@ insecticide_check <- function( RAF1gen,
     if (diagnostics)
       message(paste0("insecticide",current_insecticide, " check=",check_value, 
                    " freq=", freq,
-                   " surv=", surv
+                   " surv=", surv,
+                   " gens_this_insecticide=", gens_this_insecticide
     ))
         
     if ( check_value > threshold &
          #to add a min interval to stop lots short switches
          #BEWARE this min_rwr_interval can cause unexpected behaviour, 
          #e.g. can stop simulation ending when resistance threshold has been reached
+         #20/8/19 also this allows an insecticide to start being used even when outside threshold
          gens_this_insecticide > min_rwr_interval )
     {
       change_insecticide <- TRUE 
