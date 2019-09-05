@@ -1556,7 +1556,6 @@ double1                               9,6
 single                                7
 
 *13/7/18*
-
 ltst <- list(d=c(9,6),s=7)
 
 This nearly does what I want but loses names of columns
@@ -1574,10 +1573,7 @@ linputs2 <- lapply(linputs, toString)
 df_in_out <- as.data.frame(c(linputs2, gens_rot=gens_rot, gens_seq=gens_seq))
 
 Seems that with variable insecticides there are more runs where sequences are better (i.e. highly negative rot_minus_seq) ?
-
-See :
-df_res_all_rot1000-diffI-lowstart.rda
-
+See : df_res_all_rot1000-diffI-lowstart.rda
 
 *17/7/18*
 To be able to plot specific scenarios with different insecticides I need to get the strings that I saved above back into vectors.
@@ -1607,11 +1603,9 @@ This now works :
   linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
                                           as.numeric(unlist(strsplit(as.character(x),split=", "))))
 
-                                          
 Examples with different insecticides where sequences last much longer than rotations seem to be caused by one of the 3 insecticides lasting much longer in the sequence, in the rotation it gets to a stage where it is the only one remaining, and our changing algorithm doesn't allow switching back to it from itself. 
 
 ~ added id to outputs in sensi_an_rotations to make things easier in future, e.g. to identify runs with particular behaviour.
-
 ~ also made more efficient by declaring size of results df at start of loop
 
 The scenarios with the biggest differences seem to be where insecticide1 is the better one.
@@ -1664,6 +1658,18 @@ Sawicki, chap9. Definition, detection and documentation of insecticide resistanc
 
 Tried a solution to the diff insecticide problem. If no other insecticides are below resistance thresh and this one is then can keep using it in a rotation ...
 
+# good refs for rotations paper
+resistance : malERA2017_updated-research-agenda-resistance-in-malaria.pdf
+
+"What are the benefits of insecticide rotations, mixtures, or spatial mosaics of different compounds?
+What is the impact of adding nonpyrethroid IRS where LLINs are already deployed at high coverage and quality? When should new insecticides be adopted? What is the ideal rotation period or mosaic configuration? How many insecticide classes are needed for effective rotation or mosaic strategies? Despite the absence of data to answer these questions, some countries have already developed operational frameworks for resistance management that could be adopted by other programmes.""
+
+The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
+
+Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide resistance management strategies
+
+
+
 *12/11/2018*
 Coming back to this after a while before presenting to IVCC.
 
@@ -1678,7 +1684,6 @@ I don't understand why sceanrio A fails and B doesn't ?
   177: insecticide_check [C:/rsprojects/rotations/R/insecticide_check.r#70]
   176: run_rot [C:/rsprojects/rotations/R/run_rot.r#325]
 
-
 Also fails from the command line :
 
 run_rot( n_insecticides = 3 , max_gen = 150 , start_freqs = 0.01 , rot_interval = 10 , eff = 0.8 , dom_sel = 0.5 , dom_cos = 0.5 , rr = 0.5 , expo_hi = 0.5 , coverage = 0.8 , migration = 0.01 , cost = 0.01 , logy = TRUE , no_r_below_start = TRUE , min_rwr_interval = 5 )
@@ -1691,15 +1696,16 @@ and is working from shiny ... weird.
 
 this error then popped up again from shiny later on. 
 
-*13/11/2018*
+# 13/11/2018
 preparing slides for IVCC talk next week
 
 ~ add a slide about decision rules :
 because just one insecticide remained below the resistance threshold and our logic didn't allow it to keep being used. 
 Below is the result for the same inputs of adding a condition to check all the other insecticides, and to allow us to keep using one if it is the last remaining. I have set the minimum rotation interval to 5 otherwise it keeps switching back to the other insecticides for a single generation. This gives more similar results for the rotation and sequence.
 
-23/11/18
-#to output script as pdf for Ian to print
+# 23/11/18
+to output script as pdf for Ian to print
+
 library(knitr)
 stitch(script="R/run_rot.r")
 
@@ -1708,15 +1714,10 @@ stitch(script="R/rot_migrate.r", system.file("misc", "knitr-template.Rhtml", pac
 
 Then open html in a browser, print to pdf, set landscape and scale=150
 
-4/12/18
-Met with Jim he offered to look at parallelising.
-
-5/12/18
-making scaled down version of sensi analysis for Jim
-
+# 5/12/18
 For rotations sent Jim a scaled down version of the rotations sensitivity analysis code. That just runs the sensitivity analysis and Jim will have a go at parallelising it.
 
-6/12/18
+# 6/12/18
 Check why git changes are thinking that whole file has changed. How did I fix that for rnaturalearth ??
 
 GitHub suggests that you should make sure to only use \n as a newline character in git-handled repos. There's an option to auto-convert:
@@ -1726,15 +1727,12 @@ git config core.autocrlf true #just this project
 
 Doing it for rotations project did fix the problem straight away. I didn't even have to restart RStudio.
 
-6/2/19
-
+# 6/2/19
 before meeting with Jim to look at rotations code
-
 previous error in raf_get() seems OK now
 
 
-13/2/2019
-
+# 13/2/2019
 looking at saving tested mortality levels for the different insecticides over time
 (as a prelude to using it as a criteria for switching insecticides)
 
@@ -1763,11 +1761,8 @@ df_res_all_rot_cost10000_no_freq_limit.rda
 
 ~ think about whether I can implement allele frequencies just being constrained to their starting values the first time that each insecticide is used.
 
-
-14/2/2019
-
+#14/2/2019
 starting to get mortality recording working
-
 currently looking at the df_mortali array from within a stop put inside run_rot()
 
 with current starting resistance frequencies and effectiveness the mortalities start below the threshold where we would stop using the insecticide (90%)
@@ -1779,9 +1774,7 @@ run_rot(eff=1, start_freqs=0.001)
 https://help.github.com/articles/about-repository-transfers/
 Transfer is at the bottom of settings, options : from Ians account
 
-
 #20/2/2019
-
 watched Ellies talk
 ~ she particularly talked about the benefit of combining complementary interventions in future (e.g. community larvel source management, ATSBs, etc.)
 ~ How these combine will depend on which part of the transmission cycle they target, e.g. outdoor biters
@@ -1789,7 +1782,6 @@ watched Ellies talk
 ~ made me think there may be potential to develop a clearer visualisation of the transmission cycle and how interventions can work, similar to stuff I did with Gerry
 ~ other interesting thing that Hilary asked about is how the different insecticides can modify both repellance and killing and how this may change due to resistance. Maybe similar to converstaions we had with Francis Rowland.
 ~ but I don't really have the inclination to move in the modelling direction but may be options to keep some interests going parallel with it.
-
 
 ~ more on how to record and display mortality
 
@@ -1831,14 +1823,12 @@ sent msg to Ian
 
 
 # 21/2/2019
-
 Cool getting there with mortality checking :
 Best to set logy to F to be able to see 90% mort
 
 dfr <- run_rot(start_freqs = 0.0001, eff=1, logy=FALSE)
 
 # 26/2/2019
-
 starting to get mortality switch working.
 
 seems OK from messages but plots don't look right 
@@ -1852,19 +1842,17 @@ Fixed!!! mostly a problem that eff,dom_sel,rr was not passed to new calc functio
 
 dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
 
-1/3/19
-
+#1/3/19
 Had idea to try to plot regio of parameter space where mortality less than 90%.
 Not sure it is very useful, but did make a start.
 
 see plot_mort_thresh.r
 
-5/3/19
+#5/3/19
 ~ added mort_or_freq switch to rotresist1/ui.r
 ~ added threshold to UI
 
 7/3/19
-
 Using mortality switch for sequences, currently it switches back to other insecticides even when they are below threshold.
 
 Aha I think that is due to the min_rwr_interval. When it is set to 0 then the sim doesn't proceed.
@@ -1934,8 +1922,52 @@ switch from insecticide 1 to 3; new mortality vs threshold = 0.100044 vs 0.90000
 AHA! NASTY BUG! there are multiple insecticides and it cycles through them because I do threshold <- 1-threshold that can give uncertain results.
 
 
+# 4/9/19
+However I change the run workflow I should try to keep it so that I can do the runs on multiple cores.
+
+# 5/9/19
+
+refactoring inputs
+Currently the list linputs which has one row per run is created in sensi_an_rotations1.Rmd by hardcoded min-max limits
+
+new inputs plan
+Have a rotations function that accepts a csv file or defaults and uses that to create the linputs list, also it can save the csv. Closer to what resistance code did.
+
+How to name the different files ? what are similar names in openMalaria ?
+
+in_expt
+in_runs
+
+
+
+
+
 
 # TODO
+
+~ investigate getting runs to name the output file with the date 
+~ and create a similarly named metadata file that records run input params 
+~ think about moving run control from a rmd to a .R script
+~ think about being able to create named run inputs files (csv ?) that store the list of inputs (can be the same one that is saved as run metadata)
+
+
+
+# RUNS FOR PAPER September 2019
+# A identical insecticides, seq vs rot, resistance frequency switch, A1 no costs no dispersal, A2 costs no dispersal, A3 dispersal no costs, A4 costs & dispersal. Sensitivity analysis of inputs.
+# B different insecticides, as above, no sensitivity analysis.
+# C identical insecticides, mortality switch, reduced input range so mortality starts above 90%
+# D different insecticides, mortality switch
+
+Runs are combinations of :
+Strategy (2)       : sequence, rotation
+Insecticides (2)   : same, different
+Switch (2)         : resistance frequency, mortality
+Scenarios (4)      : no costs no dispersal, costs no dispersal, dispersal no costs, costs & dispersal
+Replicates (10000) :
+
+So number of runs 2*2*2*4*10000 = 320000
+
+
 
 
 ~ fix plot error when coverage==1
@@ -1958,11 +1990,7 @@ options
 
 
 
-
-
-
-
-fix :
+I think this is fixed now :
 Warning: Error in raf_get: object 'RAF' not found
 run_rot() can create it but when I add breakpoints it disappears
 
@@ -1992,17 +2020,12 @@ Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
 But then when I start trying to look at it even from a new session it seems to dissappear.
 
 
-~ check on 1000 runs with lower startfreqs and differing insecticides 
-~ is something weird going on favouring rotations more when insecticides differ ?
-~ yes
-
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
 ~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
 
 
 
 rotations paper :
-~ develop flow of story
 ~ think about what questions managers will want answered
 
 A) when do both strategies work (include looking at insecticides and rotation level)
@@ -2012,7 +2035,6 @@ B) if neither work, when are rotations better ?
 small changes :
 ~ dominance of resistance
 ~ how to term success. 'At least one insecticide still below resistance thresholds' 
-
 
 Look into whether to use min_rwr_interval OR min_gens_switch_back 
 I'm thinking that I'll stick with min_rwr_interval
@@ -2105,17 +2127,6 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
     #exposure 0 'no'
     a_fitloc[ paste0('RS',locusNum), 'no'] <- 1 - (a_dom[locusNum, 'no'] * a_cost[locusNum])
     a_fitloc[ paste0('RR',locusNum), 'no'] <- 1 - a_cost[locusNum]
-
-# good refs for rotations paper
-resistance : malERA2017_updated-research-agenda-resistance-in-malaria.pdf
-
-"What are the benefits of insecticide rotations, mixtures, or spatial mosaics of different compounds?
-What is the impact of adding nonpyrethroid IRS where LLINs are already deployed at high coverage and quality? When should new insecticides be adopted? What is the ideal rotation period or mosaic configuration? How many insecticide classes are needed for effective rotation or mosaic strategies? Despite the absence of data to answer these questions, some countries have already developed operational frameworks for resistance management that could be adopted by other programmes.""
-
-The malERA Refresh Consultative Panel on Insecticide and Drug Resistance (2017) malERA: An updated research agenda for insecticide and drug resistance in malaria elimination and eradication. PLoS Med 14(11): e1002450. https://doi.org/10.1371/journal.pmed.1002450 
-
-Slater2016. Use of an individual-based simulation model to explore and evaluate potential insecticide resistance management strategies
-
 
 
 # state of play

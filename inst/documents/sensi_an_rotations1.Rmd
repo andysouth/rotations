@@ -89,7 +89,7 @@ if (already_ran)
     linputs$min_rwr_interval <- 5
     linputs$min_gens_switch_back <- 1
     linputs$no_r_below_start <- FALSE #BEWARE this has been set to TRUE in all earlier runs
-    linputs$no_r_below_mut <- TRUE #BEWARE trying out new mutation-selection balance option
+    linputs$no_r_below_mut <- FALSE #BEWARE trying out new mutation-selection balance option
     #set plot to F if using grid.arrange as in phaps-rotations-better.Rmd
     linputs$plot <-     FALSE
   
@@ -629,9 +629,6 @@ n_scenarios     <- 100 #1000 #000
     
     df_in_out$rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
     
-    # rbind this scenario inputs & results onto previous
-    # not a good speed or memory way of doing ... but a start
-    #df_res_all <- rbind(df_res_all, df_in_out)
     
     #instead set up the dataframe to the required size in scenario1
     if (i==1)
@@ -684,8 +681,7 @@ n_scenarios     <- 100 #1000 #000
     
     }
     
-    #I could save partial outputs every 200 scenarios
-    #just in case doesn't make to end
+    #save partial outputs just in case doesn't make to end
     if (i%%1000 == 0)
     {
       #df_res_all$rot_minus_seq <- df_res_all$gens_rot - df_res_all$gens_seq
@@ -696,11 +692,9 @@ n_scenarios     <- 100 #1000 #000
   } #end scenario loop  
 
   
-  
 #to allow plotting of chosen scenarios by re-running them 
 #initially didn't work for diff insecticides because the inputs are saved as strings 
 #now the strings get converted back to vectors below
-  
 
 scenarios_to_plot <- c(21,23,32) #big difference ones all have insecticide1 as the good one
 scenarios_to_plot <- c(29,38,46)
@@ -713,16 +707,14 @@ for(scenario in scenarios_to_plot)
   
   #converting multiple insecticide inputs back from strings
   #have to ignore the ones that aren't strings
-  #linputs2 <- lapply(linputs, function(x) as.numeric(unlist(strsplit(as.character(x),split=", "))))
   
   #note the space after the comma in split=", "
   linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
                                           as.numeric(unlist(strsplit(as.character(x),split=", "))))
   
   #TESTING changing min_rwr_interval from 5
-  #if min_rwr_interval is set to 0 you get frequent switch backs to other insecticides 
-  #for 1 generation
-  #but when it's set to 5it pushes frequences above the resistance freq threshold
+  #if min_rwr_interval is set to 0 you get frequent switch backs to other insecticides for 1 generation
+  #but when it's set to 5 it pushes frequences above the resistance freq threshold
   linputs$min_rwr_interval <- 5
   #min_gens_switch_back has to be 0 to allow one insecticide to continue when all others dead
   linputs$min_gens_switch_back = 0
@@ -732,7 +724,7 @@ for(scenario in scenarios_to_plot)
   
   ggrot <- rot_plot_resistance(dfres, plot_refuge=FALSE, logy=TRUE, plot=FALSE)
    
-  #now run as sequence
+  # now run as sequence
   linputs$rot_interval <- 0
   dfres <- do.call(run_rot, linputs)
   
