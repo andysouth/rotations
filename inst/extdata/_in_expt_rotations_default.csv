@@ -1,31 +1,32 @@
 varname, value, comments
-coverage_min, 1
-coverage_max, 1
-migration_min, 1
-migration_max, 1
-max_gen, 500
-min_rwr_interval, 5
-min_gens_switch_back, 1
-no_r_below_start, 0, FALSE beware can create strange results
-no_r_below_mut, 0, FALSE stops freq going below resist-freq balance not well tested
-plot, 0
-cost_min, 0
-cost_max, 0.1
-expo_hi_min, 0.4
-expo_hi_max, 0.9
-male_expo_prop_min, 0
-male_expo_prop_max, 1
-eff_min, 0.5
-eff_max, 1
-rr_min, 0.1
-rr_max, 0.9
-dom_sel_min, 0
-dom_sel_max, 1
-dom_cos_min, 0
-dom_cos_max, 1
-start_freqs_min, 0.005
-start_freqs_max, 0.1
-n_insecticides_min, 2, beware needs treating diff because an integer
-n_insecticides_max, 5
-rot_interval_min, 10, beware special treatment 0 for sequence
-rot_interval_max, 20
+coverage_min,1,
+coverage_max,1,
+migration_min,1,
+migration_max,1,
+max_gen,500,
+min_rwr_interval,5,
+min_gens_switch_back,1,
+no_r_below_start,0, FALSE beware can create strange results
+no_r_below_mut,0, FALSE stops freq going below resist-freq balance not well tested
+plot,0,
+cost_min,0,
+cost_max,0.1,
+expo_hi_min,0.4,
+expo_hi_max,0.9,
+male_expo_prop_min,0,
+male_expo_prop_max,1,
+eff_min,0.5,
+eff_max,1,
+rr_min,0.1,
+rr_max,0.9,
+dom_sel_min,0,
+dom_sel_max,1,
+dom_cos_min,0,
+dom_cos_max,1,
+start_freqs_min,0.005,
+start_freqs_max,0.1,
+n_insecticides_min,2, beware needs treating diff because an integer
+n_insecticides_max,5,
+rot_interval_min,10, beware special treatment 0 for sequence
+rot_interval_max,20,
+insecticides_different,1,whether insecticides are different (1) or not (0)
