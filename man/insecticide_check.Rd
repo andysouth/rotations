@@ -39,5 +39,6 @@ insecticide_check(RAF1gen, current_insecticide, rot_interval, threshold,
 TRUE/FALSE whether to change
 }
 \description{
-based on a fixed interval no. generations, or rotate-when-resistant if interval is 0
+based on a fixed interval no. generations, or rotate-when-resistant if interval is 0.    
+The actual switching of insecticides is done in insecticide_switch().
 }

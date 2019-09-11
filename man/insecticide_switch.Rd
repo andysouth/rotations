@@ -39,5 +39,6 @@ insecticide_switch(RAF, current_insecticide, n_insecticides, threshold,
 integer : insecticide number to switch to, if 0 none found
 }
 \description{
-insecticide_switch choose a new insecticide to switch to
+only gets called if insecticide_check() has already identified that the previous insecticide needed to be changed.   
+Checks that the new insecticide is below resistance or survival thresholds.
 }

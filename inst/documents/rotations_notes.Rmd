@@ -1935,21 +1935,43 @@ Have a rotations function that accepts a csv file or defaults and uses that to c
 
 How to name the different files ? what are similar names in openMalaria ?
 
-in_expt
-in_runs
+# 6/9/19
 
+GOOD getting there, now a csv file saved in extdata that specifies the experiment
 
+linputs_multi <- set_run_inputs()
+# to get all inputs for a single scenario
+linputs <- purrr::map(linputs_multi, 2)
+# run one scenario
+dfres <- do.call(run_rot, linputs)
 
+# 10/9/19
+got different insecticides working
+added get_one_in() to get inputs for one scenario from multi-senario file
 
+# 11/09/19
+
+This is the new workflow.
+
+# read an experiment file specifying ranges
+inex <- read_in_expt() #specify filename
+# create an object containing inputs for all scenarios
+linmulti <- set_run_inputs(inex=inex)
+# get inputs for a single scenario
+linputs <- get_one_in(linmulti, scen_num=2)
+# run one scenario
+dfres <- do.call(run_rot, linputs)
 
 
 # TODO
 
+~ add option for different insecticides to the experiment file
+
+~ add the random seed to the experiment file (and decide where it will be set)
+
 ~ investigate getting runs to name the output file with the date 
 ~ and create a similarly named metadata file that records run input params 
 ~ think about moving run control from a rmd to a .R script
-~ think about being able to create named run inputs files (csv ?) that store the list of inputs (can be the same one that is saved as run metadata)
-
 
 
 # RUNS FOR PAPER September 2019

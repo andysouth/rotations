@@ -10,7 +10,8 @@
 #' 
 #' 
 #' @examples 
-
+#' mort_from_resist( rfreq=0.01, eff=0.9, dom_sel=0.5, rr=0.5 )
+#' 
 #' @return total mortality single value
 #' @export
 

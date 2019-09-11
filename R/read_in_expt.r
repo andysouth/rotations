@@ -17,15 +17,11 @@ read_in_expt <- function( file = NULL,
 
 
   # have a default file
-  #if (is.null(file)) file <- "in_expt20190905_1.csv"
-  
   if (is.null(file)) file <- system.file("extdata", "_in_expt_rotations_default.csv", package = "rotations", mustWork = TRUE)
     
   # function to read input file with experiment specifications
   
   #read scenario input (single column)
-  #tmp <- read.csv("in_expt20190905_1.csv", header=FALSE)
-  #tmp <- read.csv("in_expt20190905_1.csv")
   tmp <- read.csv(file)
   
   #transpose

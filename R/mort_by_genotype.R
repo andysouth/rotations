@@ -11,7 +11,8 @@
 #' 
 #' 
 #' @examples 
-
+#' mort_by_genotype( eff=0.9, dom_sel=0.5, rr=0.5 )
+#' 
 #' @return fitness values
 #' @export
 

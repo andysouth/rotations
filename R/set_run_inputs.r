@@ -6,10 +6,11 @@
 #' @param inex object containing the experiment input values and ranges
 #' 
 #' @examples 
-#' linmulti <- set_run_inputs()
-#' # to get all inputs for a single scenario
-#' #linputs <- purrr::map(linmulti, 2)
-#' # this also includes conversions of strings for multi insecticide runs
+#' # read an experiment file specifying ranges
+#' inex <- read_in_expt() #specify filename
+#' # create an object containing inputs for all scenarios
+#' linmulti <- set_run_inputs(inex=inex)
+#' # get inputs for a single scenario
 #' linputs <- get_one_in(linmulti, scen_num=2)
 #' # run one scenario
 #' dfres <- do.call(run_rot, linputs)

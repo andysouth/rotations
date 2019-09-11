@@ -5,7 +5,7 @@
 #' @param rfreq resistance allele frequency
 #' 
 #' @examples 
-#a_genfreq <- genotype_freq(0.001)
+#' a_genfreq <- genotype_freq(0.001)
 
 #' @return fitness values
 #' @export
