@@ -1,0 +1,37 @@
+---
+title: "rotation runs 2019"
+output: pdf_document
+#output: word_document
+author: "Andy South and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+  
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(rotations)
+library(ggplot2)
+library(gridExtra)
+
+outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+```  
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
+
+
+
+# read an experiment file specifying ranges
+inex <- read_in_expt("in_rotations_paper_2019_inssame_freq.csv", nscenarios=1) 
+
+#inex <- read_in_expt("_in_expt_rotations_default_one_scenario.csv", nscenarios=1) 
+
+# create an object containing inputs for all scenarios
+linmulti <- set_run_inputs(inex=inex)
+linmulti <- set_run_inputs()
+
+# get inputs for a single scenario
+linputs <- get_one_in(linmulti, scen_num=2)
+
+# run one scenario
+dfres <- do.call(run_rot, linputs)
+
+```

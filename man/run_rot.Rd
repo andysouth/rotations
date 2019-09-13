@@ -23,7 +23,7 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{rot_interval}{frequency of rotation (in generations) if set to zero means sequence, i.e. change when threshold reached}
 
-\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, defaults mort:0.9 freq:0.5, also precludes switch to an insecticide.}
 
 \item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 

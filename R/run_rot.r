@@ -6,8 +6,10 @@
 #' @param n_insecticides number of insecticides (and hence loci)
 #' @param start_freqs starting frequencies of resistance either one per insecticide or same for all
 #' @param rot_interval frequency of rotation (in generations) if set to zero means sequence, i.e. change when threshold reached
-#' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
+# @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, defaults mort:0.9 freq:0.5, also precludes switch to an insecticide.
 #' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
+#' @param mort_thresh mortality threshold for switching insecticides, default 0.9, only used if mort_or_freq is mort
+#' @param freq_thresh resistance frequency threshold for switching insecticides, default 0.5, only used if mort_or_freq is freq
 #' @param migration migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.
 #' @param coverage proportion of mosquitoes that are covered by the intervention (and 1-C is the proportion of the population in the untreated refugia), if coverage set to 1 no refugia.
 #' @param start_insecticide which insecticide to start with
@@ -54,24 +56,26 @@
 run_rot <- function(max_gen = 200, 
                     n_insecticides = 4, 
                     start_freqs = 0.01,
-                    rot_interval = 10, 
-                    threshold = 0.5, 
+                    rot_interval = 0, 
+                    #threshold = 0.5, now set in first lines of function
                     mort_or_freq = 'mort', #'freq'
+                    mort_thresh = 0.9,
+                    freq_thresh = 0.5,
                     migration = 0.01, 
                     #migrate_intervention = 0.01, 
                     coverage = 0.8, 
                     start_insecticide = 1,
                     expo_hi = 0.8,
                     expo_lo = 0,                              
-                    male_expo_prop = 1,
-                    eff = 0.8, #c(0.5, 0.7, 0.9),
+                    male_expo_prop = 0,
+                    eff = 0.95, #c(0.5, 0.7, 0.9),
                     dom_sel = 0.5, #c(0.5, 0.5, 0.5),
                     dom_cos = 0.5, #c(0.5, 0.5, 0.5),
                     rr = 0.5, #c(0.5, 0.5, 0.5),
                     cost = 0.1, #c(0,0,0),
                     fitSS = 1,
-                    min_rwr_interval = 1,
-                    no_r_below_start = TRUE,
+                    min_rwr_interval = 10,
+                    no_r_below_start = FALSE,
                     no_r_below_mut = FALSE,
                     exit_rot = TRUE,
                     min_gens_switch_back = 10,
@@ -90,6 +94,8 @@ run_rot <- function(max_gen = 200,
   
   if ( coverage <= 0 ) stop("the model cannot represent 0 (or less) coverage\n")
   
+  #this allows me to keep thresholds at the defaults when changing between mortality and frequency switch
+  threshold <- ifelse(mort_or_freq=='mort', mort_thresh, freq_thresh)
   
   # setup dataframe to store results, tricky to cope with variable number insecticides
   l_gene_plus_activity <- rep(list(rep(NA,max_gen)), n_insecticides*2) #2 because active & refuge 

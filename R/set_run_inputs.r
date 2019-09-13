@@ -25,24 +25,53 @@ set_run_inputs <- function( inex = NULL )
   # have a default file
   if (is.null(inex)) inex <- read_in_expt()
   
+  # set random seed so that runs can be reproduced
+  set.seed(inex$rand_seed)
   
   # currently a list that grows, slow, but not a large file  
   linmulti <- list()
   
   
   # take code from sensi_an_rotations1
-  for(i in 1:inex$n_scenarios)
+  for(i in 1:inex$nscenarios)
   {
-    if (i%%200 == 1) message("scenario ",i," of ",inex$n_scenarios," ",Sys.time())
+    if (i%%200 == 1) message("scenario ",i," of ",inex$nscenarios," ",Sys.time())
 
-    linmulti$max_gen[i] <- inex$max_gen
- 
-    # n_insecticides different because choosing random integer
-    linmulti$n_insecticides[i] <- sample( inex$n_insecticides_min:inex$n_insecticides_max, 1 )  #beware set replace=T if more than 1
     
+    # constant inputs
+    linmulti$max_gen[i] <- inex$max_gen
+    linmulti$min_rwr_interval[i] <- inex$min_rwr_interval
+    linmulti$min_gens_switch_back[i] <- inex$min_gens_switch_back
+    linmulti$no_r_below_start[i] <- inex$no_r_below_start
+    linmulti$no_r_below_mut[i] <- inex$no_r_below_mut
+    linmulti$exit_rot[i] <- inex$exit_rot
+    linmulti$mort_or_freq[i] <- inex$mort_or_freq
+    linmulti$threshold[i] <- inex$threshold 
+    linmulti$plot[i] <- inex$plot
+    
+ 
+    # random integers BEWARE that sample selects from 1:x when x is length 1
+    # causes problem when want n_insecticides or rot_interval to be fixed
+    # this resample function from the sample help file sorts it
+    # so e.g when min & max are 4 sample is always 4
+    resample <- function(x, ...) x[sample.int(length(x), ...)]
+    
+    linmulti$n_insecticides[i] <- resample( inex$n_insecticides_min:inex$n_insecticides_max, 1 )  #beware set replace=T if more than 1
+    # rotation interval, 0 for sequence
+    linmulti$rot_interval[i]  <-  resample( inex$rot_interval_min:inex$rot_interval_max, 1)    
        
     # select random uniform numbers between the ranges
     # this copes if min & max are the same
+    
+    # some inputs cannot be different for diff insecticides
+    
+    linmulti$expo_hi[i] <-        runif(1, min=inex$expo_hi_min,     max=inex$expo_hi_max)
+    linmulti$male_expo_prop[i] <- runif(1, min=inex$male_expo_prop_min,   max=inex$male_expo_prop_max)
+    linmulti$coverage[i] <-     runif(1, min=inex$coverage_min,    max=inex$coverage_max)
+    linmulti$migration[i] <-     runif(1, min=inex$migration_min,   max=inex$migration_max)
+    
+    #TODO make this lognormal to get lower frequencies too
+    linmulti$start_freqs[i] <-    runif(1, min=inex$start_freqs_min,   max=inex$start_freqs_max) 
     
     # some can be different for each insecticide if insecticides_different is set to 1
     n_ins <- linmulti$n_insecticides[i]
@@ -51,8 +80,6 @@ set_run_inputs <- function( inex = NULL )
     
     # select random numbers for each insecticide
     
-    cove <-     runif(n_rands, min=inex$coverage_min,    max=inex$coverage_max)
-    migr <-     runif(n_rands, min=inex$migration_min,   max=inex$migration_max)
     cost <-     runif(n_rands, min=inex$cost_min,        max=inex$cost_max) 
     eff  <-     runif(n_rands, min=inex$eff_min,         max=inex$eff_max)
     rr   <-     runif(n_rands, min=inex$rr_min,          max=inex$rr_max)
@@ -62,8 +89,6 @@ set_run_inputs <- function( inex = NULL )
     # convert vectors to strings if more than one insecticide
     if (n_rands > 1)
     {
-      cove <- toString(cove)
-      migr <- toString(migr)
       cost <- toString(cost) 
       eff  <- toString(eff)
       rr   <- toString(rr)
@@ -71,33 +96,18 @@ set_run_inputs <- function( inex = NULL )
       dcos <- toString(dcos)       
     }
 
-    linmulti$coverage[i] <-       cove
-    linmulti$migration[i] <-      migr
     linmulti$cost[i] <-           cost 
     linmulti$eff[i] <-            eff
     linmulti$rr[i]  <-            rr
     linmulti$dom_sel[i] <-        dsel
     linmulti$dom_cos[i] <-        dcos    
         
-    # linmulti$coverage[i] <-       runif(n_rands, min=inex$coverage_min,    max=inex$coverage_max)
-    # linmulti$migration[i] <-      runif(n_rands, min=inex$migration_min,   max=inex$migration_max)
     # linmulti$cost[i] <-           runif(n_rands, min=inex$cost_min,        max=inex$cost_max) 
     # linmulti$eff[i] <-            runif(n_rands, min=inex$eff_min,         max=inex$eff_max)
     # linmulti$rr[i]  <-            runif(n_rands, min=inex$rr_min,          max=inex$rr_max)
     # linmulti$dom_sel[i] <-        runif(n_rands, min=inex$dom_sel_min,     max=inex$dom_sel_max)
     # linmulti$dom_cos[i] <-        runif(n_rands, min=inex$dom_cos_min,     max=inex$dom_cos_max)
     
-    
-    # some inputs cannot be different for diff insecticides
-    # TODO should exposure be different for diff insecticides ?
-    linmulti$expo_hi[i] <-        runif(1, min=inex$expo_hi_min,     max=inex$expo_hi_max)
-    linmulti$male_expo_prop[i] <- runif(1, min=inex$male_expo_prop_min,   max=inex$male_expo_prop_max)
-    
-    # rotation interval, 0 for sequence
-    linmulti$rot_interval[i]  <-  runif(1, min=inex$rot_interval_min,max=inex$rot_interval_max)
-
-    #TODO make this lognormal to get lower frequencies too
-    linmulti$start_freqs[i] <-    runif(1, min=inex$start_freqs_min,   max=inex$start_freqs_max) 
     
     
   }

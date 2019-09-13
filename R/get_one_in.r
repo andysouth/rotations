@@ -22,11 +22,12 @@ get_one_in <- function( linmulti = NULL,
   # have a default file
   if (is.null(linmulti)) linmulti <- set_run_inputs()
   
-  
   linputs <- purrr::map(linmulti, scen_num)
   
-  #converting multiple insecticide inputs back from strings
-  #have to ignore the ones that aren't strings
+  # converting multiple insecticide inputs back from strings
+  # just converts those that contain ', '
+  # (so mort_or_freq which is a string is not converted)
+
   
   #note the space after the comma in split=", "
   linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else

@@ -1874,6 +1874,36 @@ from the commandline :
 git remote rm origin
 git remote add origin git@github.com:AndySouth/rotations.git
 
+
+I think this is fixed now :
+Warning: Error in raf_get: object 'RAF' not found
+run_rot() can create it but when I add breakpoints it disappears
+
+where is raf_get called ?
+insecticide_check()
+rot_migrate()
+
+I suspect problem is here in insecticide_check()    
+#end of rotation reached
+    if (gens_this_insecticide >= rot_interval) 
+      {
+      # 31/7/18 I could add a check in here for case
+      # where only this insecticide remains below resistance threshold
+      # in which case don't want to change
+      # if I reset gens-this-insecticide then it will be used for another rot_interval
+      #I can use either of these to get the freqs for all other insecticides
+      # RAF[-current_insecticide, 'f','intervention',1]
+      
+e.g.
+raf_get(a)
+Error in raf_get(a) : object 'a' not found
+
+
+It is only from scenarioA.
+Could it be something about sequence versus rotations ?
+Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
+But then when I start trying to look at it even from a new session it seems to dissappear.
+
 #14/06/2019
 Testing before sending to Sam.
 Error in mortRR["f", "intervention"] : incorrect number of dimensions
@@ -1950,7 +1980,6 @@ got different insecticides working
 added get_one_in() to get inputs for one scenario from multi-senario file
 
 # 11/09/19
-
 This is the new workflow.
 
 # read an experiment file specifying ranges
@@ -1963,15 +1992,56 @@ linputs <- get_one_in(linmulti, scen_num=2)
 dfres <- do.call(run_rot, linputs)
 
 
+# 12/09/19
+sorting mort_or_freq and other inputs in set_run_inputs() and get_one_in()
+
+something I've done means that now the first insecticide is not changed in any scenarios...
+
+linputs <- get_one_in(linmulti, scen_num=1)
+linputs <- get_one_in(linmulti, scen_num=2)
+linputs <- get_one_in(linmulti, scen_num=3)
+
+linputs <- get_one_in(linmulti, scen_num=4)
+linputs <- get_one_in(linmulti, scen_num=5)
+linputs <- get_one_in(linmulti, scen_num=6)
+
+# run one scenario
+dfres <- do.call(run_rot, linputs)
+
+# 13/09/19
+
+inex <- read_in_expt("_in_expt_rotations_default_one_scenario.csv", nscenarios=1) 
+linmulti <- set_run_inputs(inex=inex)
+linputs <- get_one_in(linmulti, scen_num=1)
+dfres <- do.call(run_rot, linputs)
+
+moving to have male_expo_prop default as 0
+
+
+
 # TODO
 
-~ add option for different insecticides to the experiment file
+CHECK THE DIFFERENCE between linputs in run_rot() which is working compared to the input csv which mostly doesn't work.
+
+
+~ something is wrong both when mort_or_freq set to mort and freq
+
+~ when set to freq the first insecticide doesn't stop being used
+  when set to mort the first insecticide is just used very briefly
+
+
+
+
+~ add log-normal distribution for frequency
+~ how to deal with running seq vs rotations
+~ there is other stuff I still need in sensi_an_rotations1.Rmd - e.g. post-processing of outputs
+~ could I have multiple experiments as columns in the same input file ?
 
 ~ add the random seed to the experiment file (and decide where it will be set)
 
 ~ investigate getting runs to name the output file with the date 
 ~ and create a similarly named metadata file that records run input params 
-~ think about moving run control from a rmd to a .R script
+
 
 
 # RUNS FOR PAPER September 2019
@@ -2011,35 +2081,6 @@ options
 ~ pass as survival convert to mortality for plot
 
 
-
-I think this is fixed now :
-Warning: Error in raf_get: object 'RAF' not found
-run_rot() can create it but when I add breakpoints it disappears
-
-where is raf_get called ?
-insecticide_check()
-rot_migrate()
-
-I suspect problem is here in insecticide_check()    
-#end of rotation reached
-    if (gens_this_insecticide >= rot_interval) 
-      {
-      # 31/7/18 I could add a check in here for case
-      # where only this insecticide remains below resistance threshold
-      # in which case don't want to change
-      # if I reset gens-this-insecticide then it will be used for another rot_interval
-      #I can use either of these to get the freqs for all other insecticides
-      # RAF[-current_insecticide, 'f','intervention',1]
-      
-e.g.
-raf_get(a)
-Error in raf_get(a) : object 'a' not found
-
-
-It is only from scenarioA.
-Could it be something about sequence versus rotations ?
-Yes it doesn't happen when rot_interval=0 but did happen when rot_interval=10.
-But then when I start trying to look at it even from a new session it seems to dissappear.
 
 
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
