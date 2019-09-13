@@ -1,5 +1,5 @@
 ---
-title: "rotation runs 2019"
+title: "rotation_runs2019"
 output: pdf_document
 #output: word_document
 author: "Andy South and Ian Hastings"
@@ -17,21 +17,62 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
 
+# options
+# i) run each scenario for rotation then sequence and calculate difference in the loop
+# ii) run each scenario for rotation then sequence and save gens_under_thresh for each in the output file
 
+nscenarios <- 10
 
 # read an experiment file specifying ranges
-inex <- read_in_expt("in_rotations_paper_2019_inssame_freq.csv", nscenarios=1) 
-
-#inex <- read_in_expt("_in_expt_rotations_default_one_scenario.csv", nscenarios=1) 
+inex <- read_in_expt("expt_rot_mort_dispersal.csv", nscenarios=nscenarios) 
 
 # create an object containing inputs for all scenarios
 linmulti <- set_run_inputs(inex=inex)
-linmulti <- set_run_inputs()
 
-# get inputs for a single scenario
-linputs <- get_one_in(linmulti, scen_num=2)
+# run all scenarios
+for(i in 1:nscenarios)
+{
+  linputs <- get_one_in(linmulti, scen_num=i)
+  
+  # to compare sequence to rotation run all the scenarios above for both seq & rot 
+  for(rot_or_not in 0:1)
+  {  
+    #to get rot_int of 0 in alternate runs - the other run uses the value from the input file
+    if (rot_or_not == 0) linputs$rot_interval <- 0
+    
+    ##################
+    # run one scenario
+    dfres <- do.call(run_rot, linputs)
+    
+    # summarise results per scenario
+    # note this is also currently calc at end of run_rot() here is probably better
+    gens <- gens_under_thresh(dfres)
+    
+    # to be able to save as for rot or seq
+    if ( linputs$rot_interval == 0 ) {gens_seq <- as.numeric(gens)}
+    else                             {gens_rot <- as.numeric(gens)}
+    
+  } #end rot_or_not loop
+    
+  # add scenario id column and difference onto results
+  # df_in_out is one row
+  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, id=i))
+  df_in_out$rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
+  
+  # if the first scenario create df to store results of all scenarios
+  if (i==1)
+  {
+    df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=n_scenarios))
+    names(df_res_all) <- names(df_in_out)
+  }
+  
+  #putting results into one row of overall results dataframe
+  df_res_all[i,] <- df_in_out
+    
+} #end scenario loop  
 
-# run one scenario
-dfres <- do.call(run_rot, linputs)
+
+
+
 
 ```

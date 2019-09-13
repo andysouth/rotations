@@ -29,7 +29,7 @@ dom_cos_min,0.5,
 dom_cos_max,0.5,
 start_freqs_min,0.01,
 start_freqs_max,0.01,
-n_insecticides_min,4, integer
+n_insecticides_min,4,
 n_insecticides_max,4,
 rot_interval_min,0, 
 rot_interval_max,0,

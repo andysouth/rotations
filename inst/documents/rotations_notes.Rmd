@@ -2017,23 +2017,27 @@ dfres <- do.call(run_rot, linputs)
 
 moving to have male_expo_prop default as 0
 
+    #now set to log-uniform 
+    minlog <- log(inex$start_freqs_min,10)
+    maxlog <- log(inex$start_freqs_max,10)
+    
+    linmulti$start_freqs[i] <-  10^runif(1, min=minlog, max=maxlog) 
+ 
+Use hist to display the distribution of values.    
+hist(linmulti$start_freqs, breaks=100)    
+
+
 
 
 # TODO
+see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
-CHECK THE DIFFERENCE between linputs in run_rot() which is working compared to the input csv which mostly doesn't work.
-
-
-~ something is wrong both when mort_or_freq set to mort and freq
-
-~ when set to freq the first insecticide doesn't stop being used
-  when set to mort the first insecticide is just used very briefly
-
-
-
-
-~ add log-normal distribution for frequency
 ~ how to deal with running seq vs rotations
+~ should rotation intervals just be set yearly i.e. 10,20,30 etc.
+
+GET FREQUENCY RUNS sorted first (easier)
+I could put the expt files all into one csv to start creating them, and divide into separate files later.
+
 ~ there is other stuff I still need in sensi_an_rotations1.Rmd - e.g. post-processing of outputs
 ~ could I have multiple experiments as columns in the same input file ?
 

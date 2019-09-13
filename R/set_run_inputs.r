@@ -70,8 +70,15 @@ set_run_inputs <- function( inex = NULL )
     linmulti$coverage[i] <-     runif(1, min=inex$coverage_min,    max=inex$coverage_max)
     linmulti$migration[i] <-     runif(1, min=inex$migration_min,   max=inex$migration_max)
     
-    #TODO make this lognormal to get lower frequencies too
-    linmulti$start_freqs[i] <-    runif(1, min=inex$start_freqs_min,   max=inex$start_freqs_max) 
+    #log-uniform to get lower frequencies represented
+    #select ‘x’ from uniform -1 to -4 and set to 10^x to give equal weight to each log interval.
+    #log(0.01,10)
+    #from resistance
+    #P_1 <- 10^-(runif(1, min=1, max=4))
+    minlog <- log(inex$start_freqs_min,10)
+    maxlog <- log(inex$start_freqs_max,10)
+    
+    linmulti$start_freqs[i] <-  10^runif(1, min=minlog, max=maxlog) 
     
     # some can be different for each insecticide if insecticides_different is set to 1
     n_ins <- linmulti$n_insecticides[i]
