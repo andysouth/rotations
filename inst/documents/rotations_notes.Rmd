@@ -2026,7 +2026,9 @@ moving to have male_expo_prop default as 0
 Use hist to display the distribution of values.    
 hist(linmulti$start_freqs, breaks=100)    
 
+# 2/10/19
 
+corrected bugs in rotation_runs2019.Rmd to do with saving rot_interval
 
 
 # TODO

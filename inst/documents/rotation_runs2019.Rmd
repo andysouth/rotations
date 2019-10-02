@@ -34,11 +34,18 @@ for(i in 1:nscenarios)
 {
   linputs <- get_one_in(linmulti, scen_num=i)
   
+  if (linputs$rot_interval == 0) stop("in rotation_runs2019 rot_interval in input file needs to be > 0 to allow it to be compared to a sequence")
+  
+  #record rotation rot interval locally otherwise it get soverwritten by 0
+  rot_rot_interval <- linputs$rot_interval
+  
   # to compare sequence to rotation run all the scenarios above for both seq & rot 
+  # need to do the rotation 2nd so that rot_interval from the input file can be saved with the outputs
   for(rot_or_not in 0:1)
   {  
     #to get rot_int of 0 in alternate runs - the other run uses the value from the input file
     if (rot_or_not == 0) linputs$rot_interval <- 0
+    else linputs$rot_interval <- rot_rot_interval
     
     ##################
     # run one scenario
@@ -62,13 +69,23 @@ for(i in 1:nscenarios)
   # if the first scenario create df to store results of all scenarios
   if (i==1)
   {
-    df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=n_scenarios))
+    df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=nscenarios))
     names(df_res_all) <- names(df_in_out)
   }
   
   #putting results into one row of overall results dataframe
   df_res_all[i,] <- df_in_out
     
+  
+  #can save partial outputs in case doesn't make to end
+  if (i==nscenarios | i%%1000 == 0)
+  {
+    
+    # save object containing inputs and results as rda for analysis
+    # by default saved to inst/documents folder
+    save(df_res_all, file='df_res_all_rot.rda') #paste0(outFolder,'*.rda'))    
+  } 
+  
 } #end scenario loop  
 
 

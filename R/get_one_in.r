@@ -33,4 +33,7 @@ get_one_in <- function( linmulti = NULL,
   linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
     as.numeric(unlist(strsplit(as.character(x),split=", "))))
   
+  # to make sure it gets returned
+  linputs
+  
 }

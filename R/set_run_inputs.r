@@ -58,7 +58,13 @@ set_run_inputs <- function( inex = NULL )
     
     linmulti$n_insecticides[i] <- resample( inex$n_insecticides_min:inex$n_insecticides_max, 1 )  #beware set replace=T if more than 1
     # rotation interval, 0 for sequence
-    linmulti$rot_interval[i]  <-  resample( inex$rot_interval_min:inex$rot_interval_max, 1)    
+    # TODO decide maybe only allow this in yearly intervals c10 generations 
+    # divide min and max by 10 then multiply after
+    mindiv10 <- inex$rot_interval_min/10
+    maxdiv10 <- inex$rot_interval_max/10    
+    linmulti$rot_interval[i]  <-  as.integer(10*resample( mindiv10:maxdiv10, 1))    
+    # old version not restricted to yearly intervals
+    #linmulti$rot_interval[i]  <-  resample( inex$rot_interval_min:inex$rot_interval_max, 1)    
        
     # select random uniform numbers between the ranges
     # this copes if min & max are the same
