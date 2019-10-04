@@ -202,11 +202,18 @@ rot_plot_resistance <- function(df_res2,
   # add text of num gens below 50%  
   if (add_gens_under50) {
     
-    # without this didn't work for log scale
+    # for positioning label without this didn't work for log scale
     if (logy) y <- 0
     else y <- -Inf
     
-    gg <- gg + geom_text(aes(x=Inf, y=y, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
+    #gens_dep_under50 is repeated for all generations which make it look ugly when plotted with geom_text
+    #this filters out so just one result per insecticide
+    df_res3 <- dplyr::filter(df_res2, generation==1 & active_or_refuge=='active')
+    gg <- gg + geom_text(data=df_res3, aes(x=Inf, y=y, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
+    
+    #problem with these options below is that they just accessed value for the first insecticide
+    #gg <- gg + annotate("text",x=Inf, y=y, label=df_res2$gens_dep_under50[1], colour='black', size=5, hjust=1, vjust=0)
+    #gg <- gg + ggtitle(paste0('generations insecticide in use and under resistance threshold : ',df_res2$gens_dep_under50[1]))
     
   }
   
