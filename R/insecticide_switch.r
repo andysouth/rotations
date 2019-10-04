@@ -70,7 +70,8 @@ insecticide_switch <- function( RAF,
     # only switch to an insecticide that has lower frequency or survival than threshold
     if (check_value < threshold & 
         #optional condition of not going back to recently used insecticide
-        df_ins$last_used[candidate] > min_gens_switch_back )
+        #BEWARE this can cause unexpected behaviour
+        df_ins$last_used[candidate] >= min_gens_switch_back )
     {
       
       if (diagnostics) 
