@@ -120,20 +120,23 @@ insecticide_check <- function( RAF1gen,
       {
         #other_ins_checks <- 1 - mort_from_resist(other_ins_checks)       
         other_ins_checks <- 1 - sapply(other_ins_checks, function(x) mort_from_resist(rfreq=x,eff=eff, dom_sel=dom_sel, rr=rr))
-        
-        # 31/7/18 new condition, only change if one to change to
-        if ( min(other_ins_checks) <= threshold )
-        {
-          # time to rotate so need to identify the next insecticide in the rotation
-          change_insecticide <- TRUE         
-        }        
       }
+      
+      #BEWARE 4/10/2019 used to be BUG here, this bracket was after next loop leading to no change for 'freq'
+      
+      # 31/7/18 new condition, only change if one to change to
+      if ( min(other_ins_checks) <= threshold )
+      {
+        # time to rotate so need to identify the next insecticide in the rotation
+        change_insecticide <- TRUE         
+      }        
+
 
       
-      # message(paste0("insecticide",current_insecticide, 
-      #                " freq=",RAF1gen[current_insecticide, 'f','intervention',1],
-      #                " min other freqs=",min(other_ins_checks),
-      #                " change=",change_insecticide,"\n"))
+      if (diagnostics) message(paste0("insecticide",current_insecticide, 
+                      " freq=",RAF1gen[current_insecticide, 'f','intervention',1],
+                      " min other freqs=",min(other_ins_checks),
+                      " change=",change_insecticide,"\n"))
       
       
     }
