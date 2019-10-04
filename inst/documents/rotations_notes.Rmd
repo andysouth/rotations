@@ -2027,15 +2027,90 @@ Use hist to display the distribution of values.
 hist(linmulti$start_freqs, breaks=100)    
 
 # 2/10/19
-
 corrected bugs in rotation_runs2019.Rmd to do with saving rot_interval
+
+# 3/10/19
+rotation_runs2019.Rmd - working for 1000 runs
+but progress messages not appearing in terminal
+If I knit I do get progress messages and also get a document with all plots but not sure how that will work if running for 10k
+
+~ improved plots so seq and rot on same page
+~ changed gens_under_thresh to annotation to make text better
+
+
+~ gens_under_thresh seemed to be counting 11 for a 10gen rotation ? Seems that a 10 gen rotation doesn't switch until generation 11 etc.
+~ AND seemed that rot_interval not passing to run_rot ?
+
+BOTH of these were because exit_rot default was true, now changed default to be false
+
+TWO SEEMING PROBLEMS
+prob1) sequence insecticide continues to be used after threshold I expect may be a problem with exit_rot=FALSE
+prob2) migration in the new runs seems to make active & refugia the same, maybe I've set limits too high ?
+I have default migration set to 0.01 and limits currently set to 0.1 to 0.9
+df_res2 <- run_rot(rot_interval = 0, mort_or_freq = 'freq', migration=0.5)
+
+Having difficulty replicating prob1
+
+df_res2 <- run_rot(rot_interval = 0, mort_or_freq = 'freq', migration=0.5)
+
+I set min_rwr_interval to 10 to stop rapid switches for sequence.
+
+run_rot(n_insecticides=2, mort_or_freq='freq', cost=0.013, start_freqs=0.077, rot_interval=10, eff=0.98,
+ dom_sel=0.55, dom_cos=0.55, rr=0.47, expo_hi=0.69, coverage=0.23, migration=0.86, max_gen=500,
+ min_rwr_interval=1)
+
+note there is a problem with the quotes when copying from the pdf
+
+diagnostics not helpful
+
+Aha, think its just to do with exit_rot = FALSE
+run_rot(n_insecticides=2, mort_or_freq='freq', rot_interval=10)
+
+# 4/10/19 
+
+Fixed rotation insecticide continues to be used after threshold
+which was a bug in insecticide_check() introduced when mort thresholds added
+
+NEW SEEMING PROBLEM
+run_rot(n_insecticides=2, mort_or_freq='freq', rot_interval=10, exit_rot=FALSE, diagnostics = TRUE, min_gens_switch_back = 0)
+Aha I think problem that insecticide itself is not assessed so keeps being used even when abovbe thresh
+FIXED
+
+fixed gens_under_thresh count which had changed to be for all insecticides, not just one.
+
+successfully GOT runs2019 to access the xls file for experiments directly
 
 
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
-~ how to deal with running seq vs rotations
-~ should rotation intervals just be set yearly i.e. 10,20,30 etc.
+
+
+migration limits ???
+I need to check on them more ! to make sure I know what they are doing.
+> RAF2 <- rot_migrate(RAF1gen, migration=1, coverage=0.1, verbose=TRUE)
+  m.intervention f.intervention m.refugia f.refugia
+1              1              1         0         0
+2              1              1         0         0
+3              1              1         0         0
+  m.intervention f.intervention m.refugia f.refugia
+1            0.1            0.1       0.1       0.1
+2            0.1            0.1       0.1       0.1
+3            0.1            0.1       0.1       0.1
+
+
+
+
+
+CHECK ALL INPUT PARAMS
+
+
+~ create some plot functions to work on the output files (df_res_all) e.g. plot_rotseq_diff()
+
+~ try to get run progress message into console or terminal
+~ improve readme.md with details of how to run simulations
+
+~ maybe just do annual rotation interval i.e. 10 ?
 
 GET FREQUENCY RUNS sorted first (easier)
 I could put the expt files all into one csv to start creating them, and divide into separate files later.

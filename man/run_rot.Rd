@@ -5,14 +5,14 @@
 \title{run_rot to run simulation of the effect of rotations on the spread of resistance}
 \usage{
 run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
-  rot_interval = 10, threshold = 0.5, mort_or_freq = "mort",
-  migration = 0.01, coverage = 0.8, start_insecticide = 1,
-  expo_hi = 0.8, expo_lo = 0, male_expo_prop = 1, eff = 0.8,
-  dom_sel = 0.5, dom_cos = 0.5, rr = 0.5, cost = 0.1, fitSS = 1,
-  min_rwr_interval = 1, no_r_below_start = TRUE,
-  no_r_below_mut = FALSE, exit_rot = TRUE, min_gens_switch_back = 10,
-  plot = TRUE, diagnostics = FALSE, logy = TRUE,
-  add_gens_under50 = FALSE, plot_mort = TRUE)
+  rot_interval = 0, mort_or_freq = "freq", mort_thresh = 0.9,
+  freq_thresh = 0.5, migration = 0.01, coverage = 0.8,
+  start_insecticide = 1, expo_hi = 0.8, expo_lo = 0,
+  male_expo_prop = 0, eff = 0.95, dom_sel = 0.5, dom_cos = 0.5,
+  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 10,
+  no_r_below_start = FALSE, no_r_below_mut = FALSE, exit_rot = FALSE,
+  min_gens_switch_back = 10, plot = TRUE, diagnostics = FALSE,
+  logy = TRUE, add_gens_under50 = FALSE, plot_mort = TRUE)
 }
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
@@ -23,9 +23,11 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 
 \item{rot_interval}{frequency of rotation (in generations) if set to zero means sequence, i.e. change when threshold reached}
 
-\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, defaults mort:0.9 freq:0.5, also precludes switch to an insecticide.}
-
 \item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
+
+\item{mort_thresh}{mortality threshold for switching insecticides, default 0.9, only used if mort_or_freq is mort}
+
+\item{freq_thresh}{resistance frequency threshold for switching insecticides, default 0.5, only used if mort_or_freq is freq}
 
 \item{migration}{migration rate between treated & untreated areas 0-1. We assume that immigration=emigration.}
 

@@ -58,7 +58,7 @@ run_rot <- function(max_gen = 200,
                     start_freqs = 0.01,
                     rot_interval = 0, 
                     #threshold = 0.5, now set in first lines of function
-                    mort_or_freq = 'mort', #'freq'
+                    mort_or_freq = 'freq', #'mort', 
                     mort_thresh = 0.9,
                     freq_thresh = 0.5,
                     migration = 0.01, 
@@ -77,7 +77,7 @@ run_rot <- function(max_gen = 200,
                     min_rwr_interval = 10,
                     no_r_below_start = FALSE,
                     no_r_below_mut = FALSE,
-                    exit_rot = TRUE,
+                    exit_rot = FALSE,
                     min_gens_switch_back = 10,
                     
                     #inputs below not needed to run model itself

@@ -101,15 +101,12 @@ insecticide_check <- function( RAF1gen,
     #end of rotation reached
     if (gens_this_insecticide >= rot_interval) 
       {
-      # 31/7/18 I could add a check in here for case
-      # where only this insecticide remains below resistance threshold
-      # in which case don't want to change
-      # if I reset gens-this-insecticide then it will be used for another rot_interval
-      #I can use either of these to get the freqs for all other insecticides
-      # RAF[-current_insecticide, 'f','intervention',1]
+      # 31/7/18 if only this insecticide remains below resistance threshold don't change
+      # resetting gens-this-insecticide means it will be used for another rot_interval
+      
+      # freqs for all other insecticides
       other_ins_checks <- raf_get(RAF1gen,insecticide=-current_insecticide,sex='f',gen=1,site='intervention')
-      #TODO check whether I need to assess that current insecticide is below its frequency
-      #& RAF1gen[current_insecticide, 'f','intervention',1] <= threshold 
+      this_ins_check <- raf_get(RAF1gen,insecticide=current_insecticide,sex='f',gen=1,site='intervention') 
       
       # 26/2/19 allow this check to work on mortality instead of frequency
       # convert to survival if mortality option is selected
@@ -124,8 +121,9 @@ insecticide_check <- function( RAF1gen,
       
       #BEWARE 4/10/2019 used to be BUG here, this bracket was after next loop leading to no change for 'freq'
       
-      # 31/7/18 new condition, only change if one to change to
-      if ( min(other_ins_checks) <= threshold )
+      # 31/7/18 only change if one to change to
+      # 4/10/19 in rotation have to force stop if this insecticide above thresh, even if no other to change to 
+      if ( this_ins_check > threshold | min(other_ins_checks) <= threshold)
       {
         # time to rotate so need to identify the next insecticide in the rotation
         change_insecticide <- TRUE         

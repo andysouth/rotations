@@ -4,31 +4,60 @@
 #' 
 #' @param file name of the text file containing the experiment ranges
 #' @param nscenarios number of runs, set here and not in input file
+#' @param multi whether to read in a multi experiment excel file
+#' @param id_expt if a multi experiment file which id_expt to use (first two chars of the column name)
 #' 
-# @examples 
+#' @examples 
+#' #single experiment
+#' inex <- read_in_expt(nscenarios = 10, multi=FALSE)
+#' 
+#' #multi experiment
+#' #filename of multiexpt file currently hardcoded into function
+#' inex <- read_in_expt(nscenarios = 10, multi=TRUE, id_expt='A4')
 #' 
 #' @return  
 #' @export
 
 
 read_in_expt <- function( file = NULL,
-                          nscenarios = 10)
+                          nscenarios = 10,
+                          multi = FALSE,
+                          id_expt = 'A2')
 {
 
 
-  # have a default file
-  if (is.null(file)) file <- system.file("extdata", "_in_expt_rotations_default.csv", package = "rotations", mustWork = TRUE)
-  # or file in the extdata folder
-  else file <- system.file("extdata", file, package = "rotations", mustWork = TRUE)
-  # TODO allow file to be in other specified location too, i.e. accept a path
+  if (multi)
+  {
+    infile_multi <- 'rotations-experiments-creating-201909.xlsx'
     
-  # function to read input file with experiment specifications
+    infile_multi <- system.file("extdata", infile_multi, package = "rotations", mustWork = TRUE)
+    
+    #read excel file
+    inex_multi <- readxl::read_excel(infile_multi)
+    #get just names column and 1 column containing inputs for this experiment id
+    #specified by first two chars of the column name
+    inex_one <- dplyr::select(inex_multi,1, dplyr::starts_with(paste0(id_expt)))
+    
+    
+  } else
+  {
+    # single experiment file
+    # have a default file
+    if (is.null(file)) file <- system.file("extdata", "_in_expt_rotations_default.csv", package = "rotations", mustWork = TRUE)
+    # or file in the extdata folder
+    else file <- system.file("extdata", file, package = "rotations", mustWork = TRUE)
+    # TODO allow file to be in other specified location too, i.e. accept a path
+    
+    # function to read input file with experiment specifications
+    
+    #read scenario input (single column)
+    inex_one <- read.csv(file)    
+  }
   
-  #read scenario input (single column)
-  tmp <- read.csv(file)
+
   
   #transpose
-  tmp2 <- t(tmp)
+  tmp2 <- t(inex_one)
   
   #set variable names from the first row
   colnames(tmp2) <- tmp2[1,]

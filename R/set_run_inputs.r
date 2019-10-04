@@ -35,8 +35,7 @@ set_run_inputs <- function( inex = NULL )
   # take code from sensi_an_rotations1
   for(i in 1:inex$nscenarios)
   {
-    if (i%%200 == 1) message("scenario ",i," of ",inex$nscenarios," ",Sys.time())
-
+    #if (i%%200 == 1) message("scenario ",i," of ",inex$nscenarios," ",Sys.time())
     
     # constant inputs
     linmulti$max_gen[i] <- inex$max_gen

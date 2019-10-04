@@ -10,21 +10,51 @@ date: "`r Sys.Date()`"
 library(rotations)
 library(ggplot2)
 library(gridExtra)
+library(readxl) # for reading the excel file that allows me to keep formatting to see inputs clearly
 
 outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```  
 
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.5, comment=NA, results='asis'}
 
-# options
-# i) run each scenario for rotation then sequence and calculate difference in the loop
-# ii) run each scenario for rotation then sequence and save gens_under_thresh for each in the output file
 
-nscenarios <- 10
+nscenarios <- 100
+plotyn <- 1 #allow turning plots on and off from here
 
-# read an experiment file specifying ranges
-inex <- read_in_expt("expt_rot_mort_dispersal.csv", nscenarios=nscenarios) 
+
+# still deciding how best to do this ...
+# infile_multi <- 'rotations-experiments-creating-201909.xlsx'
+# infile_multi <- system.file("extdata", infile_multi, package = "rotations", mustWork = TRUE)
+# inex_all <- read_excel(infile_multi)
+
+# NOTE to add new files currently need to reinstall package because infiles are in extdata
+#infile <- "expt-A2-freq-insame-costs-nodisp.csv"
+# infile <- "expt-A4-freq-insame-costs-disp.csv"
+# # get the id for the expot to include in outfilenames, specifies experiment attributes
+# id_expt <- substr(infile,6,7)
+# # read an experiment file specifying ranges
+# inex <- read_in_expt(infile, nscenarios=nscenarios) 
+
+# now specify an experiment from the multi-experiment file
+id_expt <- 'A2'
+#id_expt <- 'A4'
+
+inex <- read_in_expt(nscenarios = nscenarios, multi=TRUE, id_expt=id_expt)
+
+# text to go at start of document
+cat("Experiment :",id_expt," scenario number is pagenum -1 \n\n    ")
+
+cat("Experiment key :\n    ")
+cat("A: resistance frequency threshold, insecticides the same\n    ")
+cat("B: resistance frequency threshold, different insecticides\n    ")
+cat("C: mortality threshold, insecticides the same\n    ")
+cat("D: mortality threshold, different insecticides\n    ")
+
+cat("1: no costs, no dispersal\n    ")
+cat("2: costs, no dispersal\n    ")
+cat("3: no costs, dispersal\n    ")
+cat("4: costs, dispersal\n    ")
 
 # create an object containing inputs for all scenarios
 linmulti <- set_run_inputs(inex=inex)
@@ -32,12 +62,25 @@ linmulti <- set_run_inputs(inex=inex)
 # run all scenarios
 for(i in 1:nscenarios)
 {
+  #message should output to the R markdown console
+  if (i%%200 == 1) message("scenario ",i," of ",nscenarios," ",Sys.time())
+  
   linputs <- get_one_in(linmulti, scen_num=i)
   
   if (linputs$rot_interval == 0) stop("in rotation_runs2019 rot_interval in input file needs to be > 0 to allow it to be compared to a sequence")
   
+  linputs$plot <- plotyn #allows setting whether to plot from script
+  linputs$add_gens_under50 <- TRUE #to add text to plots of gens under threshold
+  
   #record rotation rot interval locally otherwise it get soverwritten by 0
   rot_rot_interval <- linputs$rot_interval
+  
+  #to add label between plots in output doc
+  #this adds label underneath, not my intention but does the job
+  cat("\n\n\\pagebreak\n    ") #needs results='asis' in the chunk options
+  #cat("scenario",i,"\n     ") stopped plots from aligning
+  #instead just remember that scenario number is pagenum -1 
+ 
   
   # to compare sequence to rotation run all the scenarios above for both seq & rot 
   # need to do the rotation 2nd so that rot_interval from the input file can be saved with the outputs
@@ -46,6 +89,7 @@ for(i in 1:nscenarios)
     #to get rot_int of 0 in alternate runs - the other run uses the value from the input file
     if (rot_or_not == 0) linputs$rot_interval <- 0
     else linputs$rot_interval <- rot_rot_interval
+    
     
     ##################
     # run one scenario
@@ -58,6 +102,24 @@ for(i in 1:nscenarios)
     # to be able to save as for rot or seq
     if ( linputs$rot_interval == 0 ) {gens_seq <- as.numeric(gens)}
     else                             {gens_rot <- as.numeric(gens)}
+    
+    #code to rerun approx this scenario
+    cat(paste0("run_rot(n_insecticides=",linputs$n_insecticides,", ",
+                #"mort_or_freq='",linputs$mort_or_freq,"', ", #quotes dont work, freq is now default
+                #'mort_or_freq="',linputs$mort_or_freq,'", ',
+                "cost=",signif(linputs$cost,2),", ",
+                "start_freqs=",signif(linputs$start_freqs,2),", ", 
+                "rot_interval=",linputs$rot_interval,", ",
+                "eff=",signif(linputs$eff,2),",\n",
+                "dom_sel=",signif(linputs$dom_sel,2),", ",
+                "dom_cos=",signif(linputs$dom_cos,2),", ",
+                "rr=",signif(linputs$rr,2),", ",
+                "expo_hi=",signif(linputs$expo_hi,2),", ",
+                "coverage=",signif(linputs$coverage,2),",\n",
+                "migration=",signif(linputs$migration,2),", ",
+                #"max_gen=",linputs$max_gen,", ", 
+                "min_rwr_interval=",linputs$min_rwr_interval,            
+                ")\n\n") )
     
   } #end rot_or_not loop
     
@@ -83,7 +145,9 @@ for(i in 1:nscenarios)
     
     # save object containing inputs and results as rda for analysis
     # by default saved to inst/documents folder
-    save(df_res_all, file='df_res_all_rot.rda') #paste0(outFolder,'*.rda'))    
+    save(df_res_all, file=paste0(outFolder,format(Sys.time(), "%Y-%m-%d-%H-%M-"),'df_res_all_rot',id_expt,nscenarios,'.rda')) #paste0(outFolder,'*.rda')) 
+    # also save the experiment input file
+    save(inex, file=paste0(outFolder,format(Sys.time(), "%Y-%m-%d-%H-%M-"),'inex-',id_expt,'.rda'))   
   } 
   
 } #end scenario loop  

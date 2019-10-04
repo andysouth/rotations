@@ -23,16 +23,21 @@ array of resistance freqs in 1 gen following migration
 migration between intervention and refugia
 }
 \examples{
-#frequencies the same for all insecticides
-RAF <- set_start_freqs(n=3, freqs=0.001)
-RAF[,,,1] # to view generation 1
+
 #frequencies different for each insecticide
 RAF <- set_start_freqs(freqs=c(0.1,0.01,0.001))
-RAF[,,,1] # to view generation 1
-#testing mutliplying frequency arrays
-RAF <- set_start_freqs(max_gen = 1, freqs=c(0.1,0.01,0.001))
-RAF2 <- set_start_freqs(max_gen = 1, freqs=c(1,2,3))
-RAF*RAF2
+
+simplest example, freqs 1 in intervention, 0 in refugia
+RAF <- set_start_freqs(n=3, freqs=1)
+RAF1gen <- RAF[,,,1] # to view generation 1
+#set freqs in refugia to 0
+RAF1gen[,,'refugia']  <- 0
+#testing migration
+RAF2 <- rot_migrate(RAF1gen, migration=0.5, coverage=0.5, verbose=TRUE)
+
+#max migration leads to random mixing, irrespective of coverage, intervention and refugia end with same freq
+RAF2 <- rot_migrate(RAF1gen, migration=1, coverage=0.5, verbose=TRUE)
+RAF2 <- rot_migrate(RAF1gen, migration=1, coverage=0.2, verbose=TRUE)
 
 
 }
