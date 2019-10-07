@@ -8,7 +8,7 @@
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
 #' @param lwd line thickness for resistance curves
-#' @param title optional title for plot, NULL for no title
+#' @param title optional title for plot, NULL for no title, 'auto' for auto generated title
 #' @param plot whether to plot results
 #' @param plot_mort whether to add mortality to plots
 #'
@@ -32,7 +32,7 @@ rot_plot_resistance <- function(df_res2,
                                 add_gens_under50 = TRUE,
                                 df_resanother = NULL,
                                 lwd = 1.5,
-                                title = NULL,
+                                title = 'auto', #NULL
                                 plot = TRUE,
                                 plot_mort = TRUE) {
   
@@ -62,12 +62,14 @@ rot_plot_resistance <- function(df_res2,
     {
       gg <- gg + scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
     }
-  }   else
+  } else
   {
-    gg <- ggplot( df_res2, aes_string(x='generation',y='resistance')) +
-    geom_line( alpha=0.5, lwd=lwd, colour='red3' ) 
+    gg <- ggplot( df_res2, aes_string(x='generation',y='resistance',colour='active_or_refuge')) +
+    geom_line( alpha=0.5, lwd=lwd) #, colour='red3' ) 
     #legend for the lines  
-    #scale_colour_manual("",values=c("red3"))      
+    #scale_colour_manual("",values=c("red3")) 
+    gg <- gg + scale_colour_manual("complete coverage",values=c("red3"), labels=c("treated"))
+    
   }
 
   # testing adding mortality to the plot
@@ -103,6 +105,7 @@ rot_plot_resistance <- function(df_res2,
       
       #trying & initially failing to get mortality line to appear in legend 
       #fiddled with the orders of values & labels to get to correspond to lines
+      # TODO sort when plot_refuge==FALSE
       scale_colour_manual("areas connected\nby migration",values=c("red3",thresh_col,"darkgreen","navy"), 
                            labels=c("resistance\nin treated",thresh_name,"mortality in treated","resistance in\nuntreated refugia"),
                            guide = guide_legend(linetype=c(1,3,1,1)))
@@ -119,18 +122,6 @@ rot_plot_resistance <- function(df_res2,
   gg <- gg + 
 
     facet_wrap('resist_gene', ncol=1) +
-    
-    #ylab("resistance allele frequency") +
-    
-    #theme(axis.text.x = element_blank()) +
-    
-    #trying to get 2nd legend (this puts i_in_use in middle OK start)
-    #geom_line( aes_string(x='generation',y='i_in_use', colour=factor('i_in_use')), lwd=2) +
-    
-    #annotate("text", x = 0, y = 1.15, label = "deployment", size = 2.5, hjust='left') +
-
-    #scale_y now below dependent on logy arg
-    
     
     #add new insecticide use indication
     #when I do inherit.aes=FALSE the boxes don't appear
@@ -199,6 +190,10 @@ rot_plot_resistance <- function(df_res2,
   
   else     gg <- gg + scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1))
   
+  #gens_dep_under50 is repeated for all generations which make it look ugly when plotted with geom_text
+  #this filters out so just one result per insecticide
+  df_res3 <- dplyr::filter(df_res2, generation==1 & active_or_refuge=='active')
+  
   # add text of num gens below 50%  
   if (add_gens_under50) {
     
@@ -206,9 +201,6 @@ rot_plot_resistance <- function(df_res2,
     if (logy) y <- 0
     else y <- -Inf
     
-    #gens_dep_under50 is repeated for all generations which make it look ugly when plotted with geom_text
-    #this filters out so just one result per insecticide
-    df_res3 <- dplyr::filter(df_res2, generation==1 & active_or_refuge=='active')
     gg <- gg + geom_text(data=df_res3, aes(x=Inf, y=y, label=gens_dep_under50), colour='black', show.legend=FALSE, hjust=1, vjust=0)
     
     #problem with these options below is that they just accessed value for the first insecticide
@@ -217,7 +209,19 @@ rot_plot_resistance <- function(df_res2,
     
   }
   
-  if (!is.null(title)) gg <- gg + ggtitle(title)
+  if (!is.null(title)) 
+  {
+    if (title=='auto')
+    {
+      title <- paste0("Generations in-use under threshold :", sum(df_res3$gens_dep_under50))
+      
+      #would be nice to label as rotation or sequence but don't have that info here      
+      #if (df_res2$rot_interval==0) title <- paste0("Sequence, generations in-use under threshold :", sum(df_res3$gens_dep_under50))
+      #else title <- paste0("Rotation interval ", df_res2$rot_interval," generations in-use under threshold :", sum(df_res3$gens_dep_under50))
+    }
+    
+    gg <- gg + ggtitle(title)
+  }
     
   if (plot) plot(gg)
   

@@ -2080,10 +2080,16 @@ fixed gens_under_thresh count which had changed to be for all insecticides, not 
 
 successfully GOT runs2019 to access the xls file for experiments directly
 
+# 7/10/19
+
+got diff insecticide runs working
+
 
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
+? can I get mortality to appear properly in plots & key in non disperesal runs ?
+and so that legend doesn't say areas connected by migration ?
 
 
 migration limits ???

@@ -88,7 +88,7 @@ run_rot <- function(max_gen = 200,
                     #hardcode_exposure = FALSE,
                     logy = TRUE,
                     add_gens_under50 = FALSE,
-                    plot_mort = TRUE ) 
+                    plot_mort = FALSE ) 
   {
   
   

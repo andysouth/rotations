@@ -16,7 +16,7 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```  
 
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.5, comment=NA, results='asis'}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.4, comment=NA, results='asis'}
 
 
 nscenarios <- 100
@@ -36,9 +36,17 @@ plotyn <- 1 #allow turning plots on and off from here
 # # read an experiment file specifying ranges
 # inex <- read_in_expt(infile, nscenarios=nscenarios) 
 
+
 # now specify an experiment from the multi-experiment file
-id_expt <- 'A2'
+#id_expt <- 'A2'
 #id_expt <- 'A4'
+id_expt <- 'B2'
+
+# to move the pdf of a preceeding run of this file to a saved location
+# RUN the line above and below after knitting the file
+# ASSUMING id_expt still set to previous run and still same day
+# BEWARE that id_expt will not be set correctly in home env if file was knitted
+#file.rename("rotation_runs2019.pdf",paste0(outFolder,format(Sys.time(), "%Y-%m-%d-"),id_expt,"-results-figs.pdf"))
 
 inex <- read_in_expt(nscenarios = nscenarios, multi=TRUE, id_expt=id_expt)
 
@@ -55,6 +63,10 @@ cat("1: no costs, no dispersal\n    ")
 cat("2: costs, no dispersal\n    ")
 cat("3: no costs, dispersal\n    ")
 cat("4: costs, dispersal\n    ")
+
+cat("\nNumbers on the right are the number of generations that this insecticide is in use and the corresponding resistance is below threshold.\n   ")
+
+cat("\nOn each page a Sequence is at the top and an annual Rotation at the bottom.")
 
 # create an object containing inputs for all scenarios
 linmulti <- set_run_inputs(inex=inex)
@@ -103,19 +115,21 @@ for(i in 1:nscenarios)
     if ( linputs$rot_interval == 0 ) {gens_seq <- as.numeric(gens)}
     else                             {gens_rot <- as.numeric(gens)}
     
-    #code to rerun approx this scenario
+    #code to rerun approx this scenario, can be copied from pdf and pasted into R
+    #has to cope with converting vectors to strings
+    #spaces between args stop the pdf from messing with words
     cat(paste0("run_rot(n_insecticides=",linputs$n_insecticides,", ",
+                "rot_interval=",linputs$rot_interval,", ",
                 #"mort_or_freq='",linputs$mort_or_freq,"', ", #quotes dont work, freq is now default
                 #'mort_or_freq="',linputs$mort_or_freq,'", ',
-                "cost=",signif(linputs$cost,2),", ",
                 "start_freqs=",signif(linputs$start_freqs,2),", ", 
-                "rot_interval=",linputs$rot_interval,", ",
-                "eff=",signif(linputs$eff,2),",\n",
-                "dom_sel=",signif(linputs$dom_sel,2),", ",
-                "dom_cos=",signif(linputs$dom_cos,2),", ",
-                "rr=",signif(linputs$rr,2),", ",
+                "cost=c(",paste(signif(linputs$cost,2),collapse=','),"), ", 
+                "eff=c(",paste(signif(linputs$eff,2),collapse=','),"), ",               
+                "dom_sel=c(",paste(signif(linputs$dom_sel,2),collapse=','),"), ",
+                "dom_cos=c(",paste(signif(linputs$dom_cos,2),collapse=','),"), ",
+                "rr=c(",paste(signif(linputs$rr,2),collapse=','),"), ",
                 "expo_hi=",signif(linputs$expo_hi,2),", ",
-                "coverage=",signif(linputs$coverage,2),",\n",
+                "coverage=",signif(linputs$coverage,2),", ",
                 "migration=",signif(linputs$migration,2),", ",
                 #"max_gen=",linputs$max_gen,", ", 
                 "min_rwr_interval=",linputs$min_rwr_interval,            

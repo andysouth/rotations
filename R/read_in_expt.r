@@ -28,7 +28,7 @@ read_in_expt <- function( file = NULL,
 
   if (multi)
   {
-    infile_multi <- 'rotations-experiments-creating-201909.xlsx'
+    infile_multi <- 'rotations-paper-inputs-201910.xlsx'
     
     infile_multi <- system.file("extdata", infile_multi, package = "rotations", mustWork = TRUE)
     
