@@ -36,32 +36,45 @@ rot_migrate <- function( RAF1gen,
   # which might be the case if insects killed in the treated area caused greater than 
   # random migration in from the untreated area
   
+  # OLD WAY
   # to allow migration to be on a scale from 0-1 (1-coverage is the max)
   # calculating this in rot_migrate function allows easier testing of function
-  migrate_intervention <- migration*(1-coverage)
-  migrate_refugia <- migrate_intervention*coverage/(1-coverage)  
+  # migrate_intervention <- migration*(1-coverage)
+  # migrate_refugia <- migrate_intervention*coverage/(1-coverage)  
+  # 
+  # # RAF[,, ensures calc is repeated for each insecticide and sex 
+  # # more concise version of original code
+  # 
+  # mig_intervention <- (1-migrate_intervention)*RAF1gen[,, 'intervention']+
+  #   migrate_intervention *RAF1gen[,, 'refugia']
+  # 
+  # mig_refugia      <- (1-migrate_refugia)*RAF1gen[,, 'refugia']+
+  #   migrate_refugia *RAF1gen[,, 'intervention']
+  # 
+  # RAF1gen[,, 'intervention'] <- mig_intervention
+  # RAF1gen[,, 'refugia'] <- mig_refugia
+  # 
   
-  # not needed because now calculated
-  # if(migrate_intervention>(1-coverage)){
-  # message(sprintf("warning from calibration: migration rate in/out of intervention exceed 1 minus coverage\n"))   
-  # }
+  # 9/10/19 changing dispersal to make simpler and clearer
+  leavers_intervention <- migration*(1-coverage)
+  leavers_refugia <- migration * coverage
+  stay_intervention <- 1-leavers_intervention
+  stay_refugia <- 1-leavers_refugia
   
-  #RAF <- array_named(insecticide=1:n_insecticides, sex=c('m','f'), site=c('intervention','refugia'), gen=1:max_gen)
+  # after dispersal
+  # f_intervention <- f_int*stay_intervention + f_ref*leave_intervention
+  # because those that have left intervention are replaced by dispersers from refuge
+  # BE CAREFUL - it feels wrong to multiply f_refugia by leavers_intervention but it is right
+  freq_intervention <- RAF1gen[,, 'intervention']*stay_intervention + RAF1gen[,, 'refugia']*leavers_intervention  
   
-  # RAF[,, ensures calc is repeated for each insecticide and sex 
-  # more concise version of original code
-  
-  mig_intervention <- (1-migrate_intervention)*RAF1gen[,, 'intervention']+
-    migrate_intervention *RAF1gen[,, 'refugia']
-  
-  mig_refugia      <- (1-migrate_refugia)*RAF1gen[,, 'refugia']+
-    migrate_refugia *RAF1gen[,, 'intervention']
+  freq_refugia <- RAF1gen[,, 'refugia']*stay_refugia + RAF1gen[,, 'intervention']*leavers_refugia  
+    
   
   #to allow showing what has happened
   RAF1gen_old <- RAF1gen
   
-  RAF1gen[,, 'intervention'] <- mig_intervention
-  RAF1gen[,, 'refugia'] <- mig_refugia
+  RAF1gen[,, 'intervention'] <- freq_intervention
+  RAF1gen[,, 'refugia'] <- freq_refugia
 
   #RAF[ , , , 1] = freqs
   

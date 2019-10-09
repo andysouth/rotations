@@ -1,4 +1,4 @@
-#' migration_test to testimplementation of migration between an implementation area and refugia
+#' migration_test to test implementation of migration between treated area and refugia
 #'
 #' @param migration migration between 0-1
 #' @param coverage proportion of popn in treated area

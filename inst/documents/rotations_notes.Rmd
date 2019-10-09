@@ -2081,19 +2081,53 @@ fixed gens_under_thresh count which had changed to be for all insecticides, not 
 successfully GOT runs2019 to access the xls file for experiments directly
 
 # 7/10/19
-
 got diff insecticide runs working
+Got mortality to appear properly in plots & key in non dispersal runs.
+
+# 8/10/19 
+added to readme
+
+# 9/10/19
+
+spent the day sweating over getting migration working.
+
+Now I'm pleased I think it is simpler and I know what its doing.
+Migration 1 is random mixing.
+
+see the excel file for testing : rotations-dispersal-demo-andy201910.xlsx
 
 
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
-? can I get mortality to appear properly in plots & key in non disperesal runs ?
-and so that legend doesn't say areas connected by migration ?
+check on dispersal limits using new method. Seems that anything above 0.4 leads to near complete mixing
+run_rot(migration=0.4, coverage=0.5)
+#interesting how small levels of migration cause resistance freqs to decline even with no costs
+
+write word description of what dispersal does
+rename migration to dispersal ?
 
 
 migration limits ???
 I need to check on them more ! to make sure I know what they are doing.
+
+RAF <- set_start_freqs(n=3, freqs=1)
+> RAF1gen <- RAF[,,,1] # to view generation 1
+> #set freqs in refugia to 0
+> RAF1gen[,,'refugia']  <- 0
+> #testing migration
+> RAF2 <- rot_migrate(RAF1gen, migration=0.5, coverage=0.5, verbose=TRUE)
+  m.intervention f.intervention m.refugia f.refugia
+1              1              1         0         0
+2              1              1         0         0
+3              1              1         0         0
+  m.intervention f.intervention m.refugia f.refugia
+1           0.75           0.75      0.25      0.25
+2           0.75           0.75      0.25      0.25
+3           0.75           0.75      0.25      0.25
+
+
+
 > RAF2 <- rot_migrate(RAF1gen, migration=1, coverage=0.1, verbose=TRUE)
   m.intervention f.intervention m.refugia f.refugia
 1              1              1         0         0
@@ -2105,7 +2139,7 @@ I need to check on them more ! to make sure I know what they are doing.
 3            0.1            0.1       0.1       0.1
 
 
-
+~ consider renaming package to avoid conflict with CRAN rotations package insectrot rotinsect
 
 
 CHECK ALL INPUT PARAMS
