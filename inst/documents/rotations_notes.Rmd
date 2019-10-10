@@ -2088,13 +2088,30 @@ Got mortality to appear properly in plots & key in non dispersal runs.
 added to readme
 
 # 9/10/19
-
 spent the day sweating over getting migration working.
 
 Now I'm pleased I think it is simpler and I know what its doing.
 Migration 1 is random mixing.
 
 see the excel file for testing : rotations-dispersal-demo-andy201910.xlsx
+
+# 10/10/9
+migration effects on gens under thresh
+run_rot(coverage=0.5, cost=0, migration=0) #64
+run_rot(coverage=0.5, cost=0, migration=0.01) #72
+run_rot(coverage=0.5, cost=0, migration=0.1) #92
+run_rot(coverage=0.5, cost=0, migration=0.3) #104
+run_rot(coverage=0.5, cost=0, migration=0.6) #116
+run_rot(coverage=0.5, cost=0, migration=0.8) #120
+run_rot(coverage=0.5, cost=0, migration=1) #124
+
+migration limits ? 0.01 - 0.6
+
+But other A3 scenarios showe that nearly all runs with migration > 0.2 or 0.3 have treated area & refugia with very similar frequency curves. 
+
+I noticed that male_expo_prop min was 1 in earlier runs, changed to 0
+
+
 
 
 # TODO
@@ -2111,32 +2128,6 @@ rename migration to dispersal ?
 migration limits ???
 I need to check on them more ! to make sure I know what they are doing.
 
-RAF <- set_start_freqs(n=3, freqs=1)
-> RAF1gen <- RAF[,,,1] # to view generation 1
-> #set freqs in refugia to 0
-> RAF1gen[,,'refugia']  <- 0
-> #testing migration
-> RAF2 <- rot_migrate(RAF1gen, migration=0.5, coverage=0.5, verbose=TRUE)
-  m.intervention f.intervention m.refugia f.refugia
-1              1              1         0         0
-2              1              1         0         0
-3              1              1         0         0
-  m.intervention f.intervention m.refugia f.refugia
-1           0.75           0.75      0.25      0.25
-2           0.75           0.75      0.25      0.25
-3           0.75           0.75      0.25      0.25
-
-
-
-> RAF2 <- rot_migrate(RAF1gen, migration=1, coverage=0.1, verbose=TRUE)
-  m.intervention f.intervention m.refugia f.refugia
-1              1              1         0         0
-2              1              1         0         0
-3              1              1         0         0
-  m.intervention f.intervention m.refugia f.refugia
-1            0.1            0.1       0.1       0.1
-2            0.1            0.1       0.1       0.1
-3            0.1            0.1       0.1       0.1
 
 
 ~ consider renaming package to avoid conflict with CRAN rotations package insectrot rotinsect
@@ -2281,8 +2272,6 @@ BEWARE active in active_or_refuge is potentially confusing, does not mean that i
 ~ concatenate inputs & outputs
 ~ relate outputs to inputs
 
-
-~ maybe have a set_raf() function too
 
 ~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
 

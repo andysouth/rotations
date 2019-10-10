@@ -16,7 +16,7 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```  
 
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.4, comment=NA, results='asis'}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.2, comment=NA, results='asis'}
 
 
 nscenarios <- 100
@@ -39,8 +39,11 @@ plotyn <- 1 #allow turning plots on and off from here
 
 # now specify an experiment from the multi-experiment file
 #id_expt <- 'A2'
+#id_expt <- 'A3'
 #id_expt <- 'A4'
-id_expt <- 'B2'
+#id_expt <- 'B2'
+#id_expt <- 'B3'
+id_expt <- 'B4'
 
 # to move the pdf of a preceeding run of this file to a saved location
 # RUN the line above and below after knitting the file
@@ -118,8 +121,8 @@ for(i in 1:nscenarios)
     #code to rerun approx this scenario, can be copied from pdf and pasted into R
     #has to cope with converting vectors to strings
     #spaces between args stop the pdf from messing with words
-    cat(paste0("run_rot(n_insecticides=",linputs$n_insecticides,", ",
-                "rot_interval=",linputs$rot_interval,", ",
+    cat(paste0( "run_rot(rot_interval=",linputs$rot_interval,", ", 
+                "n_insecticides=",linputs$n_insecticides,", ",
                 #"mort_or_freq='",linputs$mort_or_freq,"', ", #quotes dont work, freq is now default
                 #'mort_or_freq="',linputs$mort_or_freq,'", ',
                 "start_freqs=",signif(linputs$start_freqs,2),", ", 
@@ -129,6 +132,7 @@ for(i in 1:nscenarios)
                 "dom_cos=c(",paste(signif(linputs$dom_cos,2),collapse=','),"), ",
                 "rr=c(",paste(signif(linputs$rr,2),collapse=','),"), ",
                 "expo_hi=",signif(linputs$expo_hi,2),", ",
+                "male_expo_prop=",signif(linputs$male_expo_prop,2),", ",
                 "coverage=",signif(linputs$coverage,2),", ",
                 "migration=",signif(linputs$migration,2),", ",
                 #"max_gen=",linputs$max_gen,", ", 

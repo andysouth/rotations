@@ -1,5 +1,14 @@
 #' plot_mort_thresh to try plotting the regions of param space where mortality > 90%
-
+#' NOT FINISHED
+#' 
+#' @param threshold mortality threshold, default 0.9
+#'
+# @import
+# @importFrom
+#' @return nothing creates a plot
+#' @export
+#'
+# @examples
 
 plot_mort_thresh <- function( threshold = 0.9) {
  

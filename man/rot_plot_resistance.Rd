@@ -6,7 +6,7 @@
 \usage{
 rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
   mort_or_freq = "mort", logy = TRUE, add_gens_under50 = TRUE,
-  df_resanother = NULL, lwd = 1.5, title = NULL, plot = TRUE,
+  df_resanother = NULL, lwd = 1.5, title = "auto", plot = TRUE,
   plot_mort = TRUE)
 }
 \arguments{
@@ -26,7 +26,7 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
 
 \item{lwd}{line thickness for resistance curves}
 
-\item{title}{optional title for plot, NULL for no title}
+\item{title}{optional title for plot, NULL for no title, 'auto' for auto generated title}
 
 \item{plot}{whether to plot results}
 
