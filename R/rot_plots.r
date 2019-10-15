@@ -42,6 +42,13 @@ rot_plot_resistance <- function(df_res2,
   # filter out refuge if not wanted (if coverage=1 no refuge anyway)
   #if (!plot_refuge) df_res2 <- filter(df_res2, active_or_refuge != 'refuge')
   if (!plot_refuge) df_res2 <- df_res2[df_res2$active_or_refuge=='active',]
+
+
+  # set plot_mort true for mort    
+  if ( is.null(plot_mort) ) plot_mort <- ifelse(mort_or_freq=='mort',TRUE,FALSE)
+  # set logy false for mort    
+  if ( is.null(logy) ) logy <- ifelse(mort_or_freq=='mort',FALSE,TRUE)  
+  
   
   # to allow plotting of insecticide in use
   # add column which has a value if insecticide in use & NA if not
@@ -73,6 +80,7 @@ rot_plot_resistance <- function(df_res2,
   }
 
   # testing adding mortality to the plot
+  
   # note mortality currently added in run_rot but actually we can calc from fixed conversion
   if (plot_mort) {
 

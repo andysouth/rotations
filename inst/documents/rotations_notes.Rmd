@@ -2111,11 +2111,71 @@ But other A3 scenarios showe that nearly all runs with migration > 0.2 or 0.3 ha
 
 I noticed that male_expo_prop min was 1 in earlier runs, changed to 0
 
+# 14/10/19
+
+Quotes from IRM in Aedes paper :
+Dusfour2019
+Management of insecticide resistance in the major Aedes vectors of arboviruses: Advances and challenges.
+
+in blue could be disagreed with :
+
+Box 1. IRM strategies
+Rotation
+# This strategy employs temporal alternation of insecticides with different modes of action and is based on the assumption that resistance diminishes insect fitness in the absence of insecticide.
+
+[in our rotation paper we could address this misconception that fitness costs are required for rotations to be beneficial].
+
+# All comparisons with mosaic, rotation, or mixture based on theoretical models or empirical studies demonstrate that “reactive alternation” underperforms the other IRM approaches in slowing down resistance evolution because alternation is implemented too late, when resistance alleles are already at high frequency [60].
+
+In Singapore, permethrin was
+replaced by pirimiphos-methyl for thermal fogging after reduced efficacy was observed [61], yet after 9 years of interruption, high permethrin resistance persisted in field populations.
+
+Persistence of high levels of pyrethroid resistance was also observed 7 to 10 years after they were replaced by organophosphates in the state of Sao Paulo (Brazil) [62]. As mentioned before, however, maintenance of resistance can also be due to the exposure of vector populations to household and agricultural insecticides or other xenobiotics (pollutants, other pesticides, etc.) [63–65].
+
+On the bright side, the Onchocerciasis Control Programme in West Africa is probably the most emblematic case of successful IRM in public health. After the first detections of temephos resistance in Simulium damnosum, a rotation scheme of insecticides with alternative modes of action was implemented for larval treatments. The rotation strategy drove the reversion of organophosphate resistance and preserved S. damnosum insecticide susceptibility for more than 20 years until the program was stopped [66].
+
+For malaria, a large-scale trial was conducted in Mexico to evaluate the impact of different IRM strategies on the resistance of Anopheles albimamus [67]. In this study, a 3-compound annual rotation, a 2-compound mosaic, and a long-term treatment with a single insecticide were compared. An increase of resistance was observed in all villages, but it demonstrated that mosaic or rotation selected for low resistance levels and remained stable compared with villages with single treatment where resistance increased rapidly and to levels significantly greater [68]. Control failures associated with pyrethroid resistance in malaria vectors have been observed for IRSs using pyrethroids. Switching to DDT against An. funestus populations without kdr mutation but specific metabolic mechanisms of pyrethroid resistance in South Africa [69] or to bendiocarb against An. gambiae in Equatorial Guinea restored the control of resistant populations [70].
+...
+The limited evidence-based information to support any IRM strategy in public health (e.g., mixture, rotation, noninsecticidal tools, etc.) complicates the prioritization of interventions.
+
+Despite that, we have to advocate for the introduction of IRM policies into vector control programs by favoring a proactive approach over a response mode. 
+#For example, it has been demonstrated that the preset rotation of unrelated insecticides performed better than changing insecticides over time in response to resistance [60, 66].
+
+#[next sentence is good for justifying future work]
+Until now, it has been near impossible to anticipate how resistance will impact the efficacy of vector control tools in the field and how a given IRM strategy will slow or reverse the evolution of resistance in targeted populations. A continuous effort connecting research institutes, control programs, industry, and WHO is required to conduct operational research that evaluates vector control strategies under field conditions and the genetics of resistance in broad terms (genotype–phenotype relationships, mosquito behavior, modeling). The outcomes of these studies will provide crucial information to optimize decision-making systems and the procedures to adjust IRM strategy according to field situations.
+
+
+#15/10/2019
+
+seeming bug with mortality switch that for rotations it stops the run when one insecticide is still below threshold.
+
+e.g D4 scenario1
+run_rot(rot_interval=10, n_insecticides=2, start_freqs=0.0018, cost=c(0.083,0.047), eff=c(0.95,0.96),
+ dom_sel=c(0.18,0.41), dom_cos=c(0.85,0.98), rr=c(0.29,0.71), expo_hi=0.69, male_expo_prop=0.17,
+ coverage=0.86, migration=0.28, min_rwr_interval=10, mort_or_freq = 'mort')
+
+but compare with freq that does work :
+
+run_rot(rot_interval=10, n_insecticides=2, start_freqs=0.0018, cost=c(0.083,0.047), eff=c(0.95,0.96),
+dom_sel=c(0.18,0.41), dom_cos=c(0.85,0.98), rr=c(0.29,0.71), expo_hi=0.69, male_expo_prop=0.17,
+coverage=0.86, migration=0.28, min_rwr_interval=10)
+
+
+in insecticide_check()
+
 
 
 
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
+
+see why insecticide_check() is failing for mort
+
+~ work out what we want Sam to do
+~~ do 16 sets of 10,000 runs
+~~ what analyses on outputs
+
+
 
 check on dispersal limits using new method. Seems that anything above 0.4 leads to near complete mixing
 run_rot(migration=0.4, coverage=0.5)

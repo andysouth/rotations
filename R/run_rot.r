@@ -86,9 +86,9 @@ run_rot <- function(max_gen = 200,
                     #hardcode_fitness = FALSE,
                     #same_insecticides = TRUE,
                     #hardcode_exposure = FALSE,
-                    logy = TRUE,
+                    logy = NULL,
                     add_gens_under50 = FALSE,
-                    plot_mort = FALSE ) 
+                    plot_mort = NULL ) 
   {
   
   
