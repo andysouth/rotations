@@ -15,7 +15,7 @@
 #' @return total mortality single value
 #' @export
 
-mort_from_resist <- function ( rfreq, # = 0.01,
+mort_from_resist <- function ( rfreq, # = 0.01, # no defaults to avoid code bugs with it being called with wrong values
                                    eff,# = 0.9,
                                    dom_sel,# = 0.5,
                                    rr )# = 0.5,

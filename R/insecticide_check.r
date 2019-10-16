@@ -41,6 +41,13 @@ insecticide_check <- function( RAF1gen,
   #check that required value
   stopifnot( mort_or_freq == 'mort' | mort_or_freq == 'freq')
   
+  # convert threshold to survival if mortality option is selected
+  # BEWARE mort-survival conversion
+  if (mort_or_freq == 'mort') 
+  {
+    threshold <- 1-threshold
+  }
+  
   change_insecticide <- FALSE
   
   # if rotate-when-resistant OR exit_rot==TRUE so rotation can be exited
@@ -59,13 +66,10 @@ insecticide_check <- function( RAF1gen,
       
     check_value <- freq 
     
-    # convert threshold to survival if mortality option is selected
-    # BEWARE mort-survival conversion
     # then check is if value is > survival same as for frequency
     if (mort_or_freq == 'mort') 
     {
       check_value <- surv  
-      threshold <- 1-threshold
     }
 
     
@@ -88,8 +92,6 @@ insecticide_check <- function( RAF1gen,
       if (diagnostics)
          message(paste0("change from insecticide",current_insecticide, " check=",check_value,"\n"))
     }
-    
-
     
     
   } 
@@ -115,14 +117,17 @@ insecticide_check <- function( RAF1gen,
       # sapply allows mort_from_resist to be applied to all
       if (mort_or_freq == 'mort' & length(other_ins_checks)>0 ) 
       {
-        #other_ins_checks <- 1 - mort_from_resist(other_ins_checks)       
+        #16/10/19 bug that this_ins_check wasn't converted to mortality
+        #also bug that mortality hadn't been converted to survival, now is above
+        this_ins_check <- 1 - mort_from_resist(this_ins_check, eff=eff, dom_sel=dom_sel, rr=rr)       
         other_ins_checks <- 1 - sapply(other_ins_checks, function(x) mort_from_resist(rfreq=x,eff=eff, dom_sel=dom_sel, rr=rr))
       }
       
       #BEWARE 4/10/2019 used to be BUG here, this bracket was after next loop leading to no change for 'freq'
       
-      # 31/7/18 only change if one to change to
-      # 4/10/19 in rotation have to force stop if this insecticide above thresh, even if no other to change to 
+      # only change if one to change to
+      # in rotation force stop if this insecticide above thresh, even if no other to change to 
+      # also in rotation stick with this insecticide if it's the only one below threshold
       if ( this_ins_check > threshold | min(other_ins_checks) <= threshold)
       {
         # time to rotate so need to identify the next insecticide in the rotation
@@ -131,12 +136,18 @@ insecticide_check <- function( RAF1gen,
 
 
       
-      if (diagnostics) message(paste0("insecticide",current_insecticide, 
-                      " freq=",RAF1gen[current_insecticide, 'f','intervention',1],
-                      " min other freqs=",min(other_ins_checks),
-                      " change=",change_insecticide,"\n"))
-      
-      
+      if (diagnostics) 
+      {
+        
+        #put survival in message
+        msgtext <- ifelse( mort_or_freq=='mort','survival','resist frequency' )
+        
+        message(paste0("insecticide",current_insecticide, 
+                       " ", msgtext, "=", this_ins_check,
+                       " min others=",min(other_ins_checks),
+                       " thresh=", threshold,
+                       " change=",change_insecticide,"\n"))
+      }
     }
   }        
   

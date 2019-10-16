@@ -5,6 +5,9 @@ output: pdf_document
 author: "Andy South and Ian Hastings"
 date: "`r Sys.Date()`"
 ---
+
+An rmarkdown document that can be modified and knit to run scenarios within a specified experiment.
+Output files are saved to the specified outFolder.
   
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 library(rotations)
@@ -20,22 +23,7 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 
 
 nscenarios <- 100
-plotyn <- 1 #allow turning plots on and off from here
-
-
-# still deciding how best to do this ...
-# infile_multi <- 'rotations-experiments-creating-201909.xlsx'
-# infile_multi <- system.file("extdata", infile_multi, package = "rotations", mustWork = TRUE)
-# inex_all <- read_excel(infile_multi)
-
-# NOTE to add new files currently need to reinstall package because infiles are in extdata
-#infile <- "expt-A2-freq-insame-costs-nodisp.csv"
-# infile <- "expt-A4-freq-insame-costs-disp.csv"
-# # get the id for the expot to include in outfilenames, specifies experiment attributes
-# id_expt <- substr(infile,6,7)
-# # read an experiment file specifying ranges
-# inex <- read_in_expt(infile, nscenarios=nscenarios) 
-
+plotyn <- 1 #allow turning plots on and off from here, may want to turn plots off if doing large number of runs
 
 # now specify an experiment from the multi-experiment file
 #id_expt <- 'A2'
@@ -54,9 +42,27 @@ id_expt <- 'D4'
 # BEWARE that id_expt will not be set correctly in home env if file was knitted
 #file.rename("rotation_runs2019.pdf",paste0(outFolder,format(Sys.time(), "%Y-%m-%d-"),id_expt,"-results-figs.pdf"))
 
+
+# old ways of doing it
+# infile_multi <- 'rotations-experiments-creating-201909.xlsx'
+# infile_multi <- system.file("extdata", infile_multi, package = "rotations", mustWork = TRUE)
+# inex_all <- read_excel(infile_multi)
+
+# older way with individual experiment files
+# to add new files currently need to reinstall package because infiles are in extdata
+# infile <- "expt-A2-freq-insame-costs-nodisp.csv"
+# infile <- "expt-A4-freq-insame-costs-disp.csv"
+# # get the id for the expot to include in outfilenames, specifies experiment attributes
+# id_expt <- substr(infile,6,7)
+# # read an experiment file specifying ranges
+# inex <- read_in_expt(infile, nscenarios=nscenarios) 
+
+
 inex <- read_in_expt(nscenarios = nscenarios, multi=TRUE, id_expt=id_expt)
 
 # text to go at start of document
+cat("\nThere are 16 potential experiments :\n\n    ")
+
 cat("Experiment :",id_expt," scenario number is pagenum -1 \n\n    ")
 
 cat("Experiment key :\n    ")

@@ -2160,8 +2160,12 @@ run_rot(rot_interval=10, n_insecticides=2, start_freqs=0.0018, cost=c(0.083,0.04
 dom_sel=c(0.18,0.41), dom_cos=c(0.85,0.98), rr=c(0.29,0.71), expo_hi=0.69, male_expo_prop=0.17,
 coverage=0.86, migration=0.28, min_rwr_interval=10)
 
-
 in insecticide_check()
+
+
+# 16/10/2019
+
+
 
 
 
