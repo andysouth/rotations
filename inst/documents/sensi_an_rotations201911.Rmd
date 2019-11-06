@@ -21,9 +21,12 @@ Code below will need to be adapted to work on all 16 experiments, so far it just
   library(rotations)
   library(ggplot2)
   library(gridExtra)
+  library(tidyverse)
 
   # where the rotation runs saved
-  infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+  #infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+  infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\SJ_Runs_Nov\\"
+  
 ```
 
 
@@ -35,7 +38,9 @@ Code below will need to be adapted to work on all 16 experiments, so far it just
 
 # load the data, start with just one experiment
 # dataframes will need to be renamed because they will all be called df_res_all to start
-infile <- "df_res_all_rot_mig1000.rda"
+
+infile <- "2019-11-05-10-42-df_res_all_rotA210000.rda"
+
 infile <- paste0(infolder, infile)
 
 load(infile)
