@@ -1,0 +1,318 @@
+---
+title: "sensi_an_rotations201911. To analyse rotation runs for paper"
+output: pdf_document
+#output: word_document
+author: "Andy South, Sam Jones and Ian Hastings"
+date: "`r Sys.Date()`"
+---
+
+
+Code to plot and analyse rotations runs for paper.    
+
+Runs themselves are done from rotation_runs2019.Rmd.    
+
+16 expts of 10,000 runs each comparing rotations and sequences.
+
+Code below will need to be adapted to work on all 16 experiments, so far it just works on one.
+
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+  library(rotations)
+  library(ggplot2)
+  library(gridExtra)
+
+  # where the rotation runs saved
+  infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+```
+
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
+#results='hide',
+#comment=NA removes ## before text output
+
+
+# load the data, start with just one experiment
+# dataframes will need to be renamed because they will all be called df_res_all to start
+infile <- "df_res_all_rot_mig1000.rda"
+infile <- paste0(infolder, infile)
+
+load(infile)
+
+
+```
+
+
+# proportion of scenarios not reaching resistance thresholds
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# check proportion of scenarios not reaching thresholds by max_runs for both seq & rot
+    
+    nruns_fail <- df_res_all %>% 
+                  filter(gens_seq == max_gen & gens_rot == max_gen) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs not reaching thresholds : ', nruns_fail/nrow(df_res_all) ) 
+    
+    # remove runs where thresholds not reached for seq & rot 
+    df_res_all <- df_res_all %>% 
+                  filter(gens_seq != max_gen | gens_rot != max_gen) 
+    
+
+    nruns_same <- df_res_all %>% 
+                  filter(gens_seq == gens_rot) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs (that did reach threshold) where rotations and sequence the same  : ', nruns_same/nrow(df_res_all) )  
+    
+    
+    nruns_rot_20pc_better <- df_res_all %>% 
+                  filter(rot_minus_seq/gens_seq >= 0.2 ) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs (that did reach threshold) where rotations >20 % better than sequence  : ', nruns_rot_20pc_better/nrow(df_res_all) )   
+    
+```
+
+# difference between rotations and sequences across all runs
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+    print( ggplot(df_res_all, aes(x=rot_minus_seq)) + 
+             
+             geom_histogram(binwidth=10) +
+             xlab('rot_minus_seq : rotation generations minus sequence') +
+             ylab('count (sqrt scale to show low values)') +
+             scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + #can't use log scale because anchored at 0
+             theme_minimal() +
+             theme(panel.grid.minor.y=element_blank()))
+
+```
+
+\pagebreak
+
+# Examples of runs where rotations > 20% better than sequences
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=3.5}
+#eval false because smaller runs don't have these
+#TODO change which runs to show as examples
+
+scenarios_to_plot <- c(624,2167,602,4028,5771)
+
+for(scenario in scenarios_to_plot)
+{
+  cat(scenario,"\n")
+  
+  linputs <- as.list( df_res_all[scenario, 1:15] )
+  
+  # run one scenario
+  dfres <- do.call(run_rot, linputs)
+  
+  rot_plot_resistance(dfres, plot_refuge=FALSE, logy=FALSE, plot=TRUE)
+   
+  #now run as sequence
+  linputs$rot_interval <- 0
+  dfres <- do.call(run_rot, linputs)
+  
+  rot_plot_resistance(dfres, plot_refuge=FALSE, logy=FALSE, plot=TRUE) 
+  
+  
+  dfi <- data.frame(t(as.data.frame(linputs)))
+  names(dfi) <- 'value'
+  dfi$inputs <- rownames(dfi)
+
+  #take out columns not between 0 & 1
+  dfi <- filter(dfi, !inputs %in% c('max_gen','rot_interval','n_insecticides','plot','min_rwr_interval'))
+  #also remove coverage & migration both set to 0 for now
+  dfi <- filter(dfi, !inputs %in% c('coverage','migration'))
+    
+  ggins <- ggplot(dfi, aes(x=inputs,y=value)) + 
+            geom_point() +
+            theme_minimal() +
+            ylim(0,1) +
+            theme(axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1))
+  plot(ggins)
+  
+}
+
+
+
+```
+
+
+#Plots of how the difference between rotations and sequences respond to model inputs.
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
+
+# go through selected inputs and plot them on x with rot_minus_seq on y 
+# TODO check whether this covers all the inputs we want to look at
+in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
+
+y <- 'rot_minus_seq'  
+
+for(i in in_cols)
+{
+    
+    #plotnum <- plotnum + 1
+    
+    #print( ggplot(ggInsOuts, aes_string(x=i, y=y, colour="strategy")) + 
+    #plotlist[[plotnum]] <- 
+    print( ggplot(df_res_all, aes_string(x=i, y=y)) + 
+             
+             geom_point(shape=1, size=1, alpha=0.5, show.legend=FALSE) +
+             theme_minimal() +
+             geom_smooth(linetype='dashed',size=0.5) )
+             
+}
+
+```
+
+# PRCC to show the sensitivity of the difference between rotation and sequence to inputs
+# this can only be used for the experiments where all insecticides are the same
+# (because in the ones where insecticides differ there are multiple values for each input)
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+  library(sensitivity)
+  
+# pcc(X, y, rank = FALSE, nboot = 0, conf = 0.95)
+# 
+# Arguments
+# X a data frame containing model input variables
+# y a vector containing the responses 
+# rank logical. If TRUE, the analysis is done on the ranks.
+# nboot the number of bootstrap replicates.
+# conf the confidence level of the bootstrap confidence intervals.
+
+#same as above
+#TODO check that this covers all the inputs we want to look at
+in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
+
+    
+    x <- df_res_all[,in_cols]
+    y <- df_res_all['rot_minus_seq']
+      
+    pcc_res <- pcc(x, y, rank=TRUE)
+    
+    #if you add bootstrap, error bars are added to the default plot & extra columns to the PRCC object
+    #pcc_res <- pcc(x, y, rank=TRUE, nboot=100)
+    #plot(pcc_res)
+    
+    #results are here I can probably rbind them together into a df that I can ggplot
+    #pcc_res$PRCC
+    
+    to_plot <- pcc_res$PRCC
+    #rename column 1 from 'original to PRCC
+    names(to_plot)[1] <- 'PRCC'
+    to_plot$inputs <- rownames(to_plot)  
+    
+    axis_text_x <- element_text(angle = 45,hjust = 1, vjust = 1)
+    height <- 0.9
+    
+    gg <- ggplot( to_plot, aes_string(x='inputs',y='PRCC') ) +     
+             geom_point(shape=1, colour='red') +
+             theme(axis.text.x = axis_text_x) +
+             geom_hline(yintercept = 0, linetype=3) +
+             #theme(panel.grid.major.y = element_line(color = "grey", size = 1)) +
+             ylim(-1,1) +
+             #ggtitle(paste(strat_name[strategy_num])) +
+             xlab(NULL) 
+
+    plot(gg)
+
+  #to put back in some ref gridlines that are removed by cowplot
+  #theme_set(theme_gray())
+  #theme_set(theme_bw())
+  
+  #plot_grid( plotlist[[1]],plotlist[[2]],plotlist[[3]],plotlist[[4]],ncol=1, rel_heights=c(1,1,1,1.8))  
+  #plot_grid( plotlist[[1]],plotlist[[2]],plotlist[[3]],ncol=1, rel_heights=c(1,1,1.6), labels='AUTO')    
+
+
+```
+
+# Runs where rotations are >20% better (in red) are associated with higher dominance of cost and lower dominance of selection, but doesn't guarantee, must be interaction with other inputs too.
+# this was for earlier runs when there was some strange model behaviour, may not be the case now
+# and may not be very meaningful anyway
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
+
+
+#'cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs'
+
+#'cost','dom_cos','dom_sel'
+
+y <- 'rot_minus_seq'  
+
+ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) + 
+     geom_point(shape=3, size=1, alpha=0.2, show.legend=FALSE) +
+     theme_minimal() +
+     geom_point(data=filter(df_res_all, rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
+
+
+# quick, not very successful look at modelling it
+# library(mgcv)
+# mod_lm2 <- gam(rot_minus_seq ~ cost + dom_cos + dom_sel, data=df_res_all)
+# summary(mod_lm2)  
+# 
+# mod_gam2 <- gam(rot_minus_seq ~ s(cost) + s(dom_cos) + s(dom_sel) + s(rr) + s(expo_hi) + s(male_expo_prop) + s(eff) + s(start_freqs), data=df_res_all)
+# 
+# summary(mod_gam2)  
+# #Deviance explained = 19.5%
+# 
+# mod_gam3 <- gam(rot_minus_seq ~ te(cost,dom_cos,dom_sel), data=df_res_all)
+# summary(mod_gam3)
+
+
+```
+
+
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=6}
+#eval=FALSE tmp because changes above will break this
+# summary plot of all runs, would show any differences between sequence & rotations as non horizontal lines
+
+# want to plot line between sequence and rotation value
+# any deviation from horizontal will be obvious
+# could use rotation interval as the x axis, so that longer intervals will be clearer
+
+# maybe not for publication
+# but useful for quick view
+
+#it was useful for me but now that I've moved to one row per scenario it won't work !!
+
+    gg <- ggplot( df_res_all, aes_string(x='rot_interval',
+                                         y='tot_gens_dep_under50',
+                                         group='scenario',
+                                         colour='scenario') ) +
+          geom_line( alpha=0.5, lwd=1 )
+
+    plot(gg)
+    
+             
+# plot gens againts exposure and effectiveness
+# as a quick test to see if I can set the starting values of these higher
+    
+    gg <- ggplot( df_res_all, aes_string(x='eff',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+       
+    gg <- ggplot( df_res_all, aes_string(x='expo_hi',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+    
+    gg <- ggplot( df_res_all, aes_string(x='expo_hi*eff*male_expo_prop',
+                                         y='tot_gens_dep_under50') ) +
+          geom_point( alpha=0.5 )
+    plot(gg)    
+    
+
+```  
+
+

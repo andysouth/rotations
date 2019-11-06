@@ -2162,8 +2162,13 @@ coverage=0.86, migration=0.28, min_rwr_interval=10)
 
 in insecticide_check()
 
+I think I fixed this issue ...?
 
-# 16/10/2019
+# 6/11/2019
+
+starting to get some of the analysis code ready for Sam.
+
+taking code from sensi_an_rotations1.Rmd
 
 
 
@@ -2173,6 +2178,7 @@ in insecticide_check()
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
+~ check that I fixed issue below :
 see why insecticide_check() is failing for mort
 
 ~ work out what we want Sam to do
