@@ -32,23 +32,6 @@ Code below will need to be adapted to work on all 16 experiments, so far it just
 
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
-#results='hide',
-#comment=NA removes ## before text output
-
-
-# load the data, start with just one experiment
-# dataframes will need to be renamed because they will all be called df_res_all to start
-
-infile <- "2019-11-05-10-42-df_res_all_rotA210000.rda"
-
-infile <- paste0(infolder, infile)
-
-load(infile)
-
-```
-
-
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
 
 # sam is running all 16 scenarios with a single outfile
 # but in the meantime can I read the rda's in individually ?
@@ -153,8 +136,11 @@ widthbin <- 10 #either 10 or 20 looks fairly similar
 #      theme_minimal() +
 #      theme(panel.grid.minor.y=element_blank())
 
-
+# best strategy calculation
+# no_difference set to +/- half of widthbin set above
 df_res_16$best_strategy <- ifelse(df_res_16$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_16$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
+
+df_res_16$rms_percent <- 100 * df_res_16$rot_minus_seq / df_res_16$gens_seq
 
 # plot all 160k runs together
 # ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
@@ -172,7 +158,6 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
 
 
 # lengthening facet labels
-
 idAD_lookup <- c(
   A = "A freq i-same",
   B = "B freq i-diff",
@@ -190,7 +175,7 @@ id14_lookup <- c(
 #colrs <- c("no_difference"=rgb(210,210,210,max=255),"rotation"=rgb(113,166,89,max=255),"sequence"=rgb(137,117,202,max=255))
 colrs <- c("no_difference"=rgb(255,255,255,max=255),"rotation"=rgb(2,98,215,max=255),"sequence"=rgb(227,0,169,max=255))
 
-#facet by A-D and 1-4
+#rot_minus_seq, facet by A-D and 1-4, better facet labels
 ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
      geom_histogram(binwidth=widthbin, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
@@ -198,18 +183,49 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
      xlim(-100,100) +
      xlab("advantage of rotations over sequence in generations") +
      theme(panel.grid.minor.y=element_blank()) +
-     facet_grid(rows=vars(id14), cols=vars(idAD), labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
-
-# p2 + facet_grid(vore ~ conservation, labeller = labeller(
-#   .default = capitalize,
-#   conservation = conservation_status
-# ))
-
-
+#tally
 #df_res_16 %>% group_by(id12) %>% tally()
 
+#rms (rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
+ggplot(df_res_16, aes(x=rms_pcent, fill=best_strategy)) + 
+     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     xlim(-100,100) +
+     xlab("percentage advantage of rotations over sequence in generations") +
+     theme(panel.grid.minor.y=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
+#just as a test
+#can I plot gens_seq and gens_rot in same facet
+#but I need to make data longer to do that, currently in same columns
+
+#oooo this is interesting
+#it shows what gens_rot the best strategies occur at
+ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) + 
+     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     #xlim(-100,100) +
+     xlab("generations to reach thresholds for ROTATION") +
+     theme(panel.grid.minor.y=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+#gens_seq the best strategies occur at
+ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) + 
+     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     #xlim(-100,100) +
+     xlab("generations to reach thresholds for SEQUENCE") +
+     theme(panel.grid.minor.y=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
 
 ```
