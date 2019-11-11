@@ -45,6 +45,44 @@ infile <- paste0(infolder, infile)
 
 load(infile)
 
+```
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
+
+# sam is running all 16 scenarios with a single outfile
+# but in the meantime can I read the rda's in individually ?
+# e.g. need to be able to find files named like this
+# 2019-11-05-10-42-df_res_all_rotA210000.rda
+# how to get all combinations of A-D and 1-4
+id_columns <- expand.grid(c("A","B","C","D"),c(1:4))
+expt_ids <- paste0(id_columns[,1], id_columns[,2])
+#i think that if I add the 10000 in I can find the unique files
+expt_ids <- paste0(expt_ids,10000)
+
+#list all files
+#list.files(infolder)
+
+#list files matching a pattern, now get just on matching each
+#list.files(infolder,"A110000")
+
+df_res_16 <- data.frame(stringsAsFactors=FALSE)
+
+# read in all 16 files, rbind and add ID columns
+for(i in 1:length(expt_ids))
+{
+  
+  # gets loaded as df_res_all because that is what it was saved as
+  load(paste0(infolder, list.files(infolder, expt_ids[i])))
+  # add experiment ids, first as separate columns to make facetting easier maybe
+  df_res_all$idAD <- substr(expt_ids[i],1,1)
+  df_res_all$id14 <- substr(expt_ids[i],2,2)
+  
+  df_res_16 <- rbind(df_res_16, df_res_all)
+    
+}
+
+save(df_res_16, file=paste0(infolder,'df_res_16.rda'))
 
 ```
 
@@ -87,14 +125,92 @@ load(infile)
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-    print( ggplot(df_res_all, aes(x=rot_minus_seq)) + 
-             
-             geom_histogram(binwidth=10) +
-             xlab('rot_minus_seq : rotation generations minus sequence') +
-             ylab('count (sqrt scale to show low values)') +
-             scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + #can't use log scale because anchored at 0
-             theme_minimal() +
-             theme(panel.grid.minor.y=element_blank()))
+    # print( ggplot(df_res_all, aes(x=rot_minus_seq)) + 
+    #          
+    #          geom_histogram(binwidth=10) +
+    #          xlab('rot_minus_seq : rotation generations minus sequence') +
+    #          ylab('count (sqrt scale to show low values)') +
+    #          scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + #can't use log scale because anchored at 0
+    #          theme_minimal() +
+    #          theme(panel.grid.minor.y=element_blank()))
+
+
+
+# no colour ??
+# ggplot(df_res_all, aes(x=rot_minus_seq, colour=rot_minus_seq)) + 
+#      geom_histogram(binwidth=10) + 
+#      scale_color_brewer(palette="Dark2")
+
+
+#GOOD setting colours so can see easier when rot or seq better
+
+widthbin <- 10 #either 10 or 20 looks fairly similar
+
+# df_res_all$best_strategy <- ifelse(df_res_all$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_all$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
+# 
+# ggplot(df_res_all, aes(x=rot_minus_seq, fill=best_strategy)) + 
+#      geom_histogram(binwidth=widthbin, colour='white') + 
+#      theme_minimal() +
+#      theme(panel.grid.minor.y=element_blank())
+
+
+df_res_16$best_strategy <- ifelse(df_res_16$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_16$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
+
+# plot all 160k runs together
+# ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
+#      geom_histogram(binwidth=widthbin, colour='white') + 
+#      theme_minimal() +
+#      theme(panel.grid.minor.y=element_blank())
+
+#facet by A-D and 1-4
+ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
+     geom_histogram(binwidth=widthbin, colour='white') + 
+     theme_minimal() +
+     xlim(-100,100) +
+     theme(panel.grid.minor.y=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD))
+
+
+# lengthening facet labels
+
+idAD_lookup <- c(
+  A = "A freq i-same",
+  B = "B freq i-diff",
+  C = "C mort i-same",
+  D = "B mort i-diff"
+)
+
+id14_lookup <- c(
+  "1" = "1 nocost nodisp",
+  "2" = "2 costs nodisp",
+  "3" = "3 nocost disp",
+  "4" = "4 costs disp"
+)
+
+#colrs <- c("no_difference"=rgb(210,210,210,max=255),"rotation"=rgb(113,166,89,max=255),"sequence"=rgb(137,117,202,max=255))
+colrs <- c("no_difference"=rgb(255,255,255,max=255),"rotation"=rgb(2,98,215,max=255),"sequence"=rgb(227,0,169,max=255))
+
+#facet by A-D and 1-4
+ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
+     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     xlim(-100,100) +
+     xlab("advantage of rotations over sequence in generations") +
+     theme(panel.grid.minor.y=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD), labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+
+# p2 + facet_grid(vore ~ conservation, labeller = labeller(
+#   .default = capitalize,
+#   conservation = conservation_status
+# ))
+
+
+#df_res_16 %>% group_by(id12) %>% tally()
+
+
+
 
 ```
 
