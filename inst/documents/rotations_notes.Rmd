@@ -2171,6 +2171,35 @@ starting to get some of the analysis code ready for Sam.
 taking code from sensi_an_rotations1.Rmd
 
 
+# 13/11/2019
+
+Why does this sequence switch back when there is no cost or dispersal ?
+
+run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0021, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0,min_rwr_interval=10, diagnostics = TRUE)
+
+Using a mortality switch it now doesn't switch back :
+run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0021, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0, min_rwr_interval=10, mort_or_freq = 'mort')
+
+Not due to dom_cos >0 even though cost=0.
+
+insecticide1 check=0.488229891221731 freq=0.488229891221731 surv=0.406690062481814 gens_this_insecticide=39
+generation 41
+
+insecticide1 check=0.520515732451062 freq=0.520515732451062 surv=0.431997734603674 gens_this_insecticide=40
+change from insecticide1 check=0.520515732451062
+
+generation 121, switch from insecticide 3 to 1; new frequency vs threshold = 0.488603 and 0.500000
+
+Seems like freq has declined from 0.5205 to 0.4886 while insecticide not in use despite no costs or dispersal ???
+
+ooo weird seems to go down the generation after use stopped and then stays at that constant level:
+
+gen39 i1 freq=0.455590826478509
+gen40 i1 freq=0.488229891221731
+gen41 i1 freq=0.520515732451062
+gen42 i1 freq=0.488603067950344
+gen43 i1 freq=0.488603067950344
+gen44 i1 freq=0.488603067950344
 
 
 
@@ -2178,12 +2207,18 @@ taking code from sensi_an_rotations1.Rmd
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
-~ check that I fixed issue below :
-see why insecticide_check() is failing for mort
 
-~ work out what we want Sam to do
-~~ do 16 sets of 10,000 runs
-~~ what analyses on outputs
+1. find & fix problem with C runs see above
+2. implement annual restrictions for sequences
+
+
+# I think we allow sequence to exit at anytime ? This gives a kind of advantage to sequences, rotations tend to end up with more generations above threshold.
+
+
+
+Questions to answer re 16k runs :
+
+1. why with mortality switch are there more runs favouring sequence ?
 
 
 

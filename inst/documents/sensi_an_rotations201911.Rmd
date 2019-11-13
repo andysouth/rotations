@@ -136,11 +136,20 @@ widthbin <- 10 #either 10 or 20 looks fairly similar
 #      theme_minimal() +
 #      theme(panel.grid.minor.y=element_blank())
 
+# calc percentage difference between rotation and sequence
+df_res_16$rms_percent <- 100 * df_res_16$rot_minus_seq / df_res_16$gens_seq
+
 # best strategy calculation
 # no_difference set to +/- half of widthbin set above
 df_res_16$best_strategy <- ifelse(df_res_16$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_16$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
 
-df_res_16$rms_percent <- 100 * df_res_16$rot_minus_seq / df_res_16$gens_seq
+# OR use a % threshold for strategies to be the same
+# still uses widthbin which now represents a pcent
+# no_difference set to +/- half of widthbin% set above
+df_res_16$best_strategy <- ifelse(df_res_16$rms_percent <= -(widthbin/2),"sequence", ifelse(df_res_16$rms_percent > (widthbin/2), "rotation", "no_difference"))
+
+
+
 
 # plot all 160k runs together
 # ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
@@ -190,7 +199,8 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
 #df_res_16 %>% group_by(id12) %>% tally()
 
 #rms (rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
-ggplot(df_res_16, aes(x=rms_pcent, fill=best_strategy)) + 
+#TODO make the best_strategy threshold basedon percent too
+ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) + 
      geom_histogram(binwidth=widthbin, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
      theme_minimal() +

@@ -185,6 +185,7 @@ run_rot <- function(max_gen = 200,
   ## in the plots there is gap between rotation that stops e.g. at gen 10 and next starts at gen 11
   for(gen in 2:max_gen)
     { 
+    
     for(insecticide in 1:n_insecticides)
     {
       # extract resistance allele freqs (raf) for previous timestep
@@ -322,6 +323,11 @@ run_rot <- function(max_gen = 200,
       
      } #end of cycling insecticides
     
+
+    #TEMP check frequency of one insecticide
+    freqtest <- RAF[1, 'f','intervention',gen]
+    message(paste0("gen",gen," i1 freq=", freqtest))
+        
     
     ######  
     # migration between refugia and intervention site
@@ -370,6 +376,9 @@ run_rot <- function(max_gen = 200,
     
     if (diagnostics) message(sprintf("generation %d\n", gen))
     
+    #TEMP check frequency of one insecticide
+    freqtest <- RAF[1, 'f','intervention',gen]
+    message(paste0("gen",gen," i1 freq=", freqtest))
     
     ######
     # check if insecticide switch is needed
@@ -444,6 +453,12 @@ run_rot <- function(max_gen = 200,
     df_results$insecticide[gen] <- current_insecticide    
     df_mortali$insecticide[gen] <- current_insecticide        
   
+    
+    #TEMP check frequency of one insecticide
+    freqtest <- RAF[1, 'f','intervention',gen]
+    message(paste0("gen",gen," i1 freq=", freqtest))
+    
+    
    } #### end of max_gen loop
 
   # warning
