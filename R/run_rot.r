@@ -186,6 +186,17 @@ run_rot <- function(max_gen = 200,
   for(gen in 2:max_gen)
     { 
     
+    #TEMP check frequency of one insecticide
+    freq1 <- round(RAF[1, 'f','intervention',gen-1],3)
+    freq2 <- round(RAF[2, 'f','intervention',gen-1],3)    
+    message(paste0("*storedgen",gen-1," freqs i1:", freq1,"  i2:", freq2))
+
+    # 201911 try moving insecticide switch check to here to solve issue with freq changing
+    # due to later random mating between m&f
+    # but will need to change to assessing gen-1 rather than gen
+    
+    
+        
     for(insecticide in 1:n_insecticides)
     {
       # extract resistance allele freqs (raf) for previous timestep
@@ -324,9 +335,13 @@ run_rot <- function(max_gen = 200,
      } #end of cycling insecticides
     
 
-    #TEMP check frequency of one insecticide
-    freqtest <- RAF[1, 'f','intervention',gen]
-    message(paste0("gen",gen," i1 freq=", freqtest))
+    #TEMP check frequency of two insecticides
+    freq1f <- round(RAF[1, 'f','intervention',gen],3)
+    freq2f <- round(RAF[2, 'f','intervention',gen],3) 
+    freq1m <- round(RAF[1, 'm','intervention',gen],3)
+    freq2m <- round(RAF[2, 'm','intervention',gen],3)     
+    message(paste0("gen",gen," freqs i1 f,m:", freq1f,",",freq1m,
+                   "  i2 f,m:", freq2f,",",freq2m))
         
     
     ######  
@@ -377,9 +392,9 @@ run_rot <- function(max_gen = 200,
     if (diagnostics) message(sprintf("generation %d\n", gen))
     
     #TEMP check frequency of one insecticide
-    freqtest <- RAF[1, 'f','intervention',gen]
-    message(paste0("gen",gen," i1 freq=", freqtest))
-    
+    # freqtest <- RAF[1, 'f','intervention',gen]
+    # message(paste0("gen",gen," i1 freq=", freqtest))
+
     ######
     # check if insecticide switch is needed
     # drop=FALSE imp to preserve site dimension when coverage=1
@@ -395,7 +410,7 @@ run_rot <- function(max_gen = 200,
                                              dom_sel=dom_sel,
                                              rr=rr,
                                              diagnostics=diagnostics)
-
+    
     
     if (! change_insecticide)
     {
@@ -419,7 +434,7 @@ run_rot <- function(max_gen = 200,
                                                 dom_sel=dom_sel,
                                                 rr=rr)
     } 
-  
+    
     #message("gen", gen, " curr_ins=", current_insecticide, " change=", change_insecticide)
     
     #11/5/18 record how many generations since each insecticide has been used
@@ -448,15 +463,19 @@ run_rot <- function(max_gen = 200,
       }
       break #breaks out of looping generations and terminates the simulation
     }    
- 
+    
     # recording the insecticide that's going to be used in next timestep
     df_results$insecticide[gen] <- current_insecticide    
     df_mortali$insecticide[gen] <- current_insecticide        
-  
     
-    #TEMP check frequency of one insecticide
-    freqtest <- RAF[1, 'f','intervention',gen]
-    message(paste0("gen",gen," i1 freq=", freqtest))
+    
+    #TEMP check frequency of two insecticides
+    # freq1f <- round(RAF[1, 'f','intervention',gen],3)
+    # freq2f <- round(RAF[2, 'f','intervention',gen],3) 
+    # freq1m <- round(RAF[1, 'm','intervention',gen],3)
+    # freq2m <- round(RAF[2, 'm','intervention',gen],3)     
+    # message(paste0("gen",gen," freqs i1 f,m:", freq1f,",",freq1m,
+    #                               "  i2 f,m:", freq2f,",",freq2m,"\n"))
     
     
    } #### end of max_gen loop
