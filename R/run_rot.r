@@ -23,6 +23,7 @@
 #' @param cost fitness cost of RR in no insecticide, for all insecticides or individually
 #' @param fitSS fitness of SS if no insecticide, usually assumed to be 1, for all insecticides or individually
 #' @param min_rwr_interval minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.
+#' @param change_interval interval that insecticide can be changed on for both rotation and sequence, default 10 gens 1 year
 #' @param no_r_below_start to stop resistance frequencies going below starting values TRUE or FALSE, beware can cause odd results
 #' @param no_r_below_mut to stop resistance frequencies going below mutation-selection balance TRUE or FALSE
 #' @param exit_rot whether to exit rotation interval if threshold is reached
@@ -74,11 +75,12 @@ run_rot <- function(max_gen = 200,
                     rr = 0.5, #c(0.5, 0.5, 0.5),
                     cost = 0.1, #c(0,0,0),
                     fitSS = 1,
-                    min_rwr_interval = 10,
+                    min_rwr_interval = 0,
+                    change_interval = 10,
                     no_r_below_start = FALSE,
                     no_r_below_mut = FALSE,
                     exit_rot = FALSE,
-                    min_gens_switch_back = 10,
+                    min_gens_switch_back = 0,
                     
                     #inputs below not needed to run model itself
                     plot = TRUE,
@@ -186,10 +188,15 @@ run_rot <- function(max_gen = 200,
   for(gen in 2:max_gen)
     { 
     
-    #TEMP check frequency of one insecticide
-    freq1 <- round(RAF[1, 'f','intervention',gen-1],3)
-    freq2 <- round(RAF[2, 'f','intervention',gen-1],3)    
-    message(paste0("*storedgen",gen-1," freqs i1:", freq1,"  i2:", freq2))
+    
+    #TEMP check frequency of two insecticides
+    # freq1f <- round(RAF[1, 'f','intervention',gen-1],3)
+    # freq2f <- round(RAF[2, 'f','intervention',gen-1],3) 
+    # freq1m <- round(RAF[1, 'm','intervention',gen-1],3)
+    # freq2m <- round(RAF[2, 'm','intervention',gen-1],3)     
+    # message(paste0("*storedgen",gen-1," freqs i1 f,m:", freq1f,",",freq1m,
+    #                "  i2 f,m:", freq2f,",",freq2m))
+    
 
     # 201911 try moving insecticide switch check to here to solve issue with freq changing
     # due to later random mating between m&f
@@ -336,12 +343,12 @@ run_rot <- function(max_gen = 200,
     
 
     #TEMP check frequency of two insecticides
-    freq1f <- round(RAF[1, 'f','intervention',gen],3)
-    freq2f <- round(RAF[2, 'f','intervention',gen],3) 
-    freq1m <- round(RAF[1, 'm','intervention',gen],3)
-    freq2m <- round(RAF[2, 'm','intervention',gen],3)     
-    message(paste0("gen",gen," freqs i1 f,m:", freq1f,",",freq1m,
-                   "  i2 f,m:", freq2f,",",freq2m))
+    # freq1f <- round(RAF[1, 'f','intervention',gen],3)
+    # freq2f <- round(RAF[2, 'f','intervention',gen],3) 
+    # freq1m <- round(RAF[1, 'm','intervention',gen],3)
+    # freq2m <- round(RAF[2, 'm','intervention',gen],3)     
+    # message(paste0("gen",gen,"        freqs i1 f,m:", freq1f,",",freq1m,
+    #                "  i2 f,m:", freq2f,",",freq2m))
         
     
     ######  
@@ -405,6 +412,7 @@ run_rot <- function(max_gen = 200,
                                              mort_or_freq=mort_or_freq,
                                              gens_this_insecticide=gens_this_insecticide,
                                              min_rwr_interval=min_rwr_interval,
+                                             change_interval=change_interval,                                             
                                              exit_rot=exit_rot,
                                              eff=eff,
                                              dom_sel=dom_sel,
@@ -471,10 +479,10 @@ run_rot <- function(max_gen = 200,
     
     #TEMP check frequency of two insecticides
     # freq1f <- round(RAF[1, 'f','intervention',gen],3)
-    # freq2f <- round(RAF[2, 'f','intervention',gen],3) 
+    # freq2f <- round(RAF[2, 'f','intervention',gen],3)
     # freq1m <- round(RAF[1, 'm','intervention',gen],3)
-    # freq2m <- round(RAF[2, 'm','intervention',gen],3)     
-    # message(paste0("gen",gen," freqs i1 f,m:", freq1f,",",freq1m,
+    # freq2m <- round(RAF[2, 'm','intervention',gen],3)
+    # message(paste0("gen",gen,"        freqs i1 f,m:", freq1f,",",freq1m,
     #                               "  i2 f,m:", freq2f,",",freq2m,"\n"))
     
     

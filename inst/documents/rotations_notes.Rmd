@@ -2175,7 +2175,7 @@ taking code from sensi_an_rotations1.Rmd
 
 Why does this sequence switch back when there is no cost or dispersal ?
 
-run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0021, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0,min_rwr_interval=10, diagnostics = TRUE)
+run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0021, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0,min_rwr_interval=10, diagnostics = FALSE)
 
 Using a mortality switch it now doesn't switch back :
 run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0021, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0, min_rwr_interval=10, mort_or_freq = 'mort')
@@ -2201,7 +2201,41 @@ gen42 i1 freq=0.488603067950344
 gen43 i1 freq=0.488603067950344
 gen44 i1 freq=0.488603067950344
 
+Ian suggested this could be because we assess frequency after selection and before random mating. So what could be happening is the sequence is stopped because f is above threshold, then random mating happens to take it below threshold.
 
+In which case we could just make sure that insecticide_check is called after mating.
+But was tricky to do, partly a result of us assessing just Females for insecticide switch. Now the switch is checked based on mean of M&F.
+
+New setting to make it easier to bug-check
+
+run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.1, max_gen = 50, cost=c(0), eff=c(0.98), dom_sel=c(0.51),dom_cos=c(0.63), rr=c(0.8), expo_hi=0.47, male_expo_prop=0.01, coverage=1, migration=0,min_rwr_interval=10, diagnostics = FALSE)
+
+*storedgen16 freqs i1:0.5172  i2:0.1
+gen17 freqs i1:0.4852  i2:0.1292
+gen17 i1 freq=0.485228904909616
+
+
+# 19/11/2019
+
+confirm that insecticide check based on mean of M&F does what I'd expect
+
+trying 100 runs of A1
+
+NO sequence still not doing what I' expect, i.e. for A1 it's going back to insecticide 1 :
+Ah probably just because I haven't built and saved ...
+
+run_rot(rot_interval=0, n_insecticides=2, start_freqs=0.077, cost=c(0), eff=c(0.98), dom_sel=c(0.83),
+dom_cos=c(0.47), rr=c(0.2), expo_hi=0.69, male_expo_prop=0.17, coverage=1, migration=0,
+min_rwr_interval=10)
+
+Currently I have min_gens_switch_back and min_rwr_interval set to 10.
+Probably I should set them to 0.
+
+Instead have an input specifiying interval on which insecticides can be changed - applying both to sequence and rotation.
+
+change_interval = 10
+
+if (gens_this_insecticide %% change_interval == 0)
 
 
 # TODO
@@ -2209,11 +2243,11 @@ see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
 
 1. find & fix problem with C runs see above
-2. implement annual restrictions for sequences
-
+2. add change_interval as an input
+3. should I set min_gens_switch_back and min_rwr_interval to 0, they should have no effect
 
 # I think we allow sequence to exit at anytime ? This gives a kind of advantage to sequences, rotations tend to end up with more generations above threshold.
-
+# so now we want to only allow sequences to exit at annual time points (if an option is enabled)
 
 
 Questions to answer re 16k runs :

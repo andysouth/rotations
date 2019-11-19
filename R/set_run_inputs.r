@@ -41,6 +41,7 @@ set_run_inputs <- function( inex = NULL )
     linmulti$max_gen[i] <- inex$max_gen
     linmulti$min_rwr_interval[i] <- inex$min_rwr_interval
     linmulti$min_gens_switch_back[i] <- inex$min_gens_switch_back
+    linmulti$change_interval[i] <- inex$change_interval    
     linmulti$no_r_below_start[i] <- inex$no_r_below_start
     linmulti$no_r_below_mut[i] <- inex$no_r_below_mut
     linmulti$exit_rot[i] <- inex$exit_rot
