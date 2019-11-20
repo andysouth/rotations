@@ -15,7 +15,8 @@
 # BEWARE these can be vectors and this func prob won't cope
 #' @param eff effectiveness propn. SS killed by insecticide, for all insecticides or individually
 #' @param dom_sel dominance of selection, for all insecticides or individually
-#' @param dom_cos dominance of cost, for all insecticides or individually
+# dom_cos not needed for mortality calculation
+# @param dom_cos dominance of cost, for all insecticides or individually
 #' @param rr resistance restoration, for all insecticides or individually 
 #' @param diagnostics whether to output running info
 
@@ -36,7 +37,7 @@ insecticide_check <- function( RAF1gen,
                                eff,
                                dom_sel,
                                rr,
-                               change_interval = 10, #TODO remove default when working
+                               change_interval,
                                diagnostics = FALSE
                               ) 
 {
@@ -110,8 +111,7 @@ insecticide_check <- function( RAF1gen,
         # 31/7/18 if only this insecticide remains below resistance threshold don't change
         # resetting gens-this-insecticide means it will be used for another rot_interval
         
-        # freqs for all other insecticides
-        # TODO 201911 CHECK THIS make these mean of M&F
+        # freqs for all other insecticides, mean of M&F
         #other_ins_checks <- raf_get(RAF1gen,insecticide=-current_insecticide,sex='f',gen=1,site='intervention')
         #this_ins_check <- raf_get(RAF1gen,insecticide=current_insecticide,sex='f',gen=1,site='intervention') 
         other_ins_checks <- rowMeans(cbind(raf_get(RAF1gen,insecticide=-current_insecticide,sex='f',gen=1,site='intervention'),

@@ -27,7 +27,7 @@ migration between intervention and refugia
 #frequencies different for each insecticide
 RAF <- set_start_freqs(freqs=c(0.1,0.01,0.001))
 
-simplest example, freqs 1 in intervention, 0 in refugia
+#simplest example, freqs 1 in intervention, 0 in refugia
 RAF <- set_start_freqs(n=3, freqs=1)
 RAF1gen <- RAF[,,,1] # to view generation 1
 #set freqs in refugia to 0

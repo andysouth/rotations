@@ -15,6 +15,8 @@
 #' #filename of multiexpt file currently hardcoded into function
 #' inex <- read_in_expt(nscenarios = 10, multi=TRUE, id_expt='A4')
 #' 
+# @importFrom readxl read_excel 
+#' 
 #' @return  
 #' @export
 

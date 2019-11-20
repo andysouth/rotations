@@ -9,10 +9,11 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
   freq_thresh = 0.5, migration = 0.01, coverage = 0.8,
   start_insecticide = 1, expo_hi = 0.8, expo_lo = 0,
   male_expo_prop = 0, eff = 0.95, dom_sel = 0.5, dom_cos = 0.5,
-  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 10,
-  no_r_below_start = FALSE, no_r_below_mut = FALSE, exit_rot = FALSE,
-  min_gens_switch_back = 10, plot = TRUE, diagnostics = FALSE,
-  logy = NULL, add_gens_under50 = FALSE, plot_mort = NULL)
+  rr = 0.5, cost = 0.1, fitSS = 1, min_rwr_interval = 0,
+  change_interval = 10, no_r_below_start = FALSE,
+  no_r_below_mut = FALSE, exit_rot = FALSE, min_gens_switch_back = 0,
+  plot = TRUE, diagnostics = FALSE, logy = NULL,
+  add_gens_under50 = FALSE, plot_mort = NULL)
 }
 \arguments{
 \item{max_gen}{maximum number of mosquito generations to run the simulation}
@@ -54,6 +55,8 @@ run_rot(max_gen = 200, n_insecticides = 4, start_freqs = 0.01,
 \item{fitSS}{fitness of SS if no insecticide, usually assumed to be 1, for all insecticides or individually}
 
 \item{min_rwr_interval}{minimum rotate-when-resistant interval to stop short switches, only used when rot_interval==0. set to 0 to have no effect.}
+
+\item{change_interval}{interval that insecticide can be changed on for both rotation and sequence, default 10 gens 1 year}
 
 \item{no_r_below_start}{to stop resistance frequencies going below starting values TRUE or FALSE, beware can cause odd results}
 

@@ -6,7 +6,7 @@
 \usage{
 insecticide_check(RAF1gen, current_insecticide, rot_interval, threshold,
   mort_or_freq, gens_this_insecticide, min_rwr_interval, exit_rot, eff,
-  dom_sel, rr, diagnostics = FALSE)
+  dom_sel, rr, change_interval, diagnostics = FALSE)
 }
 \arguments{
 \item{RAF1gen}{single generation array of resistance allele frequencies}
@@ -31,9 +31,9 @@ insecticide_check(RAF1gen, current_insecticide, rot_interval, threshold,
 
 \item{rr}{resistance restoration, for all insecticides or individually}
 
-\item{diagnostics}{whether to output running info}
+\item{change_interval}{interval that insecticide can be changed on for both rotation and sequence, default 10 gens 1 year}
 
-\item{dom_cos}{dominance of cost, for all insecticides or individually}
+\item{diagnostics}{whether to output running info}
 }
 \value{
 TRUE/FALSE whether to change

@@ -304,7 +304,6 @@ run_rot <- function(max_gen = 200,
         
         #normalise and store results
         norm_coeff <- raf_m_r_new + raf_m_s_new
-        # TODO check with Ian, raf_m_s_new not used except in normalisation
         
         RAF[insecticide, 'm', 'refugia', gen] <- raf_m_r_new / norm_coeff
         
