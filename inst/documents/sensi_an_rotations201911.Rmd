@@ -70,59 +70,10 @@ save(df_res_16, file=paste0(infolder,'df_res_16.rda'))
 ```
 
 
-# proportion of scenarios not reaching resistance thresholds
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-# check proportion of scenarios not reaching thresholds by max_runs for both seq & rot
-    
-    nruns_fail <- df_res_all %>% 
-                  filter(gens_seq == max_gen & gens_rot == max_gen) %>%
-                  summarise(n=n()) %>% 
-                  unlist()
-    
-    cat('proportion runs not reaching thresholds : ', nruns_fail/nrow(df_res_all) ) 
-    
-    # remove runs where thresholds not reached for seq & rot 
-    df_res_all <- df_res_all %>% 
-                  filter(gens_seq != max_gen | gens_rot != max_gen) 
-    
+# difference between rotations and sequences, all runs
 
-    nruns_same <- df_res_all %>% 
-                  filter(gens_seq == gens_rot) %>%
-                  summarise(n=n()) %>% 
-                  unlist()
-    
-    cat('proportion runs (that did reach threshold) where rotations and sequence the same  : ', nruns_same/nrow(df_res_all) )  
-    
-    
-    nruns_rot_20pc_better <- df_res_all %>% 
-                  filter(rot_minus_seq/gens_seq >= 0.2 ) %>%
-                  summarise(n=n()) %>% 
-                  unlist()
-    
-    cat('proportion runs (that did reach threshold) where rotations >20 % better than sequence  : ', nruns_rot_20pc_better/nrow(df_res_all) )   
-    
-```
-
-# difference between rotations and sequences across all runs
-
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-    # print( ggplot(df_res_all, aes(x=rot_minus_seq)) + 
-    #          
-    #          geom_histogram(binwidth=10) +
-    #          xlab('rot_minus_seq : rotation generations minus sequence') +
-    #          ylab('count (sqrt scale to show low values)') +
-    #          scale_y_sqrt(breaks=c(0,10,20,50,200,500,2000,5000)) + #can't use log scale because anchored at 0
-    #          theme_minimal() +
-    #          theme(panel.grid.minor.y=element_blank()))
-
-
-
-# no colour ??
-# ggplot(df_res_all, aes(x=rot_minus_seq, colour=rot_minus_seq)) + 
-#      geom_histogram(binwidth=10) + 
-#      scale_color_brewer(palette="Dark2")
+```{r fig-si-1-abs-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
 #GOOD setting colours so can see easier when rot or seq better
@@ -150,39 +101,37 @@ df_res_16$best_strategy <- ifelse(df_res_16$rms_percent <= -(widthbin/2),"sequen
 
 
 
-
-# plot all 160k runs together
-# ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
-#      geom_histogram(binwidth=widthbin, colour='white') + 
-#      theme_minimal() +
-#      theme(panel.grid.minor.y=element_blank())
-
-#facet by A-D and 1-4
-ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
-     geom_histogram(binwidth=widthbin, colour='white') + 
-     theme_minimal() +
-     xlim(-100,100) +
-     theme(panel.grid.minor.y=element_blank()) +
-     facet_grid(rows=vars(id14), cols=vars(idAD))
-
-
 # lengthening facet labels
+# idAD_lookup <- c(
+#   A = "A freq i-same",
+#   B = "B freq i-diff",
+#   C = "C mort i-same",
+#   D = "B mort i-diff"
+# )
+# id14_lookup <- c(
+#   "1" = "1 nocost nodisp",
+#   "2" = "2 costs nodisp",
+#   "3" = "3 nocost disp",
+#   "4" = "4 costs disp"
+# )
+
 idAD_lookup <- c(
-  A = "A freq i-same",
-  B = "B freq i-diff",
-  C = "C mort i-same",
-  D = "B mort i-diff"
+  A = "A frequency switch\n insecticides same",
+  B = "B frequency switch\n insecticides different",
+  C = "C mortality switch\n insecticides same",
+  D = "D mortality switch\n insecticides different"
 )
 
 id14_lookup <- c(
-  "1" = "1 nocost nodisp",
-  "2" = "2 costs nodisp",
-  "3" = "3 nocost disp",
-  "4" = "4 costs disp"
+  "1" = "1 no fit. costs\n no dispersal",
+  "2" = "2 fit. costs\n no dispersal",
+  "3" = "3 no fit. costs\n dispersal",
+  "4" = "4 fit. costs and\n dispersal"
 )
 
 #colrs <- c("no_difference"=rgb(210,210,210,max=255),"rotation"=rgb(113,166,89,max=255),"sequence"=rgb(137,117,202,max=255))
 colrs <- c("no_difference"=rgb(255,255,255,max=255),"rotation"=rgb(2,98,215,max=255),"sequence"=rgb(227,0,169,max=255))
+
 
 #rot_minus_seq, facet by A-D and 1-4, better facet labels
 ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
@@ -198,21 +147,37 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
 #tally
 #df_res_16 %>% group_by(id12) %>% tally()
 
+```
+
+
+# pcent difference between rotations and sequences, all runs
+
+```{r fig1-pcent-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+
 #rms (rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
-#TODO make the best_strategy threshold basedon percent too
 ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) + 
      geom_histogram(binwidth=widthbin, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
      theme_minimal() +
-     xlim(-100,100) +
+     #xlim(-100,100) +
+     scale_x_continuous(limits=c(-80,80), breaks = c(-60,-40,-20,0,20,40,60)) +
      xlab("percentage advantage of rotations over sequence in generations") +
-     theme(panel.grid.minor.y=element_blank()) +
+     theme(panel.grid.minor=element_blank()) +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
 #just as a test
 #can I plot gens_seq and gens_rot in same facet
 #but I need to make data longer to do that, currently in same columns
+
+```
+
+
+# at each generations below threshold for rotations, which strategy was best
+
+```{r fig2-which-best-each-gens-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 #oooo this is interesting
 #it shows what gens_rot the best strategies occur at
@@ -225,6 +190,13 @@ ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) +
      theme(panel.grid.minor.y=element_blank()) +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+```
+
+
+# at each generations below threshold for rotations, which strategy was best
+
+```{r fig3-which-best-each-gens-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 #gens_seq the best strategies occur at
 ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) + 
@@ -241,6 +213,41 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
 ```
 
 \pagebreak
+
+
+# proportion of scenarios not reaching resistance thresholds
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# check proportion of scenarios not reaching thresholds by max_runs for both seq & rot
+    
+    nruns_fail <- df_res_16 %>% 
+                  filter(gens_seq == max_gen & gens_rot == max_gen) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs not reaching thresholds : ', nruns_fail/nrow(df_res_16) ) 
+    
+    # remove runs where thresholds not reached for seq & rot 
+    df_res_16 <- df_res_16 %>% 
+                  filter(gens_seq != max_gen | gens_rot != max_gen) 
+    
+
+    nruns_same <- df_res_16 %>% 
+                  filter(gens_seq == gens_rot) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs (that did reach threshold) where rotations and sequence the same  : ', nruns_same/nrow(df_res_16) )  
+    
+    
+    nruns_rot_20pc_better <- df_res_16 %>% 
+                  filter(rot_minus_seq/gens_seq >= 0.2 ) %>%
+                  summarise(n=n()) %>% 
+                  unlist()
+    
+    cat('proportion runs (that did reach threshold) where rotations >20 % better than sequence  : ', nruns_rot_20pc_better/nrow(df_res_16) )   
+    
+```
 
 # Examples of runs where rotations > 20% better than sequences
 
@@ -308,7 +315,7 @@ for(i in in_cols)
     
     #print( ggplot(ggInsOuts, aes_string(x=i, y=y, colour="strategy")) + 
     #plotlist[[plotnum]] <- 
-    print( ggplot(df_res_all, aes_string(x=i, y=y)) + 
+    print( ggplot(df_res_16, aes_string(x=i, y=y)) + 
              
              geom_point(shape=1, size=1, alpha=0.5, show.legend=FALSE) +
              theme_minimal() +
@@ -341,8 +348,8 @@ for(i in in_cols)
 in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
 
     
-    x <- df_res_all[,in_cols]
-    y <- df_res_all['rot_minus_seq']
+    x <- df_res_16[,in_cols]
+    y <- df_res_16['rot_minus_seq']
       
     pcc_res <- pcc(x, y, rank=TRUE)
     
@@ -395,24 +402,11 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
 
 y <- 'rot_minus_seq'  
 
-ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) + 
+ggplot(df_res_16, aes(x=dom_sel, y=dom_cos)) + 
      geom_point(shape=3, size=1, alpha=0.2, show.legend=FALSE) +
      theme_minimal() +
-     geom_point(data=filter(df_res_all, rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
+     geom_point(data=filter(df_res_16, rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
 
-
-# quick, not very successful look at modelling it
-# library(mgcv)
-# mod_lm2 <- gam(rot_minus_seq ~ cost + dom_cos + dom_sel, data=df_res_all)
-# summary(mod_lm2)  
-# 
-# mod_gam2 <- gam(rot_minus_seq ~ s(cost) + s(dom_cos) + s(dom_sel) + s(rr) + s(expo_hi) + s(male_expo_prop) + s(eff) + s(start_freqs), data=df_res_all)
-# 
-# summary(mod_gam2)  
-# #Deviance explained = 19.5%
-# 
-# mod_gam3 <- gam(rot_minus_seq ~ te(cost,dom_cos,dom_sel), data=df_res_all)
-# summary(mod_gam3)
 
 
 ```
@@ -432,7 +426,7 @@ ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) +
 
 #it was useful for me but now that I've moved to one row per scenario it won't work !!
 
-    gg <- ggplot( df_res_all, aes_string(x='rot_interval',
+    gg <- ggplot( df_res_16, aes_string(x='rot_interval',
                                          y='tot_gens_dep_under50',
                                          group='scenario',
                                          colour='scenario') ) +
@@ -444,17 +438,17 @@ ggplot(df_res_all, aes(x=dom_sel, y=dom_cos)) +
 # plot gens againts exposure and effectiveness
 # as a quick test to see if I can set the starting values of these higher
     
-    gg <- ggplot( df_res_all, aes_string(x='eff',
+    gg <- ggplot( df_res_16, aes_string(x='eff',
                                          y='tot_gens_dep_under50') ) +
           geom_point( alpha=0.5 )
     plot(gg)    
        
-    gg <- ggplot( df_res_all, aes_string(x='expo_hi',
+    gg <- ggplot( df_res_16, aes_string(x='expo_hi',
                                          y='tot_gens_dep_under50') ) +
           geom_point( alpha=0.5 )
     plot(gg)    
     
-    gg <- ggplot( df_res_all, aes_string(x='expo_hi*eff*male_expo_prop',
+    gg <- ggplot( df_res_16, aes_string(x='expo_hi*eff*male_expo_prop',
                                          y='tot_gens_dep_under50') ) +
           geom_point( alpha=0.5 )
     plot(gg)    
