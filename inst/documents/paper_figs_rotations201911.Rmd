@@ -1,7 +1,7 @@
 ---
-title: "sensi_an_rotations201911. To analyse rotation runs for paper"
-output: pdf_document
-#output: word_document
+title: "paper_figs_rotations201911 : create paper figures from rotation runs"
+#output: pdf_document
+output: word_document
 author: "Andy South, Sam Jones and Ian Hastings"
 date: "`r Sys.Date()`"
 ---
@@ -13,8 +13,22 @@ Runs themselves are done from rotation_runs2019.Rmd.
 
 16 expts of 10,000 runs each comparing rotations and sequences.
 
-Code below will need to be adapted to work on all 16 experiments, so far it just works on one.
 
+```{r, eval=TRUE, include=FALSE}
+#set to eval=TRUE to make figs for submission
+
+library(knitr)
+
+# options to create final publication quality figures
+# word doc summarises & figs get stored
+opts_chunk$set(dev="tiff",
+               dev.args=list(compression="lzw"),
+               dpi=300,
+               cache=FALSE,
+               fig.path='rotfigs/',
+               fig.width=8.5,
+               fig.height=8.5)
+```
 
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
@@ -22,6 +36,7 @@ Code below will need to be adapted to work on all 16 experiments, so far it just
   library(ggplot2)
   library(gridExtra)
   library(tidyverse)
+  library(patchwork) #for arranging multiple plots on page
 
   # where the rotation runs saved
   #infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
@@ -69,6 +84,94 @@ save(df_res_16, file=paste0(infolder,'df_res_16.rda'))
 
 ```
 
+
+# example scenarios
+# A1 frequency switch insecticides same, no costs no disp
+
+```{r fig1-examp-run-A1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+# TODO put into a reusable function to plot seq vs rot
+# TODO probably allow run_rot to return the ggplot object
+
+dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
+ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
+
+ggseq <- ggseq + theme(legend.position="none")
+ggrot <- ggrot + theme(legend.position="bottom",
+                       axis.title.y = element_blank())
+  
+#using patchwork
+#plot seq and rot side-by-side
+#guides=collect to put legend between plots, doesn't seem to work
+(ggseq + ggrot) + plot_layout(guides = 'collect')
+
+
+```
+
+# A2 frequency switch insecticides same, costs no disp
+
+```{r fig2-examp-run-A2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+#TODO replace later, quick pasted test to see effect of adding cost
+
+dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
+ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
+
+ggseq <- ggseq + theme(legend.position="none")
+ggrot <- ggrot + theme(legend.position="bottom",
+                       axis.title.y = element_blank())
+  
+#using patchwork
+#plot seq and rot side-by-side
+#guides=collect to put legend between plots, doesn't seem to work
+(ggseq + ggrot) + plot_layout(guides = 'collect')
+
+```
+
+# A3 frequency switch insecticides same, no costs, disp
+# in this example rotations have a reasonable advantage but I'm not sure why !!
+
+```{r fig3-examp-run-A2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+#TODO replace later, quick pasted test to see effect of adding dispersal
+
+dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+
+ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
+ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
+
+ggseq <- ggseq + theme(legend.position="none")
+ggrot <- ggrot + theme(legend.position="bottom",
+                       axis.title.y = element_blank())
+  
+#using patchwork
+#plot seq and rot side-by-side
+#guides=collect to put legend between plots, doesn't seem to work
+(ggseq + ggrot) + plot_layout(guides = 'collect')
+
+```
+
+# B1 frequency switch insecticides different, no costs no disp
+
+```{r fig4-examp-run-A1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+```
 
 
 # difference between rotations and sequences, all runs
@@ -140,7 +243,9 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
      theme_minimal() +
      xlim(-100,100) +
      xlab("advantage of rotations over sequence in generations") +
-     theme(panel.grid.minor.y=element_blank()) +
+     ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
@@ -164,7 +269,9 @@ ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) +
      #xlim(-100,100) +
      scale_x_continuous(limits=c(-80,80), breaks = c(-60,-40,-20,0,20,40,60)) +
      xlab("percentage advantage of rotations over sequence in generations") +
-     theme(panel.grid.minor=element_blank()) +
+     ylab("count of randomly sampled runs") +    
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
@@ -187,7 +294,9 @@ ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) +
      theme_minimal() +
      #xlim(-100,100) +
      xlab("generations to reach thresholds for ROTATION") +
-     theme(panel.grid.minor.y=element_blank()) +
+     ylab("count of randomly sampled runs") +    
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
@@ -205,7 +314,9 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
      theme_minimal() +
      #xlim(-100,100) +
      xlab("generations to reach thresholds for SEQUENCE") +
-     theme(panel.grid.minor.y=element_blank()) +
+     ylab("count of randomly sampled runs") +    
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
@@ -298,9 +409,12 @@ for(scenario in scenarios_to_plot)
 ```
 
 
-#Plots of how the difference between rotations and sequences respond to model inputs.
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
+
+# doesn't show much
+# Plots of how the difference between rotations and sequences respond to model inputs.
 
 # go through selected inputs and plot them on x with rot_minus_seq on y 
 # TODO check whether this covers all the inputs we want to look at
@@ -329,7 +443,7 @@ for(i in in_cols)
 # this can only be used for the experiments where all insecticides are the same
 # (because in the ones where insecticides differ there are multiple values for each input)
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r figx-PRCC, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
   library(sensitivity)
@@ -389,12 +503,13 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
 
 ```
 
+
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
+
 # Runs where rotations are >20% better (in red) are associated with higher dominance of cost and lower dominance of selection, but doesn't guarantee, must be interaction with other inputs too.
 # this was for earlier runs when there was some strange model behaviour, may not be the case now
 # and may not be very meaningful anyway
-
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
-
 
 #'cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs'
 

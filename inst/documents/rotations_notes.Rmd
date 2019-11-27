@@ -2237,6 +2237,9 @@ change_interval = 10
 
 if (gens_this_insecticide %% change_interval == 0)
 
+FIXED and new 16k simulations run.
+
+
 # 25/11/19
 
 paper from Justin :
@@ -2265,7 +2268,7 @@ resistance evolution because they help ensure that pests are
 treated with two different pesticides. Similarly, weeds resistant to one herbicide mode of action are likely to be killed by a another herbicide acting at a different site of action.
 
 
-Me :
+Me : (not sent)
 
 Hi Justin,
 
@@ -2287,25 +2290,54 @@ In our work, that we are close to submitting. We find very little difference bet
 
 Andy
 
-
-
-
-
-
-
-
-
 So for one 'good' herbicide, simple rotations provide no advantage. Complex rotations apparently can provide an advantage, but I wasn't able to establish why from their results. They results do seem to provide clear support and justification for the benefit of mixtures.
 
 
+# 27/11/2019
+
+
+paper_figs_rotations201911.Rmd
+
+choose example runs for early figs
+
+ARg, this may not matter,  but I had wondered if I could directly compare runs with and without costs.
+BUT it seems the way that random samples are drawn that th values for other input change.
+
+e.g. on p6, A1 no cost eff=0.79
+A2 with cost cost=0.79, eff=0.99
+
+run_rot(rot_interval=0, n_insecticides=5, start_freqs=0.092, cost=c(0), eff=c(0.79), dom_sel=c(0.16),
+dom_cos=c(0.94), rr=c(0.19), expo_hi=0.73, male_expo_prop=0.15, coverage=1, migration=0,
+min_rwr_interval=10)
+
+run_rot(rot_interval=0, n_insecticides=5, start_freqs=0.077, cost=c(0.079), eff=c(0.99), dom_sel=c(0.5),
+dom_cos=c(0.81), rr=c(0.38), expo_hi=0.46, male_expo_prop=0.16, coverage=1, migration=0,
+change_interval=10)
+
+This may not matter for the main runs. but may mean that I want to choose example runs differently.
+
+Happens in set_run_inputs()
+
+    # select random numbers for each insecticide
+    cost <-     runif(n_rands, min=inex$cost_min,        max=inex$cost_max) 
+    eff  <-     runif(n_rands, min=inex$eff_min,         max=inex$eff_max)
+    
+Interestingly, (and possibly worryingly) seems that the random deviate isn't used if min and max are the same.
+
+
+    
+    
+
 
 # TODO
+
+paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
 
-1. find & fix problem with C runs see above
-2. add change_interval as an input
-3. should I set min_gens_switch_back and min_rwr_interval to 0, they should have no effect
+a. create a function to compare seq and rot plots
+1. check random number issues
+2. look at paper3 folder 
 
 
 
