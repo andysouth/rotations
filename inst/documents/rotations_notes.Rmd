@@ -2237,6 +2237,67 @@ change_interval = 10
 
 if (gens_this_insecticide %% change_interval == 0)
 
+# 25/11/19
+
+paper from Justin :
+
+Busi 2019 Rotations and mixtures of soil-applied herbicides delay resistance
+
+
+From the abstract :
+Simulations indicate that without rotation it takes twice as long to select for resistance to a particular soil-applied herbicide – trifluralin – than to any other herbicide option considered. Relative to trifluralin-only use, simple herbicide rotation patterns have no effect in delaying resistance, whereas more complex rotation patterns can delay resistance two- or three-fold. Herbicide mixtures further delay resistance up to six-fold in comparison to single use or simple herbicide rotations.
+
+
+The model is able to represent the evolution of resistance conferred by either single or multiple genes (monogenic or polygenic resistance) using explicit individual-based genetics
+
+The PERTH model, parametrized with data obtained from a decade of experimental evolution studies,14,30–32,35,42 predicts
+that herbicide mixtures are the most robust strategy to
+minimize the risk of resistance and cross-resistance evolution to
+soil-applied herbicides. The relative benefits of rotations and particularly mixtures in delaying resistance were found to be consistent across a number of genetic and fitness-penalty scenarios and 100-fold difference in initial allele frequencies.
+
+Unsurprisingly, the worst ‘strategies’ were those with no herbicide rotation (1111 best, 2222, 3333).
+
+Table 2. The rank column indicates the relative efficacy
+of the strategy in delaying resistance under GS1, which is not affected by allele frequency GS3 versus GS1.
+
+Pesticide mixtures at high dosages of each pesticide and/or combinations appears to be the most effective measure at delaying
+resistance evolution because they help ensure that pests are
+treated with two different pesticides. Similarly, weeds resistant to one herbicide mode of action are likely to be killed by a another herbicide acting at a different site of action.
+
+
+Me :
+
+Hi Justin,
+
+Thanks for sending this on, apologies it has taken me a whole month to get around to reading it in detail. I've just submitted th final proofs for the windows of selection paper and have finalised the simulations for our rotations paper.
+
+It was encouraging to see some plots that looked similar to ours.
+
+However I do find this paper somewhat confusing. The title 'Rotations and mixtures of soil-applied herbicides delay resistance' suggests a benefit to rotations.
+
+Then in the abstract it says : "Relative to trifluralin-only use, simple herbicide rotation patterns have no effect in delaying resistance, whereas more complex rotation patterns can delay resistance two- or three-fold."
+
+I wasn't able to establish what the mechanistic difference was between the simple and complex rotations.
+
+They do seem to show results and justification for mixtures being beneficial.
+
+I think, looking at Table 2, that they are comparing rotations to constant use of a single herbicide. I don't think that they consider sequential stratgies (i.e. switching insecticides once resistance thresholds are reached).
+
+In our work, that we are close to submitting. We find very little difference between sequential and rotation strategies.
+
+Andy
+
+
+
+
+
+
+
+
+
+So for one 'good' herbicide, simple rotations provide no advantage. Complex rotations apparently can provide an advantage, but I wasn't able to establish why from their results. They results do seem to provide clear support and justification for the benefit of mixtures.
+
+
 
 # TODO
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
@@ -2246,8 +2307,8 @@ see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 2. add change_interval as an input
 3. should I set min_gens_switch_back and min_rwr_interval to 0, they should have no effect
 
-# I think we allow sequence to exit at anytime ? This gives a kind of advantage to sequences, rotations tend to end up with more generations above threshold.
-# so now we want to only allow sequences to exit at annual time points (if an option is enabled)
+
+
 
 
 Questions to answer re 16k runs :
