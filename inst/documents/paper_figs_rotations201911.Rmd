@@ -94,23 +94,24 @@ save(df_res_16, file=paste0(infolder,'df_res_16.rda'))
 # TODO put into a reusable function to plot seq vs rot
 # TODO probably allow run_rot to return the ggplot object
 
-dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
-dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+dfrot <- run_rot(rot_interval=10, n_insecticides=3, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
 ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
 ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
 
-ggseq <- ggseq + theme(legend.position="none")
-ggrot <- ggrot + theme(legend.position="bottom",
-                       axis.title.y = element_blank())
+ggseq <- ggseq + theme(axis.title.x = element_blank()) +
+                 ggtitle("A) sequence")
+ggrot <- ggrot + theme(legend.position="none")+
+                 ggtitle("B) rotation")
   
 #using patchwork
 #plot seq and rot side-by-side
 #guides=collect to put legend between plots, doesn't seem to work
-(ggseq + ggrot) + plot_layout(guides = 'collect')
+(ggseq / ggrot) + plot_layout(guides = 'collect')
 
 
 ```
@@ -122,54 +123,64 @@ ggrot <- ggrot + theme(legend.position="bottom",
 
 #TODO replace later, quick pasted test to see effect of adding cost
 
-dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
-dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
+dfrot <- run_rot(rot_interval=10, n_insecticides=3, start_freqs=0.0026, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
 ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
 ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
 
-ggseq <- ggseq + theme(legend.position="none")
-ggrot <- ggrot + theme(legend.position="bottom",
-                       axis.title.y = element_blank())
+ggseq <- ggseq + theme(axis.title.x = element_blank()) +
+                 ggtitle("A) sequence")
+ggrot <- ggrot + theme(legend.position="none")+
+                 ggtitle("B) rotation")
   
 #using patchwork
 #plot seq and rot side-by-side
 #guides=collect to put legend between plots, doesn't seem to work
-(ggseq + ggrot) + plot_layout(guides = 'collect')
+(ggseq / ggrot) + plot_layout(guides = 'collect')
 
 ```
 
 # A3 frequency switch insecticides same, no costs, disp
 # in this example rotations have a reasonable advantage but I'm not sure why !!
 
-```{r fig3-examp-run-A2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig3-examp-run-A3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 #TODO replace later, quick pasted test to see effect of adding dispersal
 
-dfseq <- run_rot(rot_interval=0, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
-dfrot <- run_rot(rot_interval=10, n_insecticides=4, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
+dfrot <- run_rot(rot_interval=10, n_insecticides=3, start_freqs=0.0026, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
 ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=FALSE )
 ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=FALSE )
 
-ggseq <- ggseq + theme(legend.position="none")
-ggrot <- ggrot + theme(legend.position="bottom",
-                       axis.title.y = element_blank())
+ggseq <- ggseq + theme(axis.title.x = element_blank()) +
+                 ggtitle("A) sequence")
+ggrot <- ggrot + theme(legend.position="none")+
+                 ggtitle("B) rotation")
   
 #using patchwork
 #plot seq and rot side-by-side
 #guides=collect to put legend between plots, doesn't seem to work
-(ggseq + ggrot) + plot_layout(guides = 'collect')
+(ggseq / ggrot) + plot_layout(guides = 'collect')
 
 ```
 
-# B1 frequency switch insecticides different, no costs no disp
+# B2 frequency switch insecticides different, costs
 
-```{r fig4-examp-run-A1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig4-examp-run-B2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+#in sequence first insecticide keeps being used for 500 gen
+#in rotation switch to other insecticides that reach thereshold means that generations are lost over threshold
+
+dfseq <- run_rot(n_insecticides=3, start_freqs=0.093, cost=c(0.07,0.067,0.032), eff=c(0.8,0.79,0.71),
+dom_sel=c(0.23,0.68,0.38), dom_cos=c(0.89,0.65,0.55), rr=c(0.12,0.75,0.33), expo_hi=0.73, male_expo_prop=0.25, coverage=1, migration=0, min_rwr_interval=10)
+
+
 
 ```
 
@@ -257,7 +268,7 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
 
 # pcent difference between rotations and sequences, all runs
 
-```{r fig1-pcent-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r figx1-pcent-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
 
@@ -284,7 +295,7 @@ ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) +
 
 # at each generations below threshold for rotations, which strategy was best
 
-```{r fig2-which-best-each-gens-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r figx2-which-best-each-gens-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 #oooo this is interesting
 #it shows what gens_rot the best strategies occur at
@@ -305,7 +316,7 @@ ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) +
 
 # at each generations below threshold for rotations, which strategy was best
 
-```{r fig3-which-best-each-gens-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r figx3-which-best-each-gens-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 #gens_seq the best strategies occur at
 ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) + 
@@ -360,53 +371,6 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
     
 ```
 
-# Examples of runs where rotations > 20% better than sequences
-
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=3.5}
-#eval false because smaller runs don't have these
-#TODO change which runs to show as examples
-
-scenarios_to_plot <- c(624,2167,602,4028,5771)
-
-for(scenario in scenarios_to_plot)
-{
-  cat(scenario,"\n")
-  
-  linputs <- as.list( df_res_all[scenario, 1:15] )
-  
-  # run one scenario
-  dfres <- do.call(run_rot, linputs)
-  
-  rot_plot_resistance(dfres, plot_refuge=FALSE, logy=FALSE, plot=TRUE)
-   
-  #now run as sequence
-  linputs$rot_interval <- 0
-  dfres <- do.call(run_rot, linputs)
-  
-  rot_plot_resistance(dfres, plot_refuge=FALSE, logy=FALSE, plot=TRUE) 
-  
-  
-  dfi <- data.frame(t(as.data.frame(linputs)))
-  names(dfi) <- 'value'
-  dfi$inputs <- rownames(dfi)
-
-  #take out columns not between 0 & 1
-  dfi <- filter(dfi, !inputs %in% c('max_gen','rot_interval','n_insecticides','plot','min_rwr_interval'))
-  #also remove coverage & migration both set to 0 for now
-  dfi <- filter(dfi, !inputs %in% c('coverage','migration'))
-    
-  ggins <- ggplot(dfi, aes(x=inputs,y=value)) + 
-            geom_point() +
-            theme_minimal() +
-            ylim(0,1) +
-            theme(axis.text.x = element_text(angle = 20,hjust = 1, vjust = 1))
-  plot(ggins)
-  
-}
-
-
-
-```
 
 
 
@@ -443,7 +407,7 @@ for(i in in_cols)
 # this can only be used for the experiments where all insecticides are the same
 # (because in the ones where insecticides differ there are multiple values for each input)
 
-```{r figx-PRCC, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r figxx-PRCC, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
   library(sensitivity)

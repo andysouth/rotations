@@ -228,7 +228,7 @@ rot_plot_resistance <- function(df_res2,
       #else title <- paste0("Rotation interval ", df_res2$rot_interval," generations in-use under threshold :", sum(df_res3$gens_dep_under50))
     }
     
-    gg <- gg + ggtitle(title)
+    gg <- gg + ggtitle(label="",subtitle=title)
   }
     
   if (plot) plot(gg)
