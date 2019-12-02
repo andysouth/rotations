@@ -82,6 +82,9 @@ for(i in 1:length(expt_ids))
 
 save(df_res_16, file=paste0(infolder,'df_res_16.rda'))
 
+# filter just the 4 A expts
+df_res_A <- dplyr::filter(df_res_16, idAD=="A")
+
 ```
 
 
@@ -337,7 +340,7 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
 \pagebreak
 
 
-# proportion of scenarios not reaching resistance thresholds
+# count proportion of scenarios not reaching resistance thresholds
 
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 # check proportion of scenarios not reaching thresholds by max_runs for both seq & rot
@@ -406,6 +409,7 @@ for(i in in_cols)
 # PRCC to show the sensitivity of the difference between rotation and sequence to inputs
 # this can only be used for the experiments where all insecticides are the same
 # (because in the ones where insecticides differ there are multiple values for each input)
+# start by running on just A expts
 
 ```{r figxx-PRCC, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -426,8 +430,8 @@ for(i in in_cols)
 in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
 
     
-    x <- df_res_16[,in_cols]
-    y <- df_res_16['rot_minus_seq']
+    x <- df_res_A[,in_cols]
+    y <- df_res_A['rot_minus_seq']
       
     pcc_res <- pcc(x, y, rank=TRUE)
     
@@ -453,9 +457,10 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
              #theme(panel.grid.major.y = element_line(color = "grey", size = 1)) +
              ylim(-1,1) +
              #ggtitle(paste(strat_name[strategy_num])) +
+             ggtitle("Effect of inputs on benefit of rotations, all A expts.") +
              xlab(NULL) 
 
-    plot(gg)
+    plot(gg) 
 
   #to put back in some ref gridlines that are removed by cowplot
   #theme_set(theme_gray())
