@@ -2295,7 +2295,6 @@ So for one 'good' herbicide, simple rotations provide no advantage. Complex rota
 
 # 27/11/2019
 
-
 paper_figs_rotations201911.Rmd
 
 choose example runs for early figs
@@ -2324,9 +2323,21 @@ Happens in set_run_inputs()
     
 Interestingly, (and possibly worryingly) seems that the random deviate isn't used if min and max are the same.
 
+# 9/12/19
+    
+Thinking that I can output mean % mortality over all generations and that will give us a better comparison between sequences and rotations (alongside going back to recording total generations untill all insecticides exhausted).    
+    
 
-    
-    
+# 10/12/19
+
+corrected recordning of gens_under_thresh for mortality even though probably not going to use anymore
+
+~ set recording of 
+i  total generations (maybe from run_rot)
+ii cumulative or mean mortality (maybe post-processed)
+
+I think better to use mean mortality because it is more obviously meaningfull, and a potential way of comaparing runs even id they have different lengths or number of insecticides.
+
 
 
 # TODO
@@ -2335,12 +2346,11 @@ paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
 
+
+
 a. create a function to compare seq and rot plots
 1. check random number issues
 2. look at paper3 folder 
-
-
-
 
 
 Questions to answer re 16k runs :

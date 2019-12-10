@@ -540,23 +540,40 @@ run_rot <- function(max_gen = 200,
   # to get active & refuge into the same subplot
   df_res2 <- tidyr::separate(df_res2, region, into=c("resist_gene","active_or_refuge"))
   
-  # calculate number generations under 50% resistance to be used in plotting 
-  # probably should be somewhere else ! ? just for active area
-  # also calculated in sensi_an_rotations1.Rmd
-  # this does give the answer, but only 1 per insecticide
+  # calculate number generations under threshold to be used in plotting 
+  # just for active area
+  # BEWARE different for frequency and mortality and probably not calculated correctly here
+  
+  # calculated elsewhere for all insecticides
+  # this gives 1 per insecticide
   # NSE problem fixed by dplyr::filter 
-  df_res2 <- df_res2 %>%
+  df_res3 <- df_res2 %>%
     dplyr::filter(.data$active_or_refuge=='active') %>%
-    group_by(.data$resist_gene) %>%
-    # for all insecticides in all generations  
-    # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
-    # just for deployed insecticides 
+    group_by(.data$resist_gene)
+  
+  # just for deployed insecticides 
+
+  if ( mort_or_freq == 'freq' )
+  {
+    df_res3 <- df_res3 %>%
     summarise(gens_dep_under50 = sum(.data$resistance < threshold &
                                        #finds insecticide in use = this one
-                                       .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE)) %>%
-    #summarise(tot_dep_gens_under50 = sum(gens_dep_under50)) %>%    
-    dplyr::ungroup() %>%
+                                       .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))     
+  }
+  else if ( mort_or_freq == 'mort' )
+  {
+    df_res3 <- df_res3 %>%
+      summarise(gens_dep_under50 = sum(.data$mortality > threshold &
+                                         #finds insecticide in use = this one
+                                         .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))     
+  }
+  
+
+  df_res2 <- dplyr::ungroup(df_res3) %>%
     dplyr::left_join(df_res2, by='resist_gene')
+  
+  #add on max generations that this run reached (just a single value repeated for all rows)
+  df_res2$end_gens <- calc_max_gens(df_res2)
   
   # if migration is set to 0, or coverage==1 don't show refuge in plots
   plot_refuge <- ifelse(migration==0 | coverage==1,FALSE,TRUE)

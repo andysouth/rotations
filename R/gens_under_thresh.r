@@ -18,7 +18,7 @@
 #' 
 
 gens_under_thresh <- function(dfres,
-                              threshold = 0.5,
+                              threshold,
                               mort_or_freq = 'freq')
 {
 
@@ -31,7 +31,6 @@ res <- dfres %>%
   # summarise(gens_under50 = sum(resistance < 0.5, na.rm=TRUE)) %>%
   # summarise(mean_gens_under50 = mean(gens_under50)) %>%
   # just for deployed insecticides 
-  ## TODO check change this to 1-.data$mortality for when freq_or_mort == 'mort 
 if ( mort_or_freq == 'freq' )
   res <- summarise(res, gens_dep_under50 = sum(.data$resistance < threshold &
                                    #finds insecticide in use = this one
@@ -39,7 +38,7 @@ if ( mort_or_freq == 'freq' )
 
 else if ( mort_or_freq == 'mort' )
 {
-  res <- summarise(res, gens_dep_under50 = sum(.data$mortality < threshold &
+  res <- summarise(res, gens_dep_under50 = sum(.data$mortality > threshold &
                                                  #finds insecticide in use = this one
                                                  .data$resist_gene==paste0('insecticide',.data$insecticide), na.rm=TRUE))
 }
