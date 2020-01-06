@@ -22,7 +22,7 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.2, comment=NA, results='asis'}
 
 
-nscenarios <- 100
+nscenarios <- 20
 plotyn <- 1 #allow turning plots on and off from here, may want to turn plots off if doing large number of runs
 
 # now specify an experiment from the multi-experiment file
@@ -33,9 +33,9 @@ plotyn <- 1 #allow turning plots on and off from here, may want to turn plots of
 #id_expt <- 'B2'
 #id_expt <- 'B3'
 #id_expt <- 'B4'
-id_expt <- 'C1'
+#id_expt <- 'C1'
 #id_expt <- 'C4'
-#id_expt <- 'D4'
+id_expt <- 'D4'
 
 # to move the pdf of a preceeding run of this file to a saved location
 # RUN the line above and below after knitting the file
@@ -125,7 +125,7 @@ for(i in 1:nscenarios)
     if ( linputs$mort_or_freq == 'freq' ) threshold <- linputs$freq_thresh
     else if ( linputs$mort_or_freq == 'mort' ) threshold <- linputs$mort_thresh 
 
-    #gens <- gens_under_thresh(dfres=dfres, threshold=threshold, mort_or_freq=linputs$mort_or_freq)
+    gens_u <- gens_under_thresh(dfres=dfres, threshold=threshold, mort_or_freq=linputs$mort_or_freq)
     
     # 10/12/19 change to recording end generations and mean mortality
     gens <- calc_max_gens(dfres=dfres)
@@ -133,8 +133,10 @@ for(i in 1:nscenarios)
     
     # to be able to save as for rot or seq
     if ( linputs$rot_interval == 0 ) {gens_seq <- as.numeric(gens)
+                                      gens_u_seq <- as.numeric(gens_u)
                                       mort_seq <- cum_mort/gens_seq}
     else                             {gens_rot <- as.numeric(gens)
+                                      gens_u_rot <- as.numeric(gens_u)
                                       mort_rot <- cum_mort/gens_rot}
     
     #code to rerun approx this scenario, can be copied from pdf and pasted into R
@@ -163,10 +165,12 @@ for(i in 1:nscenarios)
     
   # add scenario id column and difference onto results
   # df_in_out is one row
-  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, mort_rot=mort_rot, mort_seq=mort_seq, id=i))
+  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+                                        gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
+                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i))
   
   df_in_out$gens_rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
-  
+  df_in_out$gens_u_rot_minus_seq <- df_in_out$gens_u_rot - df_in_out$gens_u_seq  
   df_in_out$mort_rot_minus_seq <- df_in_out$mort_rot - df_in_out$mort_seq
     
   # if the first scenario create df to store results of all scenarios

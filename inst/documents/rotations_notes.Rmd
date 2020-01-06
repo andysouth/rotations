@@ -2336,7 +2336,15 @@ corrected recordning of gens_under_thresh for mortality even though probably not
 i  total generations (maybe from run_rot)
 ii cumulative or mean mortality (maybe post-processed)
 
-I think better to use mean mortality because it is more obviously meaningfull, and a potential way of comaparing runs even id they have different lengths or number of insecticides.
+I think better to use mean mortality because it is more obviously meaningfull, and a potential way of comparing runs even if they have different lengths or number of insecticides.
+
+
+# 2020-01-06 NEW YEAR
+
+sorted 3 outputs :
+gens_rot_minus_seq    #total generations
+gens_u_rot_minus_seq  #gens under threshold
+mort_rot_minus_seq    #average mortality
 
 
 
@@ -2345,7 +2353,13 @@ I think better to use mean mortality because it is more obviously meaningfull, a
 paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
+# in rotation_runs2019.Rmd uncomment the line below and re-add calc gens-under-thresh
+# gens <- gens_under_thresh(dfres=dfres, threshold=threshold, mort_or_freq=linputs$mort_or_freq)
 
+*check on new outputs : tot-gens, mean-mort
+
+Try some rotation_runs2019.Rmd with new outputs.
+Get Sam to run new ones.
 
 
 a. create a function to compare seq and rot plots
