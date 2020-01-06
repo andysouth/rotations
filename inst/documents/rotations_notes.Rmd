@@ -2346,6 +2346,9 @@ gens_rot_minus_seq    #total generations
 gens_u_rot_minus_seq  #gens under threshold
 mort_rot_minus_seq    #average mortality
 
+problem that gens_u_rot and gens_u_seq both currently 0
+
+seems to be because linputs$freq_thresh & mort thresh are both NULL
 
 
 # TODO
@@ -2353,10 +2356,10 @@ mort_rot_minus_seq    #average mortality
 paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
-# in rotation_runs2019.Rmd uncomment the line below and re-add calc gens-under-thresh
-# gens <- gens_under_thresh(dfres=dfres, threshold=threshold, mort_or_freq=linputs$mort_or_freq)
+#check : gens_u_rot_minus_seq
 
-*check on new outputs : tot-gens, mean-mort
+currently 0 for all 200 runs of b2
+
 
 Try some rotation_runs2019.Rmd with new outputs.
 Get Sam to run new ones.

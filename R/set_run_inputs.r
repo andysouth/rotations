@@ -46,7 +46,8 @@ set_run_inputs <- function( inex = NULL )
     linmulti$no_r_below_mut[i] <- inex$no_r_below_mut
     linmulti$exit_rot[i] <- inex$exit_rot
     linmulti$mort_or_freq[i] <- inex$mort_or_freq
-    linmulti$threshold[i] <- inex$threshold 
+    linmulti$mort_thresh[i] <- inex$mort_thresh 
+    linmulti$freq_thresh[i] <- inex$freq_thresh 
     linmulti$plot[i] <- inex$plot
     
  
