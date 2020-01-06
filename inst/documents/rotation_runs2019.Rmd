@@ -30,12 +30,12 @@ plotyn <- 1 #allow turning plots on and off from here, may want to turn plots of
 #id_expt <- 'A2'
 #id_expt <- 'A3'
 #id_expt <- 'A4'
-id_expt <- 'B2'
+#id_expt <- 'B2'
 #id_expt <- 'B3'
 #id_expt <- 'B4'
 #id_expt <- 'C1'
 #id_expt <- 'C4'
-#id_expt <- 'D4'
+id_expt <- 'D4'
 
 # to move the pdf of a preceeding run of this file to a saved location
 # RUN the line above and below after knitting the file
@@ -156,7 +156,7 @@ for(i in 1:nscenarios)
                 "male_expo_prop=",signif(linputs$male_expo_prop,2),", ",
                 "coverage=",signif(linputs$coverage,2),", ",
                 "migration=",signif(linputs$migration,2),", ",
-                #"max_gen=",linputs$max_gen,", ", 
+                "max_gen=",linputs$max_gen,", ", 
                 "change_interval=",linputs$change_interval,
                 #"min_rwr_interval=",linputs$min_rwr_interval,  
                 ")\n\n") )

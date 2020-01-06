@@ -2350,6 +2350,14 @@ problem that gens_u_rot and gens_u_seq both currently 0
 
 seems to be because linputs$freq_thresh & mort thresh are both NULL
 
+This B2 scenario 33 p34 is interesting, big benefit of rotations. One insecticide stays low in rotation seemingly due to use of others.
+
+run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.013, cost=c(0.061,0.024,0.047), eff=c(0.97,0.88,0.72),
+dom_sel=c(0.49,0.15,0.92), dom_cos=c(0.72,0.8,0.37), rr=c(0.25,0.51,0.42), expo_hi=0.52, male_expo_prop=0.92,
+coverage=1, migration=0, max_gen=500, change_interval=10)
+
+
+
 
 # TODO
 
