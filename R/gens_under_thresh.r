@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' df_res2 <- run_rot(plot=FALSE)
-#' gens_under_thresh(df_res2)
+#' gens_under_thresh(df_res2, threshold=0.5, mort_or_freq = 'freq')
 #' 
 
 gens_under_thresh <- function(dfres,
