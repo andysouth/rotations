@@ -1,0 +1,168 @@
+---
+title: "rotation_runs2020_sam"
+author: "Andy South, Sam Jones and Ian Hastings"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+  
+An rmarkdown document to run 160k runs, 10k from each of 16 experiments.
+Sam Jones runs on fast machine overnight.
+Output files are saved to the specified outFolder.
+
+rotation_runs2019.Rmd is similar but allows experiments to be run individually and to generate a pdf of results for an experiment per run. 
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(rotations)
+library(ggplot2)
+library(gridExtra)
+library(readxl) # for reading the excel file that allows me to keep formatting to see inputs clearly
+
+#Sam: Andy, it appears that TinyTex is also required 
+library(tinytex)
+outFolder <- "I:/Rotations/Results_Jan/"
+```  
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.2, comment=NA, results='asis'}
+
+
+Stime = date ()  
+cat("startTime", Stime, "\n")
+
+plotyn <- 0 #allow turning plots on and off from here, may want to turn plots off if doing large number of runs
+
+runList<-c('A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4')
+#runList<-'A1'
+
+nscenarios <- 10
+
+
+for(r in runList){
+  id_expt <- r
+  
+
+# # read an experiment file specifying ranges
+# inex <- read_in_expt(infile, nscenarios=nscenarios) 
+inex <- read_in_expt(nscenarios = nscenarios, multi=TRUE, id_expt=id_expt)
+
+# create an object containing inputs for all scenarios
+linmulti <- set_run_inputs(inex=inex)
+# run all scenarios
+for(i in 1:nscenarios)
+{
+  #message should output to the R markdown console
+  if (i%%200 == 1) message("scenario ",i," of ",nscenarios," ",Sys.time())
+  
+  linputs <- get_one_in(linmulti, scen_num=i)
+  
+  if (linputs$rot_interval == 0) stop("in rotation_runs2019 rot_interval in input file needs to be > 0 to allow it to be compared to a sequence")
+  
+  linputs$plot <- plotyn #allows setting whether to plot from script
+  linputs$add_gens_under50 <- TRUE #to add text to plots of gens under threshold
+  
+  #record rotation rot interval locally otherwise it gets overwritten by 0
+  rot_rot_interval <- linputs$rot_interval
+  
+  
+  # to compare sequence to rotation run all the scenarios above for both seq & rot 
+  # need to do the rotation 2nd so that rot_interval from the input file can be saved with the outputs
+  for(rot_or_not in 0:1)
+  {  
+    #to get rot_int of 0 in alternate runs - the other run uses the value from the input file
+    if (rot_or_not == 0) linputs$rot_interval <- 0
+    else linputs$rot_interval <- rot_rot_interval
+    
+    
+    ##################
+    # run one scenario
+    dfres <- do.call(run_rot, linputs)
+    
+    # summarise results per scenario
+    # this calcs for whole run, at end of run_rot() it calcs per insecticide
+    if ( linputs$mort_or_freq == 'freq' ) threshold <- linputs$freq_thresh
+    else if ( linputs$mort_or_freq == 'mort' ) threshold <- linputs$mort_thresh 
+
+    gens_u <- gens_under_thresh(dfres=dfres, threshold=threshold, mort_or_freq=linputs$mort_or_freq)
+    
+    # 10/12/19 change to recording end generations and mean mortality
+    gens <- calc_max_gens(dfres=dfres)
+    cum_mort <- cumulat_mortality(dfres=dfres)
+    
+    # to be able to save as for rot or seq
+    if ( linputs$rot_interval == 0 ) {gens_seq <- as.numeric(gens)
+                                      gens_u_seq <- as.numeric(gens_u)
+                                      mort_seq <- cum_mort/gens_seq}
+    else                             {gens_rot <- as.numeric(gens)
+                                      gens_u_rot <- as.numeric(gens_u)
+                                      mort_rot <- cum_mort/gens_rot}
+    
+    #code to rerun approx this scenario, can be copied from pdf and pasted into R
+    #has to cope with converting vectors to strings
+    #spaces between args stop the pdf from messing with words
+    cat(paste0( "run_rot(rot_interval=",linputs$rot_interval,", ", 
+                "n_insecticides=",linputs$n_insecticides,", ",
+                #"mort_or_freq='",linputs$mort_or_freq,"', ", #quotes dont work, freq is now default
+                #'mort_or_freq="',linputs$mort_or_freq,'", ',
+                "start_freqs=",signif(linputs$start_freqs,2),", ", 
+                "cost=c(",paste(signif(linputs$cost,2),collapse=','),"), ", 
+                "eff=c(",paste(signif(linputs$eff,2),collapse=','),"), ",               
+                "dom_sel=c(",paste(signif(linputs$dom_sel,2),collapse=','),"), ",
+                "dom_cos=c(",paste(signif(linputs$dom_cos,2),collapse=','),"), ",
+                "rr=c(",paste(signif(linputs$rr,2),collapse=','),"), ",
+                "expo_hi=",signif(linputs$expo_hi,2),", ",
+                "male_expo_prop=",signif(linputs$male_expo_prop,2),", ",
+                "coverage=",signif(linputs$coverage,2),", ",
+                "migration=",signif(linputs$migration,2),", ",
+                "max_gen=",linputs$max_gen,", ", 
+                "change_interval=",linputs$change_interval,
+                #"min_rwr_interval=",linputs$min_rwr_interval,  
+                ")\n\n") )
+    
+  } #end rot_or_not loop
+    
+  # add scenario id column and difference onto results
+  # df_in_out is one row
+  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+                                        gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
+                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i))
+  
+  df_in_out$gens_rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
+  df_in_out$gens_u_rot_minus_seq <- df_in_out$gens_u_rot - df_in_out$gens_u_seq  
+  df_in_out$mort_rot_minus_seq <- df_in_out$mort_rot - df_in_out$mort_seq
+  
+  # if the first scenario create df to store results of all scenarios
+  if (i==1)
+  {
+    df_res_all <- data.frame(matrix(NA, ncol=length(names(df_in_out)), nrow=nscenarios))
+    names(df_res_all) <- names(df_in_out)
+  }
+  
+  #putting results into one row of overall results dataframe
+  df_res_all[i,] <- df_in_out
+  
+  
+  #can save partial outputs in case doesn't make to end
+  #if (i==nscenarios | i%%1000 == 0)
+  #{
+    
+    # save object containing inputs and results as rda for analysis
+    # by default saved to inst/documents folder
+  
+      
+  #} 
+  
+} #end scenario loop  
+
+save(df_res_all, file=paste0(outFolder,'df_res_all_rot',id_expt,nscenarios,'.rda')) #paste0(outFolder,'*.rda')) 
+    # also save the experiment input file
+    save(inex, file=paste0(outFolder,format(Sys.time(), "%Y-%m-%d-%H-%M-"),'inex-',id_expt,'.rda'))
+    
+Etime = date ()	
+cat("endTime", Etime, "\n")
+
+cat(Stime,Etime)
+}
+```
