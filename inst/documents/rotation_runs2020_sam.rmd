@@ -1,5 +1,5 @@
 ---
-title: "rotation_runs2020_sam"
+title: "rotation_runs2020_sam v1"
 author: "Andy South, Sam Jones and Ian Hastings"
 date: "`r Sys.Date()`"
 output:
@@ -7,6 +7,7 @@ output:
     df_print: paged
   pdf_document: default
 ---
+
   
 An rmarkdown document to run 160k runs, 10k from each of 16 experiments.
 Sam Jones runs on fast machine overnight.
@@ -23,6 +24,7 @@ library(readxl) # for reading the excel file that allows me to keep formatting t
 #Sam: Andy, it appears that TinyTex is also required 
 library(tinytex)
 outFolder <- "I:/Rotations/Results_Jan/"
+#outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```  
 
 

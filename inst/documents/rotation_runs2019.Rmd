@@ -41,7 +41,7 @@ id_expt <- 'D4'
 # RUN the line above and below after knitting the file
 # ASSUMING id_expt still set to previous run and still same day
 # BEWARE that id_expt will not be set correctly in home env if file was knitted
-#file.rename("rotation_runs2019.pdf",paste0(outFolder,format(Sys.time(), "%Y-%m-%d-"),id_expt,"-results-figs.pdf"))
+file.rename("rotation_runs2019.pdf",paste0(outFolder,format(Sys.time(), "%Y-%m-%d-"),id_expt,"-results-figs.pdf"))
 
 
 # old ways of doing it
