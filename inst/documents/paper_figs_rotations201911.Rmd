@@ -40,7 +40,8 @@ opts_chunk$set(dev="tiff",
 
   # where the rotation runs saved
   #infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
-  infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\SJ_Runs_Nov\\"
+  #infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\SJ_Runs_Nov\\"
+  infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\Results_Jan\\"
   
 ```
 
@@ -197,19 +198,19 @@ dom_sel=c(0.23,0.68,0.38), dom_cos=c(0.89,0.65,0.55), rr=c(0.12,0.75,0.33), expo
 
 widthbin <- 10 #either 10 or 20 looks fairly similar
 
-# df_res_all$best_strategy <- ifelse(df_res_all$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_all$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
+# df_res_all$best_strategy <- ifelse(df_res_all$gens_rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_all$gens_rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
 # 
-# ggplot(df_res_all, aes(x=rot_minus_seq, fill=best_strategy)) + 
+# ggplot(df_res_all, aes(x=gens_rot_minus_seq, fill=best_strategy)) + 
 #      geom_histogram(binwidth=widthbin, colour='white') + 
 #      theme_minimal() +
 #      theme(panel.grid.minor.y=element_blank())
 
 # calc percentage difference between rotation and sequence
-df_res_16$rms_percent <- 100 * df_res_16$rot_minus_seq / df_res_16$gens_seq
+df_res_16$rms_percent <- 100 * df_res_16$gens_rot_minus_seq / df_res_16$gens_seq
 
 # best strategy calculation
 # no_difference set to +/- half of widthbin set above
-df_res_16$best_strategy <- ifelse(df_res_16$rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_16$rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
+df_res_16$best_strategy <- ifelse(df_res_16$gens_rot_minus_seq <= -(widthbin/2),"sequence", ifelse(df_res_16$gens_rot_minus_seq > (widthbin/2), "rotation", "no_difference"))
 
 # OR use a % threshold for strategies to be the same
 # still uses widthbin which now represents a pcent
@@ -250,8 +251,8 @@ id14_lookup <- c(
 colrs <- c("no_difference"=rgb(255,255,255,max=255),"rotation"=rgb(2,98,215,max=255),"sequence"=rgb(227,0,169,max=255))
 
 
-#rot_minus_seq, facet by A-D and 1-4, better facet labels
-ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) + 
+#gens_rot_minus_seq, facet by A-D and 1-4, better facet labels
+ggplot(df_res_16, aes(x=gens_rot_minus_seq, fill=best_strategy)) + 
      geom_histogram(binwidth=widthbin, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
      theme_minimal() +
@@ -275,7 +276,7 @@ ggplot(df_res_16, aes(x=rot_minus_seq, fill=best_strategy)) +
 
 
 
-#rms (rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
+#rms (gens_rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
 ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) + 
      geom_histogram(binwidth=widthbin, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
@@ -366,7 +367,7 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
     
     
     nruns_rot_20pc_better <- df_res_16 %>% 
-                  filter(rot_minus_seq/gens_seq >= 0.2 ) %>%
+                  filter(gens_rot_minus_seq/gens_seq >= 0.2 ) %>%
                   summarise(n=n()) %>% 
                   unlist()
     
@@ -383,11 +384,11 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
 # doesn't show much
 # Plots of how the difference between rotations and sequences respond to model inputs.
 
-# go through selected inputs and plot them on x with rot_minus_seq on y 
+# go through selected inputs and plot them on x with gens_rot_minus_seq on y 
 # TODO check whether this covers all the inputs we want to look at
 in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
 
-y <- 'rot_minus_seq'  
+y <- 'gens_rot_minus_seq'  
 
 for(i in in_cols)
 {
@@ -431,7 +432,7 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
 
     
     x <- df_res_A[,in_cols]
-    y <- df_res_A['rot_minus_seq']
+    y <- df_res_A['gens_rot_minus_seq']
       
     pcc_res <- pcc(x, y, rank=TRUE)
     
@@ -484,12 +485,12 @@ in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','s
 
 #'cost','dom_cos','dom_sel'
 
-y <- 'rot_minus_seq'  
+y <- 'gens_rot_minus_seq'  
 
 ggplot(df_res_16, aes(x=dom_sel, y=dom_cos)) + 
      geom_point(shape=3, size=1, alpha=0.2, show.legend=FALSE) +
      theme_minimal() +
-     geom_point(data=filter(df_res_16, rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
+     geom_point(data=filter(df_res_16, gens_rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
 
 
 
@@ -540,4 +541,147 @@ ggplot(df_res_16, aes(x=dom_sel, y=dom_cos)) +
 
 ```  
 
+# new - mean mortality over whole sim
+# slightly surprising that not much variation
+# this one colours by best strategy in generation terms
+# B1 suggests that runs where rotation is better may have
+# lower mortality under rotation
+# try to find a different way of showing that 
+# (e.g. just plot gens_diff against mortality diff)
 
+
+```{r figxmort-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+# ** mean mortality for rotations
+
+# have a go at classifying gens_rot so I can use it to colour the mean mort bars
+# cut(gens_rot, 5) this does that
+
+ggplot(df_res_16, aes(x=mort_rot, fill = cut(gens_rot, 5))) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     geom_histogram(colour='darkgrey') + 
+     #geom_histogram(binwidth=0.02, colour='darkgrey') + 
+     #be interesting to color by generations to see if strategies that last longer have lower mortality ?
+     #scale_fill_manual(values=colrs) +
+     #scale_fill_continuous(aes(gens_rot)) +
+     scale_fill_brewer(palette = 'greens') +
+     theme_minimal() +
+     #xlim(-100,100) +
+     xlab("mean mortality over all generations for rotation") +
+     ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+```
+
+
+```{r figxgens_rot_v_mort_rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+# ** mean mortality for rotations
+
+ggplot(df_res_16, aes(x=gens_rot, fill = cut(mort_rot, 5))) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     geom_histogram(colour='darkgrey') + 
+     #geom_histogram(binwidth=0.02, colour='darkgrey') + 
+     #be interesting to color by generations to see if strategies that last longer have lower mortality ?
+     #scale_fill_manual(values=colrs) +
+     #scale_fill_continuous(aes(gens_rot)) +
+     scale_fill_brewer(palette = 'greens') +
+     theme_minimal() +
+     #xlim(-100,100) +
+     #xlab("mean mortality over all generations for rotation") +
+     #ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+```
+
+
+```{r figxmort_rot_v_start_freqs, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+# i expect that mean mort may be largely influenced by startfreqs, but remember when diff. there are multiple
+
+# ** mean mortality for rotations
+
+ggplot(df_res_16, aes(x=start_freqs, y=mort_rot)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_hline(yintercept = 0, linetype="dashed", color = 'darkgrey') +
+     geom_vline(xintercept = 0, linetype="dashed", color = 'darkgrey') +
+     geom_point(shape='.') +
+     geom_smooth() +
+     #geom_abline() +
+     # scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     # #xlim(-100,100) +
+     # xlab("advantage of rotations over sequence in mean mortality") +
+     # ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+```
+
+
+
+```{r figxmort-which-best-meanmort, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+# ** using best strategy from generations calc above
+# ** so trying to see if being better in generations terms
+# ** has consequences for mean mortality
+
+# **hmmm doesn't seem to work, all x differences 0
+# because widthbin set to 10 above
+
+#gens_rot_minus_seq, facet by A-D and 1-4, better facet labels
+ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_histogram(binwidth=0.02, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     #xlim(-100,100) +
+     xlab("advantage of rotations over sequence in mean mortality") +
+     ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+#tally
+#df_res_16 %>% group_by(id12) %>% tally()
+
+```
+
+#try to establish whether
+#runs that have higher generations for rotations
+#also have lower mean mortality
+
+```{r figxmort-v-gens, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+#gens_rot_minus_seq, facet by A-D and 1-4, better facet labels
+ggplot(df_res_16, aes(x=gens_rot_minus_seq, y=mort_rot_minus_seq)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_hline(yintercept = 0, linetype="dashed", color = 'darkgrey') +
+     geom_vline(xintercept = 0, linetype="dashed", color = 'darkgrey') +
+     geom_point(shape='.') +
+     geom_smooth(method='lm') +
+     #geom_abline() +
+     # scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     # #xlim(-100,100) +
+     # xlab("advantage of rotations over sequence in mean mortality") +
+     # ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank()) +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+
+```

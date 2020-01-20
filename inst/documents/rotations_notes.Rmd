@@ -2362,16 +2362,35 @@ saved run file for sam to rotations_runs2020_sam.rmd
 
 sam did new runs
 
+in paper_figs_rotations201911.rmd
+~ replace rot_minus_seq with gens_rot_minus_seq
+
+
+# 2020-01-13
+looking at mean mortality from new runs
+
+
+# 2020-01-17
+
+A2 runs
+run 94 (p95) rotation better
+p109 sequence better
+
+
+looking for the B1 runs where rotations are a bit better than sequences
+
+
+
 
 # TODO
 
 paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 
+** convert single run plots to output total generations rather than gens-under-thresh **
 
 
 Try some rotation_runs2019.Rmd with new outputs.
-Get Sam to run new ones.
 
 
 a. create a function to compare seq and rot plots
@@ -2396,7 +2415,7 @@ migration limits ???
 I need to check on them more ! to make sure I know what they are doing.
 
 
-~ consider renaming package to avoid conflict with CRAN rotations package insectrot rotinsect
+~ consider renaming package to avoid conflict with CRAN rotations package insectrot rotinsect rotseq rotateinsect
 
 
 CHECK ALL INPUT PARAMS
@@ -2406,20 +2425,6 @@ CHECK ALL INPUT PARAMS
 
 ~ try to get run progress message into console or terminal
 ~ improve readme.md with details of how to run simulations
-
-~ maybe just do annual rotation interval i.e. 10 ?
-
-GET FREQUENCY RUNS sorted first (easier)
-I could put the expt files all into one csv to start creating them, and divide into separate files later.
-
-~ there is other stuff I still need in sensi_an_rotations1.Rmd - e.g. post-processing of outputs
-~ could I have multiple experiments as columns in the same input file ?
-
-~ add the random seed to the experiment file (and decide where it will be set)
-
-~ investigate getting runs to name the output file with the date 
-~ and create a similarly named metadata file that records run input params 
-
 
 
 # RUNS FOR PAPER September 2019
@@ -2438,12 +2443,7 @@ Replicates (10000) :
 So number of runs 2*2*2*4*10000 = 320000
 
 
-
-
-~ fix plot error when coverage==1
-
 STill if have min_rwr_interval > 0 an insecticide at very start of simulation outside the threshold will continue to be used. Mostly I think min_rwr_interval not a good idea, but does kind of represent what you might expect to happen in field when it is set to a year i.e. that once sprayed can't be unsprayed.
-
 
 dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort', rot_interval=0, threshold=0.9)
 
@@ -2459,11 +2459,8 @@ options
 ~ pass as survival convert to mortality for plot
 
 
-
-
 ~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
 ~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
-
 
 
 rotations paper :
@@ -2497,19 +2494,6 @@ think about killer plot to display difference between rot & seq generations
 
 ~ maybe come back to i_in_use ribbons not meeting issue
 ~ add in some unit-tests ?
-~ check how gens_under_thresh are counted in sensi_an_rotations1
-    summarise(gens_dep_under50 = sum(resistance < 0.5 &
-                                     #finds insecticide in use = this one
-                                     resist_gene==paste0('insecticide',insecticide), na.rm=TRUE)) %>%
-                                 summarise(tot_gens_dep_under50 = sum(gens_dep_under50)) %>%    
-                                 unlist()
-
-~ how to deal with 'overshooting' leading to more generations under 50 when rotation intervals are shorter ? 
-dfseq <- run_rot(rot_interval=0, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
-dfrot <- run_rot(rot_interval=6, max_gen = 300, migration=0.01, expo_hi=0.8, eff=0.8, cost=0.1, coverage=1)
-rot_plot_resistance(dfrot, df_resanother=dfseq, plot_refuge=FALSE)
-
-
 
 
 ~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? I don't think so because it requires linkage.
@@ -2524,8 +2508,6 @@ It occurred to me that maybe a benefit of rotations is that if it is difficult t
 
 ~ can we get cost to decrease over time at high frequency as suggested in GPIRM ?
 
-gens_dep_under50 is ugly and I need to rewrite in sensi_an_rotations !
-
 BEWARE active in active_or_refuge is potentially confusing, does not mean that insecticide is active/deployed, just means its is the active area (a different insecticide may be deployed)
 
 
@@ -2539,20 +2521,7 @@ BEWARE active in active_or_refuge is potentially confusing, does not mean that i
 ~ relate outputs to inputs
 
 
-~ sort outputs which need to be time to resistance for planned rotations and RwR rotate when resistant. Sequence.
-
-~ time under resitance threshold, e.g. 50%
-
-Test 1. No refugia (i.e. Coverage=100%) or fitness costs.
-Would expect all policies to be equivalent.
-
-Test 2. Dominance of resistance and fitness costs both set to 0.5.
-I suspect one of the advantages of rotations (and the presence of refugia) is that they maintain lower resistance allele frequencies which slows the spread of recessive resistance alleles. I suspect/guess/intuit that if we make them semi-dominate these effects should disappear and all policies should be the same. I’m probably wrong but it’s a nice test…..
-
-
 ~ Ian & I talked about using fitness to determine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
-
-
 
 ~ test fitness_single_locus() from run_rot() and add to Rmd
 
