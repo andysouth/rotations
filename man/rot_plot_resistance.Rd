@@ -4,17 +4,19 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
-  mort_or_freq = "mort", logy = TRUE, add_gens_under50 = TRUE,
-  df_resanother = NULL, lwd = 1.5, title = "auto", plot = TRUE,
-  plot_mort = TRUE)
+rot_plot_resistance(df_res2, plot_refuge = TRUE, mort_thresh = 0.9,
+  freq_thresh = 0.5, mort_or_freq = "mort", logy = TRUE,
+  add_gens_under50 = FALSE, df_resanother = NULL, lwd = 1.5,
+  title = "auto", plot = TRUE, plot_mort = TRUE)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
 
 \item{plot_refuge}{whether to plot refuge as well as intervention}
 
-\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
+\item{mort_thresh}{mortality threshold for switching insecticides, default 0.9, only used if mort_or_freq is mort}
+
+\item{freq_thresh}{resistance frequency threshold for switching insecticides, default 0.5, only used if mort_or_freq is freq}
 
 \item{mort_or_freq}{whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'}
 
@@ -31,6 +33,8 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, threshold = 0.5,
 \item{plot}{whether to plot results}
 
 \item{plot_mort}{whether to add mortality to plots}
+
+\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
 }
 \value{
 ggplot object

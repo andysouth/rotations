@@ -4,6 +4,8 @@
 #' @param plot_refuge whether to plot refuge as well as intervention
 #' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
 #' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
+#' @param mort_thresh mortality threshold for switching insecticides, default 0.9, only used if mort_or_freq is mort
+#' @param freq_thresh resistance frequency threshold for switching insecticides, default 0.5, only used if mort_or_freq is freq
 #' @param logy whether to use log scale for y axis
 #' @param add_gens_under50 whether to add a label of num generations under 50percent resistance
 #' @param df_resanother exploratory option to plot results of another scenario on the same graph
@@ -26,10 +28,11 @@
 #' 
 rot_plot_resistance <- function(df_res2,
                                 plot_refuge = TRUE,
-                                threshold = 0.5,
+                                mort_thresh = 0.9,
+                                freq_thresh = 0.5,
                                 mort_or_freq = 'mort',
                                 logy = TRUE,
-                                add_gens_under50 = TRUE,
+                                add_gens_under50 = FALSE,
                                 df_resanother = NULL,
                                 lwd = 1.5,
                                 title = 'auto', #NULL
@@ -88,13 +91,13 @@ rot_plot_resistance <- function(df_res2,
     # TODO change yintercept bit only plot one thresh
     if (mort_or_freq=='mort') 
     {
-      yintercept <- threshold 
+      yintercept <- mort_thresh 
       thresh_name <- "threshold mortality"
       thresh_col <- "green"
     }
     else 
     {
-      yintercept <- 0.9
+      yintercept <- freq_thresh
       thresh_name <- "threshold resistance"
       thresh_col <- "red"      
     }
@@ -152,10 +155,10 @@ rot_plot_resistance <- function(df_res2,
     # set y intercept for horiz line to threshold if freq, otherwise default to 0.5
     # stopped plotting this when thresh is mortality
     # BEWARE value of plot_mort too
-    if (! is.null(threshold) & mort_or_freq=='freq')
+    if (! is.null(freq_thresh) & mort_or_freq=='freq')
     {
-      if (mort_or_freq=='freq') yintercept <- threshold
-      else yintercept <- 0.5
+      if (mort_or_freq=='freq') yintercept <- mort_thresh
+      else yintercept <- freq_thresh
       geom_hline(yintercept=yintercept, linetype=3, colour='red')       
     }
   
@@ -188,15 +191,22 @@ rot_plot_resistance <- function(df_res2,
   
   
   
-  if (logy) gg <- gg + scale_y_continuous(trans='log10', 
+  if (logy) {
+    gg <- gg + scale_y_continuous(trans='log10', 
                                          breaks=c(0.001,0.01,0.5,1),
                                          labels=c('0.1%','1%','50%','100%'),
                                          #labels = scales::percent,
                                          #labels = scales::comma,
                                          minor_breaks=NULL) +
                        theme(axis.text.y = element_text(size = rel(0.8))) #, angle = 90))
+  } else {
+    
+    gg <- gg + scale_y_continuous(breaks=c(0,0.5,1),
+                                  labels=c('0','50%','100%'),
+                                  minor_breaks=NULL)    
+  }
   
-  else     gg <- gg + scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1))
+
   
   #gens_dep_under50 is repeated for all generations which make it look ugly when plotted with geom_text
   #this filters out so just one result per insecticide
@@ -214,14 +224,15 @@ rot_plot_resistance <- function(df_res2,
     #problem with these options below is that they just accessed value for the first insecticide
     #gg <- gg + annotate("text",x=Inf, y=y, label=df_res2$gens_dep_under50[1], colour='black', size=5, hjust=1, vjust=0)
     #gg <- gg + ggtitle(paste0('generations insecticide in use and under resistance threshold : ',df_res2$gens_dep_under50[1]))
-    
   }
   
   if (!is.null(title)) 
   {
     if (title=='auto')
     {
-      title <- paste0("Generations in-use under threshold :", sum(df_res3$gens_dep_under50))
+      #title <- paste0("Generations in-use under threshold :", sum(df_res3$gens_dep_under50))
+      #change title to show generations until all insecticides at threshold
+      title <- paste0("Generations until all insecticides at threshold :", df_res3$end_gens)     
       
       #would be nice to label as rotation or sequence but don't have that info here      
       #if (df_res2$rot_interval==0) title <- paste0("Sequence, generations in-use under threshold :", sum(df_res3$gens_dep_under50))
