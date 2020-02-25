@@ -3,7 +3,6 @@
 \docType{package}
 \name{rotations}
 \alias{rotations}
-\alias{rotations-package}
 \title{Simulating the Evolution of Insecticide Resistance under Rotations}
 \description{
 Simulating the Evolution of Insecticide Resistance under Rotations

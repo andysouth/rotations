@@ -4,8 +4,14 @@
 \alias{raf_get}
 \title{get selected Resistance Allele Frequencies from array}
 \usage{
-raf_get(RAF, insecticide = TRUE, sex = TRUE, site = TRUE,
-  gen = TRUE, asdf = FALSE)
+raf_get(
+  RAF,
+  insecticide = TRUE,
+  sex = TRUE,
+  site = TRUE,
+  gen = TRUE,
+  asdf = FALSE
+)
 }
 \arguments{
 \item{RAF}{array of resistance allele frequencies, either [insecticide, sex, site, gen] or without generationd dimension}

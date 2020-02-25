@@ -4,8 +4,12 @@
 \alias{set_start_freqs}
 \title{set_start_freqs allows starting allele frequencies to be set}
 \usage{
-set_start_freqs(n_insecticides = NULL, max_gen = 200, freqs = 0.001,
-  coverage = 0.5)
+set_start_freqs(
+  n_insecticides = NULL,
+  max_gen = 200,
+  freqs = 0.001,
+  coverage = 0.5
+)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}

@@ -4,10 +4,20 @@
 \alias{rot_plot_resistance}
 \title{rot_plot_resistance plot rotation simulation resistance results}
 \usage{
-rot_plot_resistance(df_res2, plot_refuge = TRUE, mort_thresh = 0.9,
-  freq_thresh = 0.5, mort_or_freq = "mort", logy = TRUE,
-  add_gens_under50 = FALSE, df_resanother = NULL, lwd = 1.5,
-  title = "auto", plot = TRUE, plot_mort = TRUE)
+rot_plot_resistance(
+  df_res2,
+  plot_refuge = TRUE,
+  mort_thresh = 0.9,
+  freq_thresh = 0.5,
+  mort_or_freq = "mort",
+  logy = TRUE,
+  add_gens_under50 = FALSE,
+  df_resanother = NULL,
+  lwd = 1.5,
+  title = "auto",
+  plot = TRUE,
+  plot_mort = TRUE
+)
 }
 \arguments{
 \item{df_res2}{dataframe of resistance results from run_rot()}
@@ -33,8 +43,6 @@ rot_plot_resistance(df_res2, plot_refuge = TRUE, mort_thresh = 0.9,
 \item{plot}{whether to plot results}
 
 \item{plot_mort}{whether to add mortality to plots}
-
-\item{threshold}{trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.}
 }
 \value{
 ggplot object

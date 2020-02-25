@@ -4,8 +4,7 @@
 \alias{rot_migrate}
 \title{migration between intervention and refugia}
 \usage{
-rot_migrate(RAF1gen, migration = 0.8, coverage = 0.6,
-  verbose = FALSE)
+rot_migrate(RAF1gen, migration = 0.8, coverage = 0.6, verbose = FALSE)
 }
 \arguments{
 \item{RAF1gen}{single generation array of resistance allele frequencies}

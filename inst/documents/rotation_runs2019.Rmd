@@ -22,7 +22,7 @@ outFolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
 ```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5.2, comment=NA, results='asis'}
 
 
-nscenarios <- 200
+nscenarios <- 10
 plotyn <- 1 #allow turning plots on and off from here, may want to turn plots off if doing large number of runs
 
 # now specify an experiment from the multi-experiment file
@@ -30,10 +30,10 @@ plotyn <- 1 #allow turning plots on and off from here, may want to turn plots of
 #id_expt <- 'A2'
 #id_expt <- 'A3'
 #id_expt <- 'A4'
-#id_expt <- 'B1'
+id_expt <- 'B1'
 #id_expt <- 'B2'
 #id_expt <- 'B3'
-id_expt <- 'B4'
+#id_expt <- 'B4'
 #id_expt <- 'C1'
 #id_expt <- 'C4'
 #id_expt <- 'D4'
@@ -98,7 +98,7 @@ for(i in 1:nscenarios)
   linputs$plot <- plotyn #allows setting whether to plot from script
   linputs$add_gens_under50 <- TRUE #to add text to plots of gens under threshold
   
-  #record rotation rot interval locally otherwise it get soverwritten by 0
+  #record rotation rot interval locally otherwise it gets overwritten by 0
   rot_rot_interval <- linputs$rot_interval
   
   #to add label between plots in output doc

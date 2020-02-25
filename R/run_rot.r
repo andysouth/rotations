@@ -581,7 +581,8 @@ run_rot <- function(max_gen = 200,
   # do the plots
   if (plot) rot_plot_resistance(df_res2, plot_refuge=plot_refuge, 
                                 logy=logy, add_gens_under50=add_gens_under50,
-                                threshold=threshold,
+                                mort_thresh = mort_thresh,
+                                freq_thresh = freq_thresh,
                                 mort_or_freq=mort_or_freq,
                                 plot_mort=plot_mort)
 

@@ -2,7 +2,6 @@
 #'
 #' @param df_res2 dataframe of resistance results from run_rot()
 #' @param plot_refuge whether to plot refuge as well as intervention
-#' @param threshold trigger for change of insecticide, either resistance frequency or mortality dependent on mort_or_freq, also precludes switch to an insecticide.
 #' @param mort_or_freq whether threshold for insecticide change is mortality 'mort' or resistance frequency 'freq'
 #' @param mort_thresh mortality threshold for switching insecticides, default 0.9, only used if mort_or_freq is mort
 #' @param freq_thresh resistance frequency threshold for switching insecticides, default 0.5, only used if mort_or_freq is freq

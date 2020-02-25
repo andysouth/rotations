@@ -4,8 +4,13 @@
 \alias{set_exposure_rot}
 \title{set exposure to insecticides for rotations to a flexible number of insecticides}
 \usage{
-set_exposure_rot(n_insecticides = NULL, expo_hi = 0.8, expo_lo = 0,
-  male_expo_prop = 1, plot = FALSE)
+set_exposure_rot(
+  n_insecticides = NULL,
+  expo_hi = 0.8,
+  expo_lo = 0,
+  male_expo_prop = 1,
+  plot = FALSE
+)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides, optional can just be specified by number of items in vector expo}

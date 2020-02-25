@@ -4,8 +4,12 @@
 \alias{fitness_single_locus_test}
 \title{test fill a single locus fitness array}
 \usage{
-fitness_single_locus_test(n_insecticides = NULL, a_fitloc = NULL,
-  same_insecticides = FALSE, plot = FALSE)
+fitness_single_locus_test(
+  n_insecticides = NULL,
+  a_fitloc = NULL,
+  same_insecticides = FALSE,
+  plot = FALSE
+)
 }
 \arguments{
 \item{n_insecticides}{number of insecticides}

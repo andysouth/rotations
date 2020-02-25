@@ -2379,10 +2379,106 @@ p109 sequence better
 
 looking for the B1 runs where rotations are a bit better than sequences
 
+# 2020-02-25
+
+checking on B1 runs following feedback from Sam.
+
+
+B1 scenarios, (no costs, no dispersal, insecticides different).
+
+In earlier runs there was no advantage to rotation when there is no cost and dispersal. In the latest runs there is.
+
+I think this is something to do with time spent above the resistance threshold. You may remember that insecticides can only be changed on a yearly timestep. This can result in resistance going above threshold, when that happens it can result in simulations lasting longer.
+
+It seems that something is happening with this that gives the advantage to rotations. This creates a slightly strange 'dog-tooth' pattern seen in fig x3 and pasted below.
+
+
+But sam checked that in the example 200 runs there were just a few that had minor benefits for sequences (not rotations)
+
+I could try doing 1000 runs to check ?
+or do an equiv of fig x3 for the 200 runs.
+
+its x2 which has the dogtooth
+OR first check how the fig x2 is produced to check for possible glitches
+
+fig x1 shows that of the runs that are different they mostly show benefit of rotation. 
+
+fig-si-1-abs-diff-rot-seq shows NO B1 runs with benefit of sequence. 
+
+# 2020-02-25 checking B1 scenarios that are giving weird results
+df_res_B1 <- dplyr::filter(df_res_16, idAD=='B' & id14 == 1)
+
+df_res_B1 %>% group_by(gens_rot_minus_seq) %>% tally()
+# A tibble: 7 x 2
+#   gens_rot_minus_seq     n
+#                <dbl> <int>
+# 1                -10     1
+# 2                  0  6454
+# 3                 10  1653
+# 4                 20  1207
+# 5                 30   514
+# 6                 40   150
+# 7                 50    21
+# so this seems to suggest that rotations are indeed better for B1
+
+#possibilities :
+#A something different in the runs that Sam did and the 200 example ones done for the document
+#B a problem with the document
+
+#but the B1 document looks as expected ???
+
+#should run 1,2,3 etc. from the doc be expected to be the same as the ones in df_res_B1 ?
+#remember pdfs with figs are in C:\Dropbox\resistanceResults\rotations
+
+#YES for run 1 the inputs look about the same
+#EXCEPT that e.g. eff is recorded in df_res_B1 as just a single value (0.98) whereas there are 2 insecticides should be c(0.98,0.74)
+
+#also starngely the pdf seems still to be showing gens in-use under thresh (maybe I didn't get around to changing that)
+
+a) install-restart and try redoing B1 pdf for first 10 runs
+1) check on changing gens-under-thresh output for pdf
+2) check on saving multiple values when insecticides are diff
+
+run1 
+in pdf  rot:40, seq:40
+in runs rot:50, seq:40
+
+I wonder if something went wrong with Sams runs that just running 1 insecticide (but then would expect them to be just like A1 runs ??)
+
+& maybe Sams reporting on the pdf was based on the gens-under-thresh numbers which are now superceded (my mistake for not updating package before re-running pdf)
+
+Can I run the rot for run1 from the pdf, does it generate 40 as in the pdf or 50 as in the runs ?
+eek maybe something hadn't updated before Sam did the runs ?
+
+run_rot(rot_interval=10, n_insecticides=2, start_freqs=0.077, cost=c(0,0), eff=c(0.98,0.74), dom_sel=c(0.55,0.55),
+dom_cos=c(0.24,0.76), rr=c(0.77,0.47), expo_hi=0.69, male_expo_prop=0.17, coverage=1, migration=0,
+max_gen=500, change_interval=10)
+
+this gives 40 gens, same as the pdf.
+
+Now can I rerun the first 10 runs in the same way that Sam did ?
+To do that can just click on the saved rda file.
+It does give the same results as the pdf.
+
+I think I may need to ask Sam to re-run. Making sure that we've updated everything.
+
+One remaining query, why are the inputs for multiple insecticides not saved into the df_res_all object (by both mine & Sams runs) ?
+
+it must happen here :
+  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+                                        gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
+                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i))
+                                        
+linputs has the multiple entries for eff, df_in_out has lost them
+i thought I had done something to allow for that in past ?
+
 
 
 
 # TODO
+
+2020-02-25 : probably get Sam to rerun the 16k runs
+
 
 paper_figs_rotations201911.Rmd
 see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
