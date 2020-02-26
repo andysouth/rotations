@@ -3,6 +3,8 @@
 #' 
 #' @param linmulti list of multiple scenario inputs
 #' @param scen_num scenario number
+#' @param convert_diff_insecticide_strings whether to convert strings for different insecticides into vectors for an individual run, default is TRUE, by setting to FALSE can save inputs as a single row in a datframe
+#' 
 #' 
 #' @examples 
 #' linmulti <- set_run_inputs()
@@ -16,7 +18,8 @@
 
 
 get_one_in <- function( linmulti = NULL,
-                        scen_num )
+                        scen_num,
+                        convert_diff_insecticide_strings = TRUE )
 {
   
   # have a default file
@@ -27,11 +30,14 @@ get_one_in <- function( linmulti = NULL,
   # converting multiple insecticide inputs back from strings
   # just converts those that contain ', '
   # (so mort_or_freq which is a string is not converted)
-
   
-  #note the space after the comma in split=", "
-  linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
-    as.numeric(unlist(strsplit(as.character(x),split=", "))))
+  if (convert_diff_insecticide_strings)
+  {
+    #note the space after the comma in split=", "
+    linputs <- lapply(linputs, function(x) if (!grepl(",",x)) x else
+      as.numeric(unlist(strsplit(as.character(x),split=", "))))    
+  }
+
   
   # to make sure it gets returned
   linputs

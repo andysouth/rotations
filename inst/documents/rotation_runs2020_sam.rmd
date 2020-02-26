@@ -60,6 +60,9 @@ for(i in 1:nscenarios)
   
   linputs <- get_one_in(linmulti, scen_num=i)
   
+  #2020-02-25 creating 2nd version of inputs that retains multi-insectcide strings so that can be saved in an output file as a single row
+  linputs_tosave <- get_one_in(linmulti, scen_num=i, convert_diff_insecticide_strings = FALSE)
+  
   if (linputs$rot_interval == 0) stop("in rotation_runs2019 rot_interval in input file needs to be > 0 to allow it to be compared to a sequence")
   
   linputs$plot <- plotyn #allows setting whether to plot from script
@@ -127,9 +130,14 @@ for(i in 1:nscenarios)
     
   # add scenario id column and difference onto results
   # df_in_out is one row
-  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+  
+  #2020-02-25 beware previously when insecticides are different df_in_out ended up with multiple rows with results repeated
+  #which got unintentionally semi-corrected below
+  #df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+  #now using linputs_tosave which contains unchanged strings, and had to add stringsAsFactors = FALSE
+  df_in_out <- as.data.frame(c(linputs_tosave, gens_rot=gens_rot, gens_seq=gens_seq,                                
                                         gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
-                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i))
+                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i), stringsAsFactors = FALSE)
   
   df_in_out$gens_rot_minus_seq <- df_in_out$gens_rot - df_in_out$gens_seq
   df_in_out$gens_u_rot_minus_seq <- df_in_out$gens_u_rot - df_in_out$gens_u_seq  

@@ -2383,7 +2383,6 @@ looking for the B1 runs where rotations are a bit better than sequences
 
 checking on B1 runs following feedback from Sam.
 
-
 B1 scenarios, (no costs, no dispersal, insecticides different).
 
 In earlier runs there was no advantage to rotation when there is no cost and dispersal. In the latest runs there is.
@@ -2464,7 +2463,7 @@ I think I may need to ask Sam to re-run. Making sure that we've updated everythi
 
 One remaining query, why are the inputs for multiple insecticides not saved into the df_res_all object (by both mine & Sams runs) ?
 
-it must happen here :
+it must happen here in rotation_runs2019 :
   df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
                                         gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
                                         mort_rot=mort_rot, mort_seq=mort_seq, id=i))
@@ -2472,12 +2471,55 @@ it must happen here :
 linputs has the multiple entries for eff, df_in_out has lost them
 i thought I had done something to allow for that in past ?
 
+(to be clear I don't think the above is source of an error, it just might influence ability to analyse runs with diff insecticides later)
+
+BUT
+e.g. when there are 4 insecticides df_in_out ends up with 4 rows ... & the outputs repeated
+THEN this bit (i think) just saves one row so the outputs will be OK
+
+df_res_all[i,] <- df_in_out
+
+It's a bit of a mess though.
+
+  #2020-02-25 BEWARE (see above) when insecticides are different this saves just first row of df_in_out
+  #result is that correct results are saved but with just the inputs for the first insecticide
+  #this shouldn't effect the output results, but I should try to correct
+  #putting results into one row of overall results dataframe
+  df_res_all[i,] <- df_in_out
+  
+
+# this demonstrates problem
+tst <- as.data.frame(c(linputs))  
+
+How did I solve it somewhere else ?
+
+solution may be to use linmulti which contains the strings with multiple insecticide values in.
+e.g. these are the effectivenesses for the first run
+linmulti$eff[1]
+[1] "0.98304248759523, 0.738747693016194"
+
+get_one_in() converts linmulti to linputs which can be used to run a simulation, but maybe I just need to take a single row from linmulti to save into the output file.
+
+Maybe add an argument to get_one_in to be able to keep the strings ?
+
+tst <- as.data.frame(c(linputs_tosave))
+
+but still remaining problem that df_res_all can't store a string so it seems to store 1 instead, e.g. for eff
+
 
 
 
 # TODO
 
 2020-02-25 : probably get Sam to rerun the 16k runs
+
+first try to fix the issues above, or check they don't cause problems
+
+Try to fix so that this saves multiple insecticide inputs, e.g. as c(x,y,z)
+  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+                                        gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
+                                        mort_rot=mort_rot, mort_seq=mort_seq, id=i))
+
 
 
 paper_figs_rotations201911.Rmd
