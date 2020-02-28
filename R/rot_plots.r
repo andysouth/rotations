@@ -86,8 +86,7 @@ rot_plot_resistance <- function(df_res2,
   # note mortality currently added in run_rot but actually we can calc from fixed conversion
   if (plot_mort) {
 
-    # set y intercept for horiz line to threshold if mort, otherwise default to 0.9
-    # TODO change yintercept bit only plot one thresh
+    # set y intercept for horiz line to threshold
     if (mort_or_freq=='mort') 
     {
       yintercept <- mort_thresh 
@@ -156,8 +155,8 @@ rot_plot_resistance <- function(df_res2,
     # BEWARE value of plot_mort too
     if (! is.null(freq_thresh) & mort_or_freq=='freq')
     {
-      if (mort_or_freq=='freq') yintercept <- mort_thresh
-      else yintercept <- freq_thresh
+      if (mort_or_freq=='freq') yintercept <- freq_thresh
+      else yintercept <- mort_thresh
       geom_hline(yintercept=yintercept, linetype=3, colour='red')       
     }
   
