@@ -41,7 +41,7 @@ opts_chunk$set(dev="tiff",
   # where the rotation runs saved
   #infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
   #infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\SJ_Runs_Nov\\"
-  infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\Results_Jan\\"
+  infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\2020-02-results-sam\\"
   
 ```
 
@@ -420,11 +420,11 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
     cat('proportion runs not reaching thresholds : ', nruns_fail/nrow(df_res_16) ) 
     
     # remove runs where thresholds not reached for seq & rot 
-    df_res_16 <- df_res_16 %>% 
+    df_res_16_threshreached <- df_res_16 %>% 
                   filter(gens_seq != max_gen | gens_rot != max_gen) 
     
 
-    nruns_same <- df_res_16 %>% 
+    nruns_same <- df_res_16_threshreached %>% 
                   filter(gens_seq == gens_rot) %>%
                   summarise(n=n()) %>% 
                   unlist()
@@ -432,7 +432,7 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
     cat('proportion runs (that did reach threshold) where rotations and sequence the same  : ', nruns_same/nrow(df_res_16) )  
     
     
-    nruns_rot_20pc_better <- df_res_16 %>% 
+    nruns_rot_20pc_better <- df_res_16_threshreached %>% 
                   filter(gens_rot_minus_seq/gens_seq >= 0.2 ) %>%
                   summarise(n=n()) %>% 
                   unlist()
@@ -693,23 +693,16 @@ ggplot(df_res_16, aes(x=start_freqs, y=mort_rot)) +
 ```
 
 
+```{r figxmort-rot-minus-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-```{r figxmort-which-best-meanmort, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
+# ** mean mortality difference between rot & seq
+# why do these seem not to sum to totals ?
 
-# ** using best strategy from generations calc above
-# ** so trying to see if being better in generations terms
-# ** has consequences for mean mortality
-
-# **hmmm doesn't seem to work, all x differences 0
-# because widthbin set to 10 above
-
-#gens_rot_minus_seq, facet by A-D and 1-4, better facet labels
-ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
+ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
      geom_histogram(binwidth=0.02, colour='darkgrey') + 
-     scale_fill_manual(values=colrs) +
+     #scale_fill_manual(values=colrs) +
      theme_minimal() +
      #xlim(-100,100) +
      xlab("advantage of rotations over sequence in mean mortality") +
@@ -719,8 +712,32 @@ ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
-#tally
-#df_res_16 %>% group_by(id12) %>% tally()
+
+```
+
+
+```{r figxmort-which-best-meanmort, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+# ** using best strategy from generations calc above
+# ** so trying to see if being better in generations terms
+# ** has consequences for mean mortality
+
+
+ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_histogram(binwidth=0.02, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     xlim(-0.2,0.2) +
+     xlab("advantage of rotations over sequence in mean mortality") +
+     ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
 
 ```
 
