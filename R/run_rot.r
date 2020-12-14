@@ -317,7 +317,6 @@ run_rot <- function(max_gen = 200,
       
       # 13/2/2019 put something here to calculate mortality
       # from bioassays so assumes all exposed and exposure doesn't need to be included
-      # this does for m & f, even though only probably need for f
       # TODO make this dryer and more efficient
       # freqs are calculated by HardyWeinberg
       #freqRR <- RAF[insecticide,,,gen-1]^2

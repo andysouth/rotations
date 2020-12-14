@@ -2507,19 +2507,37 @@ tst <- as.data.frame(c(linputs_tosave))
 but still remaining problem that df_res_all can't store a string so it seems to store 1 instead, e.g. for eff
 
 
+2020-02-25 : get Sam to rerun the 16k runs
+
+#2020-10-05 reviewing runs for rotations paper & Qs from Ian
+
+Andy….I assume the following description is how you transformed the data to plot Figure 7 ?
+We quantify the relative performance of sequential and rotations policy (see later discussion of Figures 7 and 8) using the metric, z.
+z=(L(r)/L(s) -1)*100
+
+this is my fig x1, the output is rms_percent
+
+df_res_16$rms_percent <- 100 * df_res_16$gens_rot_minus_seq / df_res_16$gens_seq
+
+Ian asks to change the mortality fig (8) to %difference.
+
+I think it is :
+figxmort-which-best-meanmort
+
+The rational for keeping it to absolute mortality differences is that the values are meaningful to those interested in insecticide resistance, and that mortality is already a %, so talking about percent of a percent gets really confusing.
+Currently the figure shows that most runs result in just a 1% difference in mortality - that readers may equate e.g. to the difference between 89 & 90% in a bioassay.  
 
 
-# TODO
 
-2020-02-25 : probably get Sam to rerun the 16k runs
+# TODO 2020-20
 
-first try to fix the issues above, or check they don't cause problems
+
+# TODO (from before)
 
 Try to fix so that this saves multiple insecticide inputs, e.g. as c(x,y,z)
-  df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
+df_in_out <- as.data.frame(c(linputs, gens_rot=gens_rot, gens_seq=gens_seq, 
                                         gens_u_rot=gens_u_rot, gens_u_seq=gens_u_seq,
                                         mort_rot=mort_rot, mort_seq=mort_seq, id=i))
-
 
 
 paper_figs_rotations201911.Rmd
@@ -2528,41 +2546,17 @@ see rotation_runs2019.Rmd & rotations-experiments-creating-201909.xlsx
 ** convert single run plots to output total generations rather than gens-under-thresh **
 
 
-Try some rotation_runs2019.Rmd with new outputs.
-
-
-a. create a function to compare seq and rot plots
-1. check random number issues
-2. look at paper3 folder 
-
-
-Questions to answer re 16k runs :
-
-1. why with mortality switch are there more runs favouring sequence ?
-
-
-
 check on dispersal limits using new method. Seems that anything above 0.4 leads to near complete mixing
 run_rot(migration=0.4, coverage=0.5)
-#interesting how small levels of migration cause resistance freqs to decline even with no costs
-
+interesting how small levels of migration cause resistance freqs to decline even with no costs
 write word description of what dispersal does
 rename migration to dispersal ?
-
-migration limits ???
-I need to check on them more ! to make sure I know what they are doing.
-
+migration limits ??? I need to check on them more ! to make sure I know what they are doing.
 
 ~ consider renaming package to avoid conflict with CRAN rotations package insectrot rotinsect rotseq rotateinsect
 
 
 CHECK ALL INPUT PARAMS
-
-
-~ create some plot functions to work on the output files (df_res_all) e.g. plot_rotseq_diff()
-
-~ try to get run progress message into console or terminal
-~ improve readme.md with details of how to run simulations
 
 
 # RUNS FOR PAPER September 2019
@@ -2588,65 +2582,8 @@ dfr <- run_rot(start_freqs = 0.000000001, eff=1, logy=FALSE, mort_or_freq='mort'
 ~ fix that mortality calc in plots and that for switching is currently repeated
 ~ check it works with diff insecticides i.e. eff=c(0.7,0.8,0.9) I suspect not because mort_from_resist() or something else not properly vectorised.
 
-~ TIDY UP CODE AND IMPROVE DOCUMENTATION e.g. function args
-
-whatever I do I need to make mort/survival thing more transparent
-
-options
-~ pass as mortality and then convert to survival for calculation
-~ pass as survival convert to mortality for plot
 
 
-~ ian interested in starting frequencies at 10e-4, can do that for the runs with different values per insecticide.
-~ we won't run sensitivity analysis on those runs, but just to check that rotations and sequence runs still similar
-
-
-rotations paper :
-~ think about what questions managers will want answered
-
-A) when do both strategies work (include looking at insecticides and rotation level)
- - maybe do PRCC
-B) if neither work, when are rotations better ?
-
-small changes :
-~ dominance of resistance
-~ how to term success. 'At least one insecticide still below resistance thresholds' 
-
-Look into whether to use min_rwr_interval OR min_gens_switch_back 
-I'm thinking that I'll stick with min_rwr_interval
-
-
-I think takehome message maybe that rotations are much better than sequences only in rare circumstances.
-
-May also be something useful I can say about the number of insecticides too ? (Which is of interest to IVCC).
-
-
-~ can I create some simple figs to illustrate how an increasing rate of resistance evolution with frequency can lead to rotations being favoured   
-
-
-~ modify sensi_an_rotations so that I have a reproduceable record of a) no cost or dispersal b)cost only c)dispersal only, d) cost & dispersal
-
-
-think about killer plot to display difference between rot & seq generations
-
-
-~ maybe come back to i_in_use ribbons not meeting issue
-~ add in some unit-tests ?
-
-
-~ can we do cross resistance within the rotations model ? i.e. that resistance to one insecticide also provides some protection against another ? I don't think so because it requires linkage.
-
-~ add error-check to run_rot if n.insecticides=1 & migration > 0 
-
-Maybe explore idea from Rowland (1981) that resistance declines faster when it is mostly held by the RR (i.e. at higher allele frequencies) 
-
-Look into data on changing allele frequencies over time (e.g. for Kdr)...
-
-It occurred to me that maybe a benefit of rotations is that if it is difficult to measure resistance allele frequencies they provide a lower risk of reaching resistance thresholds for any insecticide. i.e. are they a better strategy in light of uncertainty in resistance allele frequencies ?
-
-~ can we get cost to decrease over time at high frequency as suggested in GPIRM ?
-
-BEWARE active in active_or_refuge is potentially confusing, does not mean that insecticide is active/deployed, just means its is the active area (a different insecticide may be deployed)
 
 
 *protocol for sensitivity analysis*
@@ -2658,10 +2595,6 @@ BEWARE active in active_or_refuge is potentially confusing, does not mean that i
 ~ concatenate inputs & outputs
 ~ relate outputs to inputs
 
-
-~ Ian & I talked about using fitness to determine changes. and that fitness could be used as an index of population, but Ian was sceptical, he said to look up fitness determinants of population on wikipedia, about soft & hard selection.
-
-~ test fitness_single_locus() from run_rot() and add to Rmd
 
 ~ check in resistance::fitnessSingleLocus() on separation of dominance of cost & selection. Was probably OK for Levick et al because we didn't have cost in. 
 But I think that dominance of cost may be set to 0 which means that the RS experiences no effect of cost.
@@ -2676,7 +2609,7 @@ But I think that dominance of cost may be set to 0 which means that the RS exper
 
 
 # state of play
-~ sensi_an_rotations1.Rmd : starting on sensitivity analysis
+~ sensi_an_rotations1.Rmd
 ~~  produces an output dataframe containing both inputs and outputs
 ~~ saves outputs to df_res_all_rot.rda
 

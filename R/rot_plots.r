@@ -35,6 +35,7 @@ rot_plot_resistance <- function(df_res2,
                                 df_resanother = NULL,
                                 lwd = 1.5,
                                 title = 'auto', #NULL
+                                legend_title = "areas connected\nby migration",
                                 plot = TRUE,
                                 plot_mort = TRUE) {
   
@@ -69,7 +70,7 @@ rot_plot_resistance <- function(df_res2,
     #legend for the lines, allows me to set title & labels  
     if (!plot_mort & mort_or_freq=='freq')
     {
-      gg <- gg + scale_colour_manual("areas connected\nby migration",values=c("red3","navy"), labels=c("treated","untreated refugia"))
+      gg <- gg + scale_colour_manual(legend_title,values=c("red3","navy"), labels=c("treated","untreated refugia"))
     }
   } else
   {
@@ -114,12 +115,20 @@ rot_plot_resistance <- function(df_res2,
       
       #trying & initially failing to get mortality line to appear in legend 
       #fiddled with the orders of values & labels to get to correspond to lines
-      # TODO sort when plot_refuge==FALSE
-      scale_colour_manual("areas connected\nby migration",values=c("red3",thresh_col,"darkgreen","navy"), 
-                           labels=c("resistance\nin treated",thresh_name,"mortality in treated","resistance in\nuntreated refugia"),
-                           guide = guide_legend(linetype=c(1,3,1,1)))
-                           #guide = guide_legend(override.aes = list(fill = NA)))
-    
+      if (plot_refuge) {
+        
+        scale_colour_manual(legend_title,values=c("red3",thresh_col,"darkgreen","navy"), 
+                            labels=c("resistance\nin treated",thresh_name,"mortality in treated","resistance in\nuntreated refugia"),
+                            guide = guide_legend(linetype=c(1,3,1,1)))
+        
+      } else {
+        
+        scale_colour_manual(legend_title,values=c("red3",thresh_col,"darkgreen"), 
+                            labels=c("resistance\nin treated",thresh_name,"mortality in treated"),
+                            guide = guide_legend(linetype=c(1,3,1)))
+        
+      }
+
       
       #legend for mortality, allows me to set title & labels  
       #but this overwrites other legend

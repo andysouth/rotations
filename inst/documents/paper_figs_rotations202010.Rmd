@@ -1,5 +1,5 @@
 ---
-title: "paper_figs_rotations201911 : create paper figures from rotation runs"
+title: "paper_figs_rotations202010 : create paper figures from rotation runs"
 #output: pdf_document
 output: word_document
 author: "Andy South, Sam Jones and Ian Hastings"
@@ -14,7 +14,7 @@ Runs themselves are done from rotation_runs2019.Rmd.
 16 expts of 10,000 runs each comparing rotations and sequences.
 
 
-```{r, eval=TRUE, include=FALSE}
+```{r setup, eval=TRUE, include=FALSE}
 #set to eval=TRUE to make figs for submission
 
 library(knitr)
@@ -28,10 +28,7 @@ opts_chunk$set(dev="tiff",
                fig.path='rotfigs/',
                fig.width=8.5,
                fig.height=8.5)
-```
 
-
-```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
   library(rotations)
   library(ggplot2)
   library(gridExtra)
@@ -93,11 +90,9 @@ df_res_A <- dplyr::filter(df_res_16, idAD=="A")
 # example scenarios
 # A1 frequency switch insecticides same, no costs no disp
 
-```{r fig2-examp-run-A1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig4-examp-run-A1, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-
-# TODO put into a reusable function to plot seq vs rot
-# TODO probably allow run_rot to return the ggplot object
+#2020-10 was fig2
 
 dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.001, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
@@ -123,10 +118,10 @@ ggrot <- ggrot + theme(legend.position="none")+
 
 # A2 frequency switch insecticides same, costs no disp
 
-```{r fig3-examp-run-A2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig5-examp-run-A2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
+#2020-10 was fig3
 
-#TODO replace later, quick pasted test to see effect of adding cost
 
 dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.001, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
@@ -151,9 +146,11 @@ ggrot <- ggrot + theme(legend.position="none")+
 
 # C2 mortality switch insecticides same, no costs, disp
 
-```{r fig4-examp-run-C2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig6-examp-run-C2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 # mortality switch
+
+#2020-10 was fig4
 
 dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.001, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'mort')
@@ -161,7 +158,7 @@ min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'mort')
 dfrot <- run_rot(rot_interval=10, n_insecticides=3, start_freqs=0.001, cost=c(0.02), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=1, migration=0,
 min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'mort')
 
-ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=TRUE, plot_refuge = FALSE, logy =FALSE  )
+ggseq <- rot_plot_resistance(dfseq, plot=FALSE, plot_mort=TRUE, plot_refuge = FALSE, logy =FALSE, legend_title = '' )
 ggrot <- rot_plot_resistance(dfrot, plot=FALSE, plot_mort=TRUE, plot_refuge = FALSE, logy =FALSE  )
 
 ggseq <- ggseq + theme(axis.title.x = element_blank()) +
@@ -178,9 +175,9 @@ ggrot <- ggrot + theme(legend.position="none")+
 
 # A3 frequency switch insecticides same, no costs, disp
 
-```{r fig5-examp-run-A3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig7-examp-run-A3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-#TODO replace later, quick pasted test to see effect of adding dispersal
+#2020-10 was fig5
 
 dfseq <- run_rot(rot_interval=0, n_insecticides=3, start_freqs=0.001, cost=c(0), eff=c(0.98), dom_sel=c(0.96), dom_cos=c(0.32), rr=c(0.12), expo_hi=0.75, male_expo_prop=0.34, coverage=0.3, migration=0.1, min_rwr_interval=10, plot=FALSE, max_gen=500, mort_or_freq = 'freq')
 
@@ -203,7 +200,9 @@ ggrot <- ggrot + theme(legend.position="none")+
 
 # B2 frequency switch insecticides different, costs
 
-```{r fig6-examp-run-B2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig8-examp-run-B2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+#2020-10 was fig6
 
 #in sequence first insecticide keeps being used for 500 gen
 #in rotation switch to other insecticides that reach threshold means that generations are lost over threshold
@@ -245,9 +244,14 @@ widthbin <- 10 #either 10 or 20 looks fairly similar, 5 gives gaps because of co
 #      theme_minimal() +
 #      theme(panel.grid.minor.y=element_blank())
 
-# calc percentage difference between rotation and sequence
+# calc percentage difference between rotation and sequence for resistance & mortality
 df_res_16$rms_percent <- 100 * df_res_16$gens_rot_minus_seq / df_res_16$gens_seq
-
+df_res_16$rms_mort_percent <- 100 * df_res_16$mort_rot_minus_seq / df_res_16$mort_seq
+#seems problem with above try Ians way
+df_res_16$rms_mort_percent <- 100 * (df_res_16$mort_rot / df_res_16$mort_seq -1)
+# Ian said this is equivalent and it does give nearly same result 10pow-14 difference
+#df_res_16$ian_rms_percent <- 100 * (df_res_16$gens_rot / df_res_16$gens_seq -1)
+#df_res_16$tst <- df_res_16$ian_rms_percent-df_res_16$rms_percent
 
 # 2020-02-25 checking B1 scenarios that are giving weird results
 df_res_B1 <- dplyr::filter(df_res_16, idAD=='B' & id14 == 1)
@@ -270,7 +274,6 @@ df_res_B1 %>% group_by(gens_rot_minus_seq) %>% tally()
 #B a problem with the document
 
 #but the B1 document looks as expected ???
-
 
 
 # TODO 2020-02-25 check whats going on here
@@ -338,9 +341,9 @@ ggplot(df_res_16, aes(x=gens_rot_minus_seq, fill=best_strategy)) +
 
 # pcent difference between rotations and sequences, all runs
 
-```{r figx1-pcent-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig2-pcent-diff-rot-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-# 2020-10 seems this is now fig7
+# 2020-10 previously fig7
 
 #rms (gens_rot_minus_seq)_pcent, facet by A-D and 1-4, better facet labels
 ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) + 
@@ -362,19 +365,68 @@ ggplot(df_res_16, aes(x=rms_percent, fill=best_strategy)) +
 
 ```
 
+```{r fig3-mort-which-best-meanmort, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+# 2020-10 previously fig8
+
+# ** using best strategy from generations calc above
+# ** so trying to see if being better in generations terms
+# ** has consequences for mean mortality
+
+
+#2020-10-08 Ian asked to change this to percent difference
+
+ggplot(df_res_16, aes(x=rms_mort_percent, fill=best_strategy)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
+#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
+     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_histogram(binwidth=5, colour='darkgrey') + 
+     scale_fill_manual(values=colrs) +
+     theme_minimal() +
+     xlim(-40,40) +
+     xlab("percentage advantage of rotations over sequence in mean mortality") +  
+     ylab("count of randomly sampled runs") +  
+     theme(panel.grid.minor=element_blank(),
+           legend.position="bottom") +
+     facet_grid(rows=vars(id14), cols=vars(idAD),
+                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+#old version just mortality rather than %
+# ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
+#      geom_histogram(binwidth=0.02, colour='darkgrey') + 
+#      scale_fill_manual(values=colrs) +
+#      theme_minimal() +
+#      xlim(-0.2,0.2) +
+#      xlab("advantage of rotations over sequence in mean mortality") +
+#      ylab("count of randomly sampled runs") +  
+#      theme(panel.grid.minor=element_blank(),
+#            legend.position="bottom") +
+#      facet_grid(rows=vars(id14), cols=vars(idAD),
+#                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
+```
+
+
 
 # at each generations below threshold for rotations, which strategy was best
 
-```{r figx2-which-best-each-gens-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig9-which-best-each-gens-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-# 2020-10 seems this is now fig8
+# 2020-10 fig9
 
 #oooo this is interesting
 #it shows what gens_rot the best strategies occur at
+
+# but difficult to see the ones where there is an advantage to either strategy because so few of them 
+# increasing binwidth to 50 made advantage run more visible
+
+#also good that it shows runs lasting longer when fitness costs and dispersal are added 
+
 ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) + 
-     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_histogram(binwidth=50, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
      theme_minimal() +
+     #scale_y_log10() + #log scale did make it easier to see lower values but misleading
      #xlim(-100,100) +
      xlab("generations to reach thresholds for ROTATION") +
      ylab("count of randomly sampled runs") +    
@@ -383,16 +435,34 @@ ggplot(df_res_16, aes(x=gens_rot, fill=best_strategy)) +
      facet_grid(rows=vars(id14), cols=vars(idAD),
                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
 
+#Ian asked if could make the bars mean of rot & seq
+#but I think this is confusing & potentially wrong
+# ggplot(df_res_16, aes(x=0.5*(gens_rot+gens_seq), fill=best_strategy)) + 
+#      geom_histogram(binwidth=50, colour='darkgrey') + 
+#      scale_fill_manual(values=colrs) +
+#      theme_minimal() +
+#      #scale_y_log10() + #log scale did make it easier to see lower values but misleading
+#      #xlim(-100,100) +
+#      xlab("generations to reach thresholds for ROTATION") +
+#      ylab("count of randomly sampled runs") +    
+#      theme(panel.grid.minor=element_blank(),
+#            legend.position="bottom") +
+#      facet_grid(rows=vars(id14), cols=vars(idAD),
+#                 labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
+
 ```
 
 
 # at each generations below threshold for rotations, which strategy was best
 
-```{r figx3-which-best-each-gens-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r fig9seq-which-best-each-gens-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+#same as previous but for seq rather than rot
+#maybe to go in SI
 
 #gens_seq the best strategies occur at
 ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) + 
-     geom_histogram(binwidth=widthbin, colour='darkgrey') + 
+     geom_histogram(binwidth=50, colour='darkgrey') + 
      scale_fill_manual(values=colrs) +
      theme_minimal() +
      #xlim(-100,100) +
@@ -405,8 +475,6 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
 
 
 ```
-
-\pagebreak
 
 
 # count proportion of scenarios not reaching resistance thresholds
@@ -447,326 +515,5 @@ ggplot(df_res_16, aes(x=gens_seq, fill=best_strategy)) +
 
 
 
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
 
-# doesn't show much
-# Plots of how the difference between rotations and sequences respond to model inputs.
 
-# go through selected inputs and plot them on x with gens_rot_minus_seq on y 
-# TODO check whether this covers all the inputs we want to look at
-in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
-
-y <- 'gens_rot_minus_seq'  
-
-for(i in in_cols)
-{
-    
-    #plotnum <- plotnum + 1
-    
-    #print( ggplot(ggInsOuts, aes_string(x=i, y=y, colour="strategy")) + 
-    #plotlist[[plotnum]] <- 
-    print( ggplot(df_res_16, aes_string(x=i, y=y)) + 
-             
-             geom_point(shape=1, size=1, alpha=0.5, show.legend=FALSE) +
-             theme_minimal() +
-             geom_smooth(linetype='dashed',size=0.5) )
-             
-}
-
-```
-
-# PRCC to show the sensitivity of the difference between rotation and sequence to inputs
-# this can only be used for the experiments where all insecticides are the same
-# (because in the ones where insecticides differ there are multiple values for each input)
-# start by running on just A expts
-
-```{r figxx-PRCC, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-
-  library(sensitivity)
-  
-# pcc(X, y, rank = FALSE, nboot = 0, conf = 0.95)
-# 
-# Arguments
-# X a data frame containing model input variables
-# y a vector containing the responses 
-# rank logical. If TRUE, the analysis is done on the ranks.
-# nboot the number of bootstrap replicates.
-# conf the confidence level of the bootstrap confidence intervals.
-
-#same as above
-#TODO check that this covers all the inputs we want to look at
-in_cols <- c('cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs')
-
-    
-    x <- df_res_A[,in_cols]
-    y <- df_res_A['gens_rot_minus_seq']
-      
-    pcc_res <- pcc(x, y, rank=TRUE)
-    
-    #if you add bootstrap, error bars are added to the default plot & extra columns to the PRCC object
-    #pcc_res <- pcc(x, y, rank=TRUE, nboot=100)
-    #plot(pcc_res)
-    
-    #results are here I can probably rbind them together into a df that I can ggplot
-    #pcc_res$PRCC
-    
-    to_plot <- pcc_res$PRCC
-    #rename column 1 from 'original to PRCC
-    names(to_plot)[1] <- 'PRCC'
-    to_plot$inputs <- rownames(to_plot)  
-    
-    axis_text_x <- element_text(angle = 45,hjust = 1, vjust = 1)
-    height <- 0.9
-    
-    gg <- ggplot( to_plot, aes_string(x='inputs',y='PRCC') ) +     
-             geom_point(shape=1, colour='red') +
-             theme(axis.text.x = axis_text_x) +
-             geom_hline(yintercept = 0, linetype=3) +
-             #theme(panel.grid.major.y = element_line(color = "grey", size = 1)) +
-             ylim(-1,1) +
-             #ggtitle(paste(strat_name[strategy_num])) +
-             ggtitle("Effect of inputs on benefit of rotations, all A expts.") +
-             xlab(NULL) 
-
-    plot(gg) 
-
-  #to put back in some ref gridlines that are removed by cowplot
-  #theme_set(theme_gray())
-  #theme_set(theme_bw())
-  
-  #plot_grid( plotlist[[1]],plotlist[[2]],plotlist[[3]],plotlist[[4]],ncol=1, rel_heights=c(1,1,1,1.8))  
-  #plot_grid( plotlist[[1]],plotlist[[2]],plotlist[[3]],ncol=1, rel_heights=c(1,1,1.6), labels='AUTO')    
-
-
-```
-
-
-
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=5}
-
-# Runs where rotations are >20% better (in red) are associated with higher dominance of cost and lower dominance of selection, but doesn't guarantee, must be interaction with other inputs too.
-# this was for earlier runs when there was some strange model behaviour, may not be the case now
-# and may not be very meaningful anyway
-
-#'cost','dom_cos','dom_sel','rr','expo_hi','male_expo_prop','eff','start_freqs'
-
-#'cost','dom_cos','dom_sel'
-
-y <- 'gens_rot_minus_seq'  
-
-ggplot(df_res_16, aes(x=dom_sel, y=dom_cos)) + 
-     geom_point(shape=3, size=1, alpha=0.2, show.legend=FALSE) +
-     theme_minimal() +
-     geom_point(data=filter(df_res_16, gens_rot_minus_seq/gens_seq >= 0.3 ), shape=1, size=1, col='red', alpha=0.8)
-
-
-
-```
-
-
-
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=6}
-#eval=FALSE tmp because changes above will break this
-# summary plot of all runs, would show any differences between sequence & rotations as non horizontal lines
-
-# want to plot line between sequence and rotation value
-# any deviation from horizontal will be obvious
-# could use rotation interval as the x axis, so that longer intervals will be clearer
-
-# maybe not for publication
-# but useful for quick view
-
-#it was useful for me but now that I've moved to one row per scenario it won't work !!
-
-    gg <- ggplot( df_res_16, aes_string(x='rot_interval',
-                                         y='tot_gens_dep_under50',
-                                         group='scenario',
-                                         colour='scenario') ) +
-          geom_line( alpha=0.5, lwd=1 )
-
-    plot(gg)
-    
-             
-# plot gens againts exposure and effectiveness
-# as a quick test to see if I can set the starting values of these higher
-    
-    gg <- ggplot( df_res_16, aes_string(x='eff',
-                                         y='tot_gens_dep_under50') ) +
-          geom_point( alpha=0.5 )
-    plot(gg)    
-       
-    gg <- ggplot( df_res_16, aes_string(x='expo_hi',
-                                         y='tot_gens_dep_under50') ) +
-          geom_point( alpha=0.5 )
-    plot(gg)    
-    
-    gg <- ggplot( df_res_16, aes_string(x='expo_hi*eff*male_expo_prop',
-                                         y='tot_gens_dep_under50') ) +
-          geom_point( alpha=0.5 )
-    plot(gg)    
-    
-
-```  
-
-# new - mean mortality over whole sim
-# slightly surprising that not much variation
-# this one colours by best strategy in generation terms
-# B1 suggests that runs where rotation is better may have
-# lower mortality under rotation
-# try to find a different way of showing that 
-# (e.g. just plot gens_diff against mortality diff)
-
-
-```{r figxmort-rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-# ** mean mortality for rotations
-
-# have a go at classifying gens_rot so I can use it to colour the mean mort bars
-# cut(gens_rot, 5) this does that
-
-ggplot(df_res_16, aes(x=mort_rot, fill = cut(gens_rot, 5))) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     geom_histogram(colour='darkgrey') + 
-     #geom_histogram(binwidth=0.02, colour='darkgrey') + 
-     #be interesting to color by generations to see if strategies that last longer have lower mortality ?
-     #scale_fill_manual(values=colrs) +
-     #scale_fill_continuous(aes(gens_rot)) +
-     scale_fill_brewer(palette = 'greens') +
-     theme_minimal() +
-     #xlim(-100,100) +
-     xlab("mean mortality over all generations for rotation") +
-     ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank(),
-           legend.position="bottom") +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-```
-
-
-```{r figxgens_rot_v_mort_rot, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-# ** mean mortality for rotations
-
-ggplot(df_res_16, aes(x=gens_rot, fill = cut(mort_rot, 5))) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     geom_histogram(colour='darkgrey') + 
-     #geom_histogram(binwidth=0.02, colour='darkgrey') + 
-     #be interesting to color by generations to see if strategies that last longer have lower mortality ?
-     #scale_fill_manual(values=colrs) +
-     #scale_fill_continuous(aes(gens_rot)) +
-     scale_fill_brewer(palette = 'greens') +
-     theme_minimal() +
-     #xlim(-100,100) +
-     #xlab("mean mortality over all generations for rotation") +
-     #ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank(),
-           legend.position="bottom") +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-```
-
-
-```{r figxmort_rot_v_start_freqs, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-# i expect that mean mort may be largely influenced by startfreqs, but remember when diff. there are multiple
-
-# ** mean mortality for rotations
-
-ggplot(df_res_16, aes(x=start_freqs, y=mort_rot)) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
-     geom_hline(yintercept = 0, linetype="dashed", color = 'darkgrey') +
-     geom_vline(xintercept = 0, linetype="dashed", color = 'darkgrey') +
-     geom_point(shape='.') +
-     geom_smooth() +
-     #geom_abline() +
-     # scale_fill_manual(values=colrs) +
-     theme_minimal() +
-     # #xlim(-100,100) +
-     # xlab("advantage of rotations over sequence in mean mortality") +
-     # ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank()) +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-```
-
-
-```{r figxmort-rot-minus-seq, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-
-# ** mean mortality difference between rot & seq
-# why do these seem not to sum to totals ?
-
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
-ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     geom_histogram(binwidth=0.02, colour='darkgrey') + 
-     #scale_fill_manual(values=colrs) +
-     theme_minimal() +
-     #xlim(-100,100) +
-     xlab("advantage of rotations over sequence in mean mortality") +
-     ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank(),
-           legend.position="bottom") +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-
-```
-
-
-```{r figxmort-which-best-meanmort, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-
-# ** using best strategy from generations calc above
-# ** so trying to see if being better in generations terms
-# ** has consequences for mean mortality
-
-
-ggplot(df_res_16, aes(x=mort_rot_minus_seq, fill=best_strategy)) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
-     geom_histogram(binwidth=0.02, colour='darkgrey') + 
-     scale_fill_manual(values=colrs) +
-     theme_minimal() +
-     xlim(-0.2,0.2) +
-     xlab("advantage of rotations over sequence in mean mortality") +
-     ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank(),
-           legend.position="bottom") +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-
-```
-
-#try to establish whether
-#runs that have higher generations for rotations
-#also have lower mean mortality
-
-```{r figxmort-v-gens, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-
-#gens_rot_minus_seq, facet by A-D and 1-4, better facet labels
-ggplot(df_res_16, aes(x=gens_rot_minus_seq, y=mort_rot_minus_seq)) + 
-#ggplot(df_res_16, aes(x=mort_rot_minus_seq)) +   
-     #geom_histogram(binwidth=widthbin, colour='darkgrey') + 
-     geom_hline(yintercept = 0, linetype="dashed", color = 'darkgrey') +
-     geom_vline(xintercept = 0, linetype="dashed", color = 'darkgrey') +
-     geom_point(shape='.') +
-     geom_smooth(method='lm') +
-     #geom_abline() +
-     # scale_fill_manual(values=colrs) +
-     theme_minimal() +
-     # #xlim(-100,100) +
-     # xlab("advantage of rotations over sequence in mean mortality") +
-     # ylab("count of randomly sampled runs") +  
-     theme(panel.grid.minor=element_blank()) +
-     facet_grid(rows=vars(id14), cols=vars(idAD),
-                labeller=labeller(idAD=idAD_lookup, id14=id14_lookup))
-
-
-```

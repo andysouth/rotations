@@ -1,0 +1,499 @@
+---
+title: "Supplementary Information: PRCC and Classification trees"
+author: "Andy South, Sam Jones and Ian Hastings"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+  df_print: paged
+---
+  
+  
+  
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+#library(rotations)
+library(ggplot2)
+library(gridExtra)
+library(tidyr)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+# where the rotation runs saved
+#andy
+#infolder <- "C:\\Dropbox\\resistanceResults\\rotations\\"
+infolder <- "C:\\Dropbox\\2017_Rotations for IRM\\2020-02-results-sam\\"
+#sam
+#infolder <- "I:/Rotations/Results_Jan/"
+
+```
+
+The results shown on Figures 7 and 8 of the main text were subjected to PRCC and decision tree analysis. To recap, the analysis was as follows i.e.
+
+Column A: each insecticide had identical properties; switching criterion was resistance allele frequency exceeding 50%
+Column B: each insecticide had different properties; switching criterion was resistance allele frequency exceeding 50%
+ Column C: each insecticide had identical properties; switching criterion was mortality <90%
+Column D: each insecticide had different properties; switching criterion was mortality <90%
+
+Row 1: no costs of resistance or dispersal into/out of an untreated refugia\
+Row 2: costs are present; untreated areas absent\
+Row 3: costs absent; refugia present of an untreated refugia\
+Row 4: costs and refugia and both present\
+
+\pagebreak
+
+PRCC
+
+The results are given in the graphs at the end of this SI. The wealth of data they contain meant the most convenient method of evaluating the results is to print out each page, physically arrange  them by column/row and search for consistent patterns within rows or within columns. It is also possible to compare consistency between evaluation criteria in each row/column by comparing evaluation based on operational lifespan of the insecticide armoury (red crosses) with evaluation based on mean mortality during this lifespan (blue crosses); note that lifespan data are absent in plots of A1 and C1 as each policy had identical results in these circumstances. 
+
+There may be some slight patterns (e.g. “coverage” across row 3, “effectiveness” in column C) but these may well be coincidental and there seem no clear, consistent patterns that would identify circumstances under which one policy is consistently favoured over the other.
+
+The results given in D3 and D4 are the most important as they reflect the most realistic deployment scenarios i.e. insecticides differ in their properties, switching is based on mortality), but PRCC values are small and inconsistent both within the plots (i.e. evaluation based on operation lifespan or on mean mortality) or between analyses of D3 and D4.
+
+Finally, note the ‘p’ value may be very low (the sample size is very large) so the effects are ‘real’ but small in magnitude and inconsistent across scenarios
+
+\pagebreak
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=9, fig.height=11, comment=NA}
+#results='hide',
+#comment=NA removes ## before text output
+# load the data, start with just one experiment
+# dataframes will need to be renamed because they will all be called df_res_all to start
+
+
+experiment_vector<-c('A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4')
+#experiment_vector<-c('A1','A2','A3','A4')
+experiment_files<-grep("df_res_all",list.files(infolder),value=TRUE)
+
+#infile <- "2019-11-05-10-42-df_res_all_rotA210000.rda"
+#infile <- paste0(infolder, infile)
+#load(infile)
+
+experiment_files<-paste0(infolder,experiment_files)
+```
+
+
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(ppcor)
+#library(ggpubr)
+# for gens 
+
+index<-0
+
+for(e in experiment_files){
+  index<-index+1
+  
+  load(e)
+  
+
+  # all  
+  PRCC_a <- c('n_insecticides','eff','rr','dom_sel','expo_hi','male_expo_prop','start_freqs')
+  # cost present
+  PRCC_b <- c('cost','dom_cos')
+  # refugia
+  PRCC_c <- c('coverage','migration')
+  
+  names_a <- c('Number of insecticides','Effectiveness','Resistance restoration','Dominance of   resistance','Exposure', 'Male exposure','Starting frequency')
+  names_b <-c('Cost of resistance', 'Dominance of cost')
+  names_c <-c('Coverage','Dispersal')
+  
+  if(index==1 | index==5 | index==9 | index==13){
+    in_cols<-PRCC_a
+    all_names<-names_a
+  }
+  if(index==2 | index==6 | index==10 | index==14){
+    in_cols<-c(PRCC_a,PRCC_b)
+    all_names <- c(names_a,names_b)
+  }
+  if(index==3 | index==7 | index==11 | index==15){
+    in_cols<-c(PRCC_a,PRCC_c)
+    all_names <- c (names_a,names_c)
+  }
+  if(index==4 | index==8 | index==12 | index==16){
+    in_cols<-c(PRCC_a,PRCC_b,PRCC_c)
+    all_names <-c (names_a,names_b,names_c)
+  }
+  
+  
+  # filter out runs where both reach 500? 
+  df_res_all <- mutate(df_res_all, pcent_rot_adv = gens_rot_minus_seq * 100/gens_seq)
+  
+  df_res_all <- mutate(df_res_all, rot_seq_adv_new_params = ifelse(gens_seq==max_gen & gens_rot==max_gen,'Neither',
+                                                                   ifelse(pcent_rot_adv>0,'Rotation',
+                                                                          ifelse(pcent_rot_adv<0,'Sequence', 'Equivalent'        
+                                                                          ))))
+  
+  
+  df_cost<-filter(df_res_all,rot_seq_adv_new_params != 'Neither')
+  
+  # Add ratios to df_cost
+  # Ratio is seq / rot (i.e., above 1 = rot better, below 1 = seq better)
+
+  
+  df_cost <- rowwise(df_cost)
+  df_cost<-mutate ( df_cost, gens_ratio =ifelse (
+    
+    rot_seq_adv_new_params == 'Equivalent' , 1,
+    
+    # max / min
+    
+    gens_rot / gens_seq 
+    
+  ))
+  
+  df_cost<-mutate( df_cost, mort_ratio =
+                      
+                      mort_rot / mort_seq 
+                    
+  )
+  
+  df_cost<- mutate (df_cost, adj_gen_ratio=ifelse(abs(gens_rot-gens_seq)<11,1,gens_ratio))
+  
+  df_cost<-data.frame(df_cost)
+  
+  
+  
+  # Incredibly convulted method required to seperate the character/ listed variables... 
+  # Which are cost, eff, rr, dom_sel, dom_cos. 
+  if(index== 5 | index== 6 | index== 7 | index== 8 | index== 13 | index== 14 | index== 15 | index== 16){
+    # First convert to list... 
+    adj_cost1 <- as.list(strsplit(df_cost$cost,","))
+    # Then for each element of list, force to numeric and calculate mean...
+    # can't combine these for some reason,crashes.. 
+    adj_cost2 <- lapply(adj_cost1, as.numeric)
+    adj_cost3 <- lapply(adj_cost2, mean)
+    df_cost$cost <- as.numeric(adj_cost3)
+    
+    adj_eff1 <- as.list(strsplit(df_cost$eff,","))
+    adj_eff2 <- lapply(adj_eff1, as.numeric)
+    adj_eff3 <- lapply(adj_eff2, mean)
+    df_cost$eff <- as.numeric(adj_eff3)
+    
+    adj_rr1 <- as.list(strsplit(df_cost$rr,","))
+    adj_rr2 <- lapply(adj_rr1, as.numeric)
+    adj_rr3 <- lapply(adj_rr2, mean)
+    df_cost$rr <- as.numeric(adj_rr3)
+    
+    adj_dom_sel1 <- as.list(strsplit(df_cost$dom_sel,","))
+    adj_dom_sel2 <- lapply(adj_dom_sel1, as.numeric)
+    adj_dom_sel3 <- lapply(adj_dom_sel2, mean)
+    df_cost$dom_sel <- as.numeric(adj_dom_sel3)
+    
+    adj_dom_cos1 <- as.list(strsplit(df_cost$dom_cos,","))
+    adj_dom_cos2 <- lapply(adj_dom_cos1, as.numeric)
+    adj_dom_cos3 <- lapply(adj_dom_cos2, mean)
+    df_cost$dom_cos <- as.numeric(adj_dom_cos3)
+  }
+  
+  x <- df_cost[,in_cols]
+  
+  y_gen_2 <- df_cost[c(in_cols,'adj_gen_ratio')]
+  y_mort_2<- df_cost[c(in_cols,'mort_ratio')]
+  
+  
+  gen_prcc<-pcor(y_gen_2,method="spearman")
+  mort_prcc<-pcor(y_mort_2,method="spearman")
+  
+  gen_plot2 <- gen_prcc$estimate
+  mort_plot2 <- mort_prcc$estimate
+  
+  gen_p <- gen_prcc$p.value
+  mort_p <- mort_prcc$p.value
+  
+  gen_p_format <- gen_p[1:(nrow(gen_p)-1),ncol(gen_p)]
+  mort_p_format <- mort_p[1:(nrow(gen_p)-1),ncol(mort_p)]
+  
+  
+  gen_estimate <- gen_plot2[1:(nrow(gen_plot2)-1),ncol(gen_plot2)]
+  mort_estimate <- mort_plot2[1:(nrow(gen_plot2)-1),ncol(mort_plot2)]
+  
+  # Estimates are now all correct. Need to get them into a single data-frame (both_plot with columns inputs, PRCC-gen and PRCC_mort as below). 
+  
+  # in_cols should automatically scale, use that to create df.. 
+  both_plot<-data.frame(in_cols)
+  both_plot$PRCC_gen<-gen_estimate
+  both_plot$PRCC_mort<-mort_estimate
+  names(both_plot)[1] <-"inputs"
+  both_plot[1] <- all_names
+  
+  
+  gg <- ggplot() +  
+    
+    geom_point(aes(x=inputs,y=PRCC_gen,colour="Generations"),data=both_plot) +
+    geom_point(aes(x=inputs,y=PRCC_mort,colour="Mortality"),data=both_plot)+
+    
+    scale_x_discrete()+
+    theme_bw()+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),legend.title=element_blank()) +
+    geom_hline(yintercept = 0, linetype=3) +
+    geom_hline(yintercept = 0.3, linetype=3) +
+    geom_hline(yintercept = -0.3, linetype=3) +
+    ylim(-1,1)+ 
+    scale_y_continuous(name="PRCC estimate",breaks=c(-1,-0.5,-0.3,0,0.3,0.5,1))+
+    xlab("Parameters") +
+    coord_cartesian(ylim=c(-1,1))+
+    ggtitle(paste("Scenario",experiment_vector[index]))
+  
+  plot(gg)
+  
+  names(gen_p_format)<-all_names
+  names(mort_p_format)<-all_names
+  
+  print("P values for generations")
+  print(gen_p_format)
+  
+  
+  print("P values for mortality")
+  print(mort_p_format)
+
+  
+} # end e loop
+
+
+
+```
+
+\pagebreak
+
+Classification trees
+
+Classification trees were run on the same datasets, using the R package Rpart. When evaluated on generations, those runs with a difference of 10 generations or less were regarded as “equivalent”. A significant subset of runs evaluated on mortality were also equivalent as they had the same overall mortality under both policies (as might be expected if both policies reached the same endpoint but by different routes). The trees are interpreted as follows:
+•	The numbers under each box give the numbers of runs in the box which were equivalent, favoured rotations, favours sequences, in that order.
+•	The percentage given below each box is the percentage of runs that fall into that box
+
+As for PRCC, the only reasonable way to look for consistency seems to require printing the graphs, spreading them on the floor in columns/rows as in Figs 7&8 in main ms and look for consistent patterns across row and down columns. There was a tendency for low exposure to favour rotations in Column A when evaluated on mean moratility but in general there was no consistent patterns. 
+
+As noted above, scenario A3 and A4 reflect the most realistic deployment scenarios but there was little consistence y between their trees.
+
+Even when classification did occur they classes did not consistent identify parameter spaces in which one policy was clearly favoured. For example, Scenario D4 evaluated on mortality was relatively simple and identified parameter spaces in which sequences, rotations or equivalence was most likely. However, the numbers beneath each box show that although one policy or equivalence tended to be favoured, there were a large number of runs in the classification box which were contrary to the favoured policy/equivalence. For example, rotations was the favoured policy in the bottom right box of this figure with 134 run favouring rotations but the classification box still contained 68 runs where the policies were equivalent and 91 runs where sequences were favoured.
+
+\pagebreak
+
+
+```{r tree, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.height=7, fig.width=9, comment=NA}
+
+library(rpart)
+library(rpart.plot)
+
+index<-0
+
+for(e in experiment_files){
+  
+  index<-index+1
+  
+  #print(paste("Scenario", experiment_vector[index]))
+  
+  load(e)
+  
+  # all  
+  PRCC_a <- c('n_insecticides','eff','rr','dom_sel','expo_hi','male_expo_prop','st art_freqs')
+  # cost present
+  PRCC_b <- c('cost','dom_cos')
+  # refugia
+  PRCC_c <- c('coverage','migration')
+  
+  names_a <- c('Number of insecticides','Effectiveness','Resistance     restoration','Dominance of   resistance','Exposure', 'Male exposure','Starting frequency')
+  names_b <-c('Cost of resistance', 'Dominance of cost')
+  names_c <-c('Coverage','Dispersal')
+  
+  if(index==1 | index==5 | index==9 | index==13){
+    in_cols<-PRCC_a
+    all_names<-names_a
+  }
+  if(index==2 | index==6 | index==10 | index==14){
+    in_cols<-c(PRCC_a,PRCC_b)
+    all_names <- c(names_a,names_b)
+  }
+  if(index==3 | index==7 | index==11 | index==15){
+    in_cols<-c(PRCC_a,PRCC_c)
+    all_names <- c (names_a,names_c)
+  }
+  if(index==4 | index==8 | index==12 | index==16){
+    in_cols<-c(PRCC_a,PRCC_b,PRCC_c)
+    all_names <-c (names_a,names_b,names_c)
+  }
+  
+  
+  # filter out runs where both reach 500? 
+  df_res_all <- mutate(df_res_all, pcent_rot_adv = gens_rot_minus_seq * 100/gens_seq)
+  
+  
+  
+  
+  df_res_all <- mutate(df_res_all, rot_seq_adv_new_params = ifelse(gens_seq==max_gen & gens_rot==max_gen,'Neither',
+                                                                   ifelse(pcent_rot_adv>0,'Rotation',
+                                                                          ifelse(pcent_rot_adv<0,'Sequence', 'Equivalent'        
+                                                                          ))))
+  
+  
+  df_cost<-filter(df_res_all,rot_seq_adv_new_params != 'Neither')
+  
+  # Add ratios to df_cost
+  # Ratio is seq / rot (i.e., above 1 = rot better, below 1 = seq better)
+  # Apply would be better but changes the d.f into a tibble
+
+  
+  df_cost <- rowwise(df_cost)
+  df_cost<-mutate ( df_cost, gens_ratio =ifelse (
+    
+    rot_seq_adv_new_params == 'Equivalent' , 1,
+    
+    # max / min
+    
+   gens_rot / gens_seq 
+    
+  ))
+  
+  df_cost<-mutate ( df_cost, mort_ratio =
+    
+                      mort_rot / mort_seq 
+    
+  )
+  
+  df_cost<- mutate (df_cost, adj_gen_ratio=ifelse(abs(gens_rot-gens_seq)<11,1,gens_ratio))
+  
+  df_cost<-data.frame(df_cost)
+  
+  # New mutated params to give gens advantage as discrete variable... 
+  df_cost<- mutate (df_cost, final_gens_ratio=ifelse(
+    gens_ratio == 1, 'Equivalent', ifelse(gens_ratio>1, 'Rotation','Sequence')))
+
+  # And for mortality.. 
+  df_cost<- mutate (df_cost, final_mort_ratio=ifelse(
+    mort_ratio == 1, 'Equivalent', ifelse(mort_ratio>1, 'Rotation','Sequence')))
+  
+  # Incredibly convulted method required to seperate the character/ listed variables... 
+  # Which are cost, eff, rr, dom_sel, dom_cos. 
+  if(index== 5 | index== 6 | index== 7 | index== 8 | index== 13 | index== 14 | index== 15 | index== 16){
+  # First convert to list... 
+  adj_cost1 <- as.list(strsplit(df_cost$cost,","))
+  # Then for each element of list, force to numeric and calculate mean...
+  # can't combine these for some reason,crashes.. 
+  adj_cost2 <- lapply(adj_cost1, as.numeric)
+  adj_cost3 <- lapply(adj_cost2, mean)
+  df_cost$cost <- as.numeric(adj_cost3)
+  
+  adj_eff1 <- as.list(strsplit(df_cost$eff,","))
+  adj_eff2 <- lapply(adj_eff1, as.numeric)
+  adj_eff3 <- lapply(adj_eff2, mean)
+  df_cost$eff <- as.numeric(adj_eff3)
+  
+  adj_rr1 <- as.list(strsplit(df_cost$rr,","))
+  adj_rr2 <- lapply(adj_rr1, as.numeric)
+  adj_rr3 <- lapply(adj_rr2, mean)
+  df_cost$rr <- as.numeric(adj_rr3)
+  
+  adj_dom_sel1 <- as.list(strsplit(df_cost$dom_sel,","))
+  adj_dom_sel2 <- lapply(adj_dom_sel1, as.numeric)
+  adj_dom_sel3 <- lapply(adj_dom_sel2, mean)
+  df_cost$dom_sel <- as.numeric(adj_dom_sel3)
+  
+  adj_dom_cos1 <- as.list(strsplit(df_cost$dom_cos,","))
+  adj_dom_cos2 <- lapply(adj_dom_cos1, as.numeric)
+  adj_dom_cos3 <- lapply(adj_dom_cos2, mean)
+  df_cost$dom_cos <- as.numeric(adj_dom_cos3)
+  }
+  
+# this seems to be best way of doing it
+
+
+
+if(min(df_cost[,"adj_gen_ratio"]==1) && max(df_cost[,"adj_gen_ratio"]==1)){
+print(paste("Scenario", experiment_vector[index],"Generations tree cannot run"))
+}
+
+else{
+  # Names a
+   if(index==1 | index==5 | index==9 | index==13){  
+    tree <- rpart::rpart("final_gens_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs", data = df_cost, method = 'class')
+    
+prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"generations decision tree"))
+
+   }
+  # names a, b
+  if(index==2 | index==6 | index==10 | index==14){
+       tree <- rpart::rpart("final_gens_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + cost + dom_cos", data = df_cost, method = 'class')
+    
+prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"generations decision tree"))
+
+  }
+  
+  # names a, c
+  if(index==3 | index==7 | index==11 | index==15){
+    tree <- rpart::rpart("final_gens_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + coverage + migration", data = df_cost, method = 'class')
+    
+ prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= ",main=paste("Scenario",experiment_vector[index],"generations decision tree") )
+
+  }
+  # names abc
+  if(index==4 | index==8 | index==12 | index==16){
+    tree <- rpart::rpart("final_gens_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + cost + dom_cos + coverage + migration", data = df_cost, method = 'class')
+    
+prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= ",main=paste("Scenario",experiment_vector[index],"generations decision tree") )
+
+  }
+  
+  
+}
+
+
+
+   if(index==1 | index==5 | index==9 | index==13){  
+    tree <- rpart::rpart("final_mort_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop +     start_freqs", data = df_cost, method = 'class')
+    
+    prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"mortality decision tree"))
+    
+   }
+
+  # names a, b
+  if(index==2 | index==6 | index==10 | index==14){
+       tree <- rpart::rpart("final_mort_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + cost + dom_cos", data = df_cost, method = 'class')
+    
+    prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"mortality decision tree"))
+    
+  }
+  
+  # names a, c
+  if(index==3 | index==7 | index==11 | index==15){
+    tree <- rpart::rpart("final_mort_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + coverage + migration", data = df_cost, method = 'class')
+    
+    prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"mortality decision tree"))
+    
+  }
+
+  # names abc
+  if(index==4 | index==8 | index==12 | index==16){
+    tree <- rpart::rpart("final_mort_ratio ~ n_insecticides + eff + rr +dom_sel + expo_hi + male_expo_prop + start_freqs + cost + dom_cos + coverage + migration", data = df_cost, method = 'class')
+    
+    prp(tree, extra=101, type=3, varlen = 0, under=TRUE, 
+    cex=0.6, round=1, split.font=1, ycompress = TRUE,
+    eq="\n= ", lt="\n< ", ge="\n>= " ,main=paste("Scenario",experiment_vector[index],"mortality decision tree"))
+    
+  }
+
+
+}
+```
+
+
+
+\pagebreak
+
+
+

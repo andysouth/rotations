@@ -1,0 +1,555 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Supplementary Information: PRCC and Classification trees},
+  pdfauthor={Andy South, Sam Jones and Ian Hastings},
+  pdfborder={0 0 0},
+  breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-2}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{Supplementary Information: PRCC and Classification trees}
+\author{Andy South, Sam Jones and Ian Hastings}
+\date{2020-05-19}
+
+\begin{document}
+\maketitle
+
+The results shown on Figures 7 and 8 of the main text were subjected to
+PRCC and decision tree analysis. To recap, the analysis was as follows
+i.e.
+
+Column A: each insecticide had identical properties; switching criterion
+was resistance allele frequency exceeding 50\% Column B: each
+insecticide had different properties; switching criterion was resistance
+allele frequency exceeding 50\% Column C: each insecticide had identical
+properties; switching criterion was mortality \textless{}90\% Column D:
+each insecticide had different properties; switching criterion was
+mortality \textless{}90\%
+
+Row 1: no costs of resistance or dispersal into/out of an untreated
+refugia\\
+Row 2: costs are present; untreated areas absent\\
+Row 3: costs absent; refugia present of an untreated refugia\\
+Row 4: costs and refugia and both present\\
+
+\pagebreak
+
+PRCC
+
+The results are given in the graphs at the end of this SI. The wealth of
+data they contain meant the most convenient method of evaluating the
+results is to print out each page, physically arrange them by column/row
+and search for consistent patterns within rows or within columns. It is
+also possible to compare consistency between evaluation criteria in each
+row/column by comparing evaluation based on operational lifespan of the
+insecticide armoury (red crosses) with evaluation based on mean
+mortality during this lifespan (blue crosses); note that lifespan data
+are absent in plots of A1 and C1 as each policy had identical results in
+these circumstances.
+
+There may be some slight patterns (e.g.~``coverage'' across row 3,
+``effectiveness'' in column C) but these may well be coincidental and
+there seem no clear, consistent patterns that would identify
+circumstances under which one policy is consistently favoured over the
+other.
+
+The results given in D3 and D4 are the most important as they reflect
+the most realistic deployment scenarios i.e.~insecticides differ in
+their properties, switching is based on mortality), but PRCC values are
+small and inconsistent both within the plots (i.e.~evaluation based on
+operation lifespan or on mean mortality) or between analyses of D3 and
+D4.
+
+Finally, note the `p' value may be very low (the sample size is very
+large) so the effects are `real' but small in magnitude and inconsistent
+across scenarios
+
+\pagebreak
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##                       NaN                       NaN                       NaN 
+## Dominance of   resistance                  Exposure             Male exposure 
+##                       NaN                       NaN                       NaN 
+##        Starting frequency 
+##                       NaN 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.279497e-05              4.132992e-09             2.839076e-271 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             5.796504e-134              1.597436e-10              0.000000e+00 
+##        Starting frequency 
+##              1.962586e-28
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.431292e-10              6.866538e-02              7.066883e-02 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             3.410289e-101              2.987057e-03              5.003460e-05 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              2.009100e-04              4.302566e-01             2.149941e-139 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##             6.256138e-103              6.819722e-58              8.500737e-01 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.204792e-72             1.070692e-190              1.688966e-70 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##             2.058805e-124             6.201080e-282              8.977118e-09
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-3.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.040190e-07              8.847019e-15              1.544334e-37 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             1.590978e-248              3.102177e-38              5.230439e-10 
+##        Starting frequency                  Coverage                 Dispersal 
+##              2.436760e-98             3.112878e-287              2.048830e-04 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              1.736910e-28              2.438733e-12             4.530652e-206 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              2.569953e-12              2.352183e-40              1.960913e-21 
+##        Starting frequency                  Coverage                 Dispersal 
+##              1.982413e-36              0.000000e+00              1.339645e-39
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-4.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              5.964994e-04              9.664349e-04              9.390170e-06 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             1.232597e-103              1.023258e-13              8.119258e-01 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              1.217907e-04              9.860850e-01              2.460829e-40 
+##                  Coverage                 Dispersal 
+##              5.473628e-25              2.552781e-01 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              3.420232e-47              1.749062e-30              1.830962e-38 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.030718e-35              2.399366e-60              5.004423e-23 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              7.936141e-59              4.081867e-44              9.055371e-11 
+##                  Coverage                 Dispersal 
+##              1.993505e-78              2.970499e-01
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-5.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##                       NaN                       NaN                       NaN 
+## Dominance of   resistance                  Exposure             Male exposure 
+##                       NaN                       NaN                       NaN 
+##        Starting frequency 
+##                       NaN 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.527251e-51              8.903486e-01             2.042072e-319 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             6.806321e-253              5.600780e-26              0.000000e+00 
+##        Starting frequency 
+##              4.181653e-01
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-6.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##             3.445174e-107              2.530469e-04              5.221642e-06 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              3.489091e-51              2.074492e-14              3.151796e-05 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              1.292085e-03              2.661099e-52              2.604509e-16 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              7.385269e-43              6.990974e-01              2.016125e-13 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.221363e-02              3.963614e-04              9.717417e-01 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              1.914308e-04              3.310871e-13              3.074197e-06
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-7.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.621072e-44              1.190614e-03              3.178174e-11 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.321768e-59              4.243877e-35              5.891333e-06 
+##        Starting frequency                  Coverage                 Dispersal 
+##              1.081656e-78             7.213789e-200              1.513218e-64 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.922073e-25              2.194519e-01             4.420165e-108 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              4.123880e-05              8.941555e-01              1.221618e-06 
+##        Starting frequency                  Coverage                 Dispersal 
+##              9.166678e-07             6.332364e-237              1.705509e-02
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-8.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              3.091741e-52              9.523047e-03              5.946935e-11 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              9.285600e-44              2.692993e-09              7.693886e-02 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              3.210231e-04              1.814614e-25              4.636453e-06 
+##                  Coverage                 Dispersal 
+##              1.513121e-15              4.841748e-02 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.574257e-16              1.705323e-01              3.938262e-17 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.015848e-02              6.186243e-01              4.336015e-02 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              3.418948e-04              1.734081e-05              1.140939e-07 
+##                  Coverage                 Dispersal 
+##              2.918941e-03              1.555878e-02
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-9.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##                       NaN                       NaN                       NaN 
+## Dominance of   resistance                  Exposure             Male exposure 
+##                       NaN                       NaN                       NaN 
+##        Starting frequency 
+##                       NaN 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              5.536947e-04              0.000000e+00              0.000000e+00 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              0.000000e+00             2.891056e-217             9.843181e-174 
+##        Starting frequency 
+##             1.976263e-323
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-10.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              6.613208e-02              9.126458e-01              2.107584e-03 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              9.689983e-50              2.363406e-03              1.312496e-03 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              2.947348e-03              7.551858e-01              1.364583e-63 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              1.901525e-24             3.162762e-177             1.467414e-309 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              0.000000e+00             9.265694e-195              1.352644e-33 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              0.000000e+00              1.442660e-47              1.341460e-20
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-11.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              1.324957e-06              3.097366e-17              5.149826e-91 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             6.974852e-181              2.268646e-56              1.139877e-05 
+##        Starting frequency                  Coverage                 Dispersal 
+##             9.857767e-129             1.725897e-225              2.580508e-05 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.962626e-02             2.666263e-161             2.505642e-144 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             4.098326e-179              9.857408e-70              9.155748e-18 
+##        Starting frequency                  Coverage                 Dispersal 
+##             1.562930e-131              5.436548e-24              7.645491e-02
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-12.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.121770e-02              4.043657e-05              2.535163e-26 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             7.777280e-145              5.690995e-33              3.447412e-03 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              7.900528e-53              3.439374e-02              1.318700e-25 
+##                  Coverage                 Dispersal 
+##              2.240292e-66              1.772746e-02 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.831730e-05             2.018771e-175             1.446793e-136 
+## Dominance of   resistance                  Exposure             Male exposure 
+##             2.082715e-232             5.502352e-109              3.536926e-11 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##             4.439919e-225              3.034425e-04              1.179055e-07 
+##                  Coverage                 Dispersal 
+##              1.230631e-03              4.419448e-01
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-13.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##                       NaN                       NaN                       NaN 
+## Dominance of   resistance                  Exposure             Male exposure 
+##                       NaN                       NaN                       NaN 
+##        Starting frequency 
+##                       NaN 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              6.242765e-52             1.633581e-122             1.296183e-124 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.561774e-79             7.049997e-117             9.553510e-153 
+##        Starting frequency 
+##             1.035562e-320
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-14.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              8.200503e-55              1.443596e-06              1.441594e-10 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.201341e-51              2.943605e-09              1.116616e-02 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              8.701257e-09              5.228213e-14              1.053013e-05 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              1.325812e-44              7.853500e-01              2.859244e-09 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              1.031419e-05              2.370490e-08              8.829040e-01 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              1.159202e-15              3.963494e-11              3.563846e-01
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-15.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              7.434045e-29              2.582068e-08              9.351446e-18 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              6.528407e-38              6.660790e-23              1.426250e-05 
+##        Starting frequency                  Coverage                 Dispersal 
+##              9.760751e-81             1.531881e-125              9.664162e-29 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              4.154050e-15              2.993334e-32              5.412344e-13 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              3.481640e-18              9.576041e-07              2.529119e-02 
+##        Starting frequency                  Coverage                 Dispersal 
+##              2.029387e-80              2.767899e-01              6.645464e-05
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/unnamed-chunk-3-16.pdf}
+
+\begin{verbatim}
+## [1] "P values for generations"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              7.191772e-48              2.713605e-14              8.983791e-21 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              4.919087e-67              2.272904e-13              1.101868e-03 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              1.097601e-54              2.038884e-08              1.484036e-09 
+##                  Coverage                 Dispersal 
+##              2.970703e-27              6.020441e-01 
+## [1] "P values for mortality"
+##    Number of insecticides             Effectiveness    Resistance restoration 
+##              2.143110e-29              3.130298e-02              1.966945e-03 
+## Dominance of   resistance                  Exposure             Male exposure 
+##              2.879619e-05              1.735534e-01              2.238551e-01 
+##        Starting frequency        Cost of resistance         Dominance of cost 
+##              4.868563e-15              8.983808e-07              6.133150e-01 
+##                  Coverage                 Dispersal 
+##              2.946694e-01              5.137393e-01
+\end{verbatim}
+
+\pagebreak
+
+Classification trees
+
+Classification trees were run on the same datasets, using the R package
+Rpart. When evaluated on generations, those runs with a difference of 10
+generations or less were regarded as ``equivalent''. A significant
+subset of runs evaluated on mortality were also equivalent as they had
+the same overall mortality under both policies (as might be expected if
+both policies reached the same endpoint but by different routes). The
+trees are interpreted as follows: • The numbers under each box give the
+numbers of runs in the box which were equivalent, favoured rotations,
+favours sequences, in that order. • The percentage given below each box
+is the percentage of runs that fall into that box
+
+As for PRCC, the only reasonable way to look for consistency seems to
+require printing the graphs, spreading them on the floor in columns/rows
+as in Figs 7\&8 in main ms and look for consistent patterns across row
+and down columns. There was a tendency for low exposure to favour
+rotations in Column A when evaluated on mean moratility but in general
+there was no consistent patterns.
+
+As noted above, scenario A3 and A4 reflect the most realistic deployment
+scenarios but there was little consistence y between their trees.
+
+Even when classification did occur they classes did not consistent
+identify parameter spaces in which one policy was clearly favoured. For
+example, Scenario D4 evaluated on mortality was relatively simple and
+identified parameter spaces in which sequences, rotations or equivalence
+was most likely. However, the numbers beneath each box show that
+although one policy or equivalence tended to be favoured, there were a
+large number of runs in the classification box which were contrary to
+the favoured policy/equivalence. For example, rotations was the favoured
+policy in the bottom right box of this figure with 134 run favouring
+rotations but the classification box still contained 68 runs where the
+policies were equivalent and 91 runs where sequences were favoured.
+
+\pagebreak
+
+\begin{verbatim}
+[1] "Scenario A1 Generations tree cannot run"
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/tree-1.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-2.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-3.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-4.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-5.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-6.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-7.pdf}
+
+\begin{verbatim}
+[1] "Scenario B1 Generations tree cannot run"
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/tree-8.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-9.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-10.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-11.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-12.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-13.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-14.pdf}
+
+\begin{verbatim}
+[1] "Scenario C1 Generations tree cannot run"
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/tree-15.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-16.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-17.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-18.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-19.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-20.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-21.pdf}
+
+\begin{verbatim}
+[1] "Scenario D1 Generations tree cannot run"
+\end{verbatim}
+
+\includegraphics{combined_SI_files/figure-latex/tree-22.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-23.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-24.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-25.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-26.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-27.pdf}
+\includegraphics{combined_SI_files/figure-latex/tree-28.pdf}
+
+\pagebreak
+
+\end{document}
